@@ -15,4 +15,4 @@ fl_new = gsub(old.prior, new.prior, fl_new, fixed=T)
 fileConn<-file("lavExport/sem_nonlinear.jag")
 writeLines(fl_new, fileConn)
 close(fileConn)
-cat(fl_new, file=)
+

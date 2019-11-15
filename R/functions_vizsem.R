@@ -21,7 +21,6 @@ generate_predictions = function(object, variable){
 diagnostic_plots = function(x,y,latent, data, object, plot="model"){
   
   data$residual = data[,y] - data[,latent]
-  #data$predicted = fifer::rescale(data[,latent],new.mean = mean(data[,y]), new.sd = sd(data[,y]))
   predicted = generate_predictions(object, x)
   predicted$f = predicted$latent
   predicted$latent = fifer::rescale(predicted[,"latent"],new.mean = mean(data[,y]), new.sd = sd(data[,y]))

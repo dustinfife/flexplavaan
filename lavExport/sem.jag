@@ -2,7 +2,7 @@ model {
   for(i in 1:N) {
     x1[i] ~ dnorm(mu[i,1], 1/theta[1,1,g[i]])
     x2[i] ~ dnorm(mu[i,2], 1/theta[2,2,g[i]])
-    x3a[i] ~ dnorm(mu[i,3], 1/theta[3,3,g[i]])
+    x3b[i] ~ dnorm(mu[i,3], 1/theta[3,3,g[i]])
 
     # lvs
     eta[i,1] ~ dnorm(mu_eta[i,1], 1/psi[1,1,g[i]])
@@ -39,4 +39,9 @@ model {
   parvec[7] ~ dnorm(0,1e-3)
   parvec[8] ~ dnorm(0,1e-3)
   parvec[9] ~ dnorm(0,1e-3)
+  
+  for (i in 1:N){
+  mu[i,3] <- nu[3,1,g[i]]^eta[i,1]
+  }
+
 }

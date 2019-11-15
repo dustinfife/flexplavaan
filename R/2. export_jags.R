@@ -1,4 +1,5 @@
 require(blavaan)
+require(lavaan)
 d = read.csv("data/exp_data.csv")
 future::plan("multiprocess")
 
@@ -13,15 +14,18 @@ model.linear = '
 '
 
     ### first model runs quick in jags (to just export things)
-fit.bayes.export = bcfa(model.nonlinear, data=d, mcmcfile=T, 
-                 target="jags", 
-                 n.chains = 1,
-                 burnin = 100,
-                 sample = 2000)
-    
+# fit.bayes.export = bcfa(model.nonlinear, data=d, mcmcfile=T, 
+#                  target="jags", 
+#                  n.chains = 1,
+#                  burnin = 100,
+#                  sample = 2000)
+#     
   ### second model 
-fit.bayes.linear = bcfa(model.linear, data=d, save.lvs = T)
-saveRDS(fit.bayes.linear, file="data/initial_bayes_fit_linear.rds")
+#fit.bayes.linear = bcfa(model.linear, data=d, save.lvs = T)
+#saveRDS(fit.bayes.linear, file="data/initial_bayes_fit_linear.rds")
 
-fit.bayes.nonlinear = bcfa(model.nonlinear, data=d, save.lvs = T)
+fit.linear = bcfa(model.linear, data=d)
+saveRDS(fit.linear, file="data/initial_fit_linear.rds", jagcontrol=list(method="rjparallel"))
+
+fit.bayes.nonlinear = bcfa(model.nonlinear, data=d, jagcontrol=list(method="rjparallel"))
 saveRDS(fit.bayes.nonlinear, file="data/initial_bayes_fit_nonlinear.rds")

@@ -1,13 +1,14 @@
     #### this script simulates the non-linear data
 
-set.seed(1212)
+set.seed(12121)
 ### latent variable of "force"'ness
-latent = rnorm(300)
+latent = rnorm(1000)
 
 ### observed variables
 x1 = 10 + .75*(2)*latent + rnorm(length(latent), 0, 2)
 x2 = 30 + .55*(8)*latent + rnorm(length(latent), 0, 8)
-x3a = 10^latent + rchisq(length(latent), 15, 20)
+x3a = 3^latent + rnorm(length(latent), 0, 3)
+plot(latent, x3a)
 x3b = 50 + .65*(12)*latent + rnorm(length(latent), 0, 12)
 
 
