@@ -10,7 +10,7 @@ generate_predictions = function(object, variable){
   mean.replace = cnames[cnames!=variable]
   new.data = data.frame(matrix(means, nrow=20, ncol=length(means), byrow=T))
   names(new.data) = cnames
-  ## lavaan requires variability for the predict to work
+  ## lavaan requires variability for predict to work
   new.data = new.data + matrix(rnorm(20*length(means), 0, .001*sds), nrow=20, byrow=T, ncol=length(means))
   
   new.data[,variable] = seq(from=mins[[variable]], to=max[[variable]], length.out=nrow(new.data))

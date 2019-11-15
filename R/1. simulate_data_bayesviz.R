@@ -2,7 +2,7 @@
 
 set.seed(1212)
 ### latent variable of "force"'ness
-latent = rnorm(1111)
+latent = rnorm(300)
 
 ### observed variables
 x1 = 10 + .75*(2)*latent + rnorm(length(latent), 0, 2)
