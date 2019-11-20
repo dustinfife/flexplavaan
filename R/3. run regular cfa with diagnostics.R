@@ -1,31 +1,158 @@
-  ### this script reads in the regular CFA and does diagnostic plots
+  ### this script reads in the CFA models and does diagnostic plots
 require(tidyverse); require(blavaan); require(flexplot)
 source("R/functions_vizsem.R")
 d = read.csv("data/exp_data.csv")
 
 
+# standard lavaan model ---------------------------------------------------
 
-# linear model ------------------------------------------------------------
+### read in lavaan data
+fit.lavaan <- readRDS("data/fit_lavaan.rds")
 
-  ### read in blavaan data
-fit.bayes.linear <- readRDS("data/initial_fit_linear.rds")
+## factor scores (estimated during MCMC)
+head(lavPredict(fit.lavaan, method="Bartlett"))
+d[,c("A", "B")] = lavPredict(fit.lavaan, method="Bartlett")
+  flexplot(B~A, data=d)
+  flexplot(latent_b~latent_a, data=d)
+  flexplot(A~latent_a, data=d)
+  flexplot(B~latent_b, data=d)
+    ### it's doing pretty good!
+  
+## residualize X2 based on latent variable
+d$x2_residual = residuals(lm(x2~A+B, data=d))
+flexplot(x2_residual~x1, data=d, method="lm")
+residuals(fit.lavaan)
 
-  ## factor scores (estimated during MCMC)
-d$f_linear = lavPredict(fit.bayes.linear)
+with(d, cor(x2_residual, x1))
+  #### looks beautiful
 
-  ## make sure estimated factor scores are similar to actual factor scores
-flexplot(latent~f_linear, data=d)
-flexplot(x1~latent, data=d)
+  #### trace plot (fit between x1 and x2 implied by lavaan)
+  #### use lavaan to predict X2 from X1 (which automatically accounts for the latent variable)
+pred.matrix = sequence_grid("x1", d)
+m = data.frame(x1 = sequence_grid("x1", d), x2 = mean(d$x2)+rnorm(10, 0, .001), x3b = mean(d$x3b)+rnorm(10, 0, .001))
+m$latent = as.numeric(lavPredict(fit.lavaan, newdata = m, method="Bartlett"))
+m$latent = 29.897 + m$latent * 4.415  
+flexplot(x2~x1, data=d, method="lm") +
+  geom_line(data=m, aes(x1, latent), col="red")
+
+  #### model plot (fit between x1 and outcome)
 flexplot(x1~f_linear, data=d)
 
-  ## create diagnostic plots
-diagnostic_plots(x="x3b", y="x2", latent = "f_linear", data=d, object=fit.bayes.linear, plot="model") 
+  #### compare fits of the actual versus estimated factor line
+d %>% tidyr::gather("method", "value", f_linear, latent) %>% 
+  mutate(method = factor(method, labels = c("Estimated", "Actual"))) %>% 
+  with(flexplot(x1~value | method, data = ., ghost.line="red"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## make sure estimated factor scores are similar to actual factor scores
+flexplot(latent~f_linear, data=d) 
+
+#### expand that grid
+coef(fit.lavaan)
+x1 = seq(from=min(d$x1), to = max(d$x1), length.out=20)
+f = (x1 - 9.983)/1.506
+x2 = 4.415*f + 29.897 
+
+
+newd = data.frame(x1=x1, x2=x2, f=f)
+flexplot(x2~x1, data=d, method="lm") +
+  geom_line(data=newd, aes(x1,x2))
+
+
+
+
+
+new_data = c("x1", "x2", "x3b") %>% map(sequence_grid, data=d) %>% expand.grid
+names(new_data) = c("x1", "x2", "x3b")
+new_data$prediction = predict(fit.lavaan, new_data) %>% fifer::rescale(new.mean = mean(d$x2), new.sd = sd(d$x2))
+new_data$model = "latent"
+
+flexplot(x2~x3b | x1, data=d, prediction = new_data, method="lm")
+
+
+
+## create diagnostic plots
+diagnostic_plots(x="x3b", y="x2", latent = "latent", data=d, object=fit.bayes.linear, plot="model")
 diagnostic_plots("x3b", "x2", "latent", data=d, object=fit.bayes.linear, plot="trace") + geom_smooth(method="lm")
 diagnostic_plots("x3b", "x2", "latent", data=d, object=fit.bayes.linear, plot="residuals")
 
 
+    #### do a plot that subtracts from y the effect of the third variable
+d$x2_resid = residuals(lm(x2~x1, data=d)) #### remove the effect of x1
+d$x3_resid = residuals(lm(x3b~x1, data=d)) #### remove the effect of x1
+predicted = generate_predictions(fit.lavaan, "x3b", data=d)  ### predict value of x3b, assuming all others are constant
+predicted$latent = fifer::rescale(predicted[,"latent"],new.mean = mean(d[,"x2_resid"]), new.sd = sd(d[,"x2_resid"]))
+predicted$x3_resid = fifer::rescale(predicted[,"x3_resid"],new.mean = mean(d[,"x3_resid"]), new.sd = sd(d[,"x3_resid"]))
+names(predicted)
+ggplot(d, aes(x3_resid, x2_resid)) +
+  geom_point() + 
+  geom_line(data=predicted, aes_string("x3b", "latent")) +
+  geom_smooth()
 
-# nonlinear model ---------------------------------------------------------
+# linear model ------------------------------------------------------------
+
+### read in blavaan data
+fit.bayes.linear <- readRDS("data/initial_fit_linear.rds")
+
+## factor scores (estimated during MCMC)
+d$f_linear = lavPredict(fit.bayes.linear)
+
+## make sure estimated factor scores are similar to actual factor scores
+flexplot(latent~f_linear, data=d)
+flexplot(x1~latent, data=d)
+flexplot(x1~f_linear, data=d)
+d %>% tidyr::gather("method", "value", f_linear, latent) %>% 
+  mutate(method = factor(method, labels = c("Estimated", "Actual"))) %>% 
+  with(flexplot(x1~value | method, data = ., ghost.line="red")) 
+
+## create diagnostic plots
+diagnostic_plots(x="x3b", y="x2", latent = "latent", data=d, object=fit.bayes.linear, plot="model")
+diagnostic_plots("x3b", "x2", "latent", data=d, object=fit.bayes.linear, plot="trace") + geom_smooth(method="lm")
+diagnostic_plots("x3b", "x2", "latent", data=d, object=fit.bayes.linear, plot="residuals")
+
+
+# nonlinear model (correctly specified) -----------------------------------
+
+### read in blavaan data
+custom.bayes <- readRDS("data/custom_bayes_fit_nonlinear.rds")
+
+## factor scores (estimated during MCMC)
+d$f_linear = lavPredict(custom.bayes)
+
+## make sure estimated factor scores are similar to actual factor scores
+flexplot(latent~f_linear, data=d)
+flexplot(x3a~latent, data=d)
+flexplot(x3a~f_linear, data=d)
+d %>% tidyr::gather("method", "value", f_linear, latent) %>% 
+  mutate(method = factor(method, labels = c("Estimated", "Actual"))) %>% 
+  with(flexplot(x3a~value | method, data = ., ghost.line="red")) 
+
+
+## create diagnostic plots
+diagnostic_plots(x="x3a", y="x2", latent = "f_linear", data=d, object=custom.bayes, plot="model") 
+diagnostic_plots("x3a", "x2", "f_linear", data=d, object=custom.bayes, plot="trace") + geom_smooth(method="lm")
+diagnostic_plots("x3a", "x2", "f_linear", data=d, object=custom.bayes, plot="residuals")
+
+
+
+
+
+
+# nonlinear model (incorrectly specified) --------------------------------
 
 fit.bayes.nonlinear <- readRDS("data/initial_bayes_fit_nonlinear.rds")
 

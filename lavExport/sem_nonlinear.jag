@@ -38,6 +38,19 @@ model {
   parvec[6] ~ dgamma(1,.5)
   parvec[7] ~ dnorm(0,1e-3)
   parvec[8] ~ dnorm(0,1e-3)
+  
   parvec[9] ~ dnorm(0,1e-3)
-}
+  
+   for(i in 1:N.sim) { 
+    x1_pred[i] ~ dnorm(mu_pred[i,1], 1/theta[1,1,1])
+    x2_pred[i] ~ dnorm(mu_pred[i,2], 1/theta[2,2,1])
+    x3a_pred[i] ~ dnorm(mu_pred[i,3], 1/theta[3,3,1])
+   }
+   for(i in 1:N.sim) {   
+    mu_pred[i,1] <- nu[1,1,1] + lambda[1,1,1]*eta[i,1]
+    mu_pred[i,2] <- nu[2,1,1] + lambda[2,1,1]*eta[i,1]
+    mu_pred[i,3] <- nu[3,1,1] + lambda[3,1,1]*eta[i,1]    
+   }
+  }
+
 

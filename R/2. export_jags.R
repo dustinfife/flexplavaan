@@ -1,31 +1,65 @@
+    ### this script fits three jags models: 
+        # 1. the nonlinear variable (x3a) with a correctly specified nonlinear function
+        # 2. the nonlinear variable (x3a) with an INcorrectly specified LINEAR function
+        # 3. the linear variable (x3B) with a correctly specified linear function
+
 require(blavaan)
 require(lavaan)
 d = read.csv("data/exp_data.csv")
-future::plan("multiprocess")
+#future::plan("multiprocess")
+export.model = FALSE
 
-### estimate fit with lavaan
+# this first model uses the nonlinear version of X3/Y3
 model.nonlinear = '
-  force =~ NA*x1 + x2 + x3a
-  force ~~ 1*force
+  A =~ NA*x1 + x2 + x3a
+  A ~~ 1*A
+  B =~ NA*y1 + y2 + y3a
+  B ~~ 1*B 
+  B ~ A
 '
+# this first model uses the linear version of X3/Y3
 model.linear = '
-  force =~ NA*x1 + x2 + x3b
-  force ~~ 1*force
+  A =~ NA*x1 + x2 + x3b
+  A ~~ 1*A
+  B =~ NA*y1 + y2 + y3b
+  B ~~ 1*B 
+  B ~ A
 '
 
-    ### first model runs quick in jags (to just export things)
-# fit.bayes.export = bcfa(model.nonlinear, data=d, mcmcfile=T, 
-#                  target="jags", 
-#                  n.chains = 1,
-#                  burnin = 100,
-#                  sample = 2000)
-#     
-  ### second model 
-#fit.bayes.linear = bcfa(model.linear, data=d, save.lvs = T)
-#saveRDS(fit.bayes.linear, file="data/initial_bayes_fit_linear.rds")
+### first model runs quick in jags (to just export syntax)
+if (export.model){
+  fit.bayes.export = bcfa(model.nonlinear, data=d, mcmcfile=T,
+                        target="jags",
+                        n.chains = 1,
+                        burnin = 100,
+                        sample = 200)
+}  
+### add syntax to do the nonlinear model
+extra.fit = "
+for (i in 1:N){
+  mu_2[i,3] <- nu[3,1,g[i]]^eta[i,1]
+  x3a_2[i] ~ dnorm(mu_2[i,3], 1/theta[3,3,g[i]])
+  mu_2[i,6] <- nu[6,1,g[i]]^eta[i,2]
+  y3a_2[i] ~ dnorm(mu_2[i,6], 1/theta[6,6,g[i]])  
+  mu2_eta[i,2] <- alpha[2,1,g[i]] + beta[2,1,g[i]]*eta[i,1]
+}"
 
+## fit a standard lavaan model
+fit.lavaan = cfa(model.linear, data=d)
+saveRDS(fit.lavaan, file="data/fit_lavaan.rds")
+
+## fit the linear dataset assuming a linear models
 fit.linear = bcfa(model.linear, data=d)
-saveRDS(fit.linear, file="data/initial_fit_linear.rds", jagcontrol=list(method="rjparallel"))
+saveRDS(fit.linear, file="data/initial_fit_linear.rds")
 
-fit.bayes.nonlinear = bcfa(model.nonlinear, data=d, jagcontrol=list(method="rjparallel"))
-saveRDS(fit.bayes.nonlinear, file="data/initial_bayes_fit_nonlinear.rds")
+## fit the nonlinear dataset with nonlinear equation
+fit.custom.nonlinear = bcfa(model.nonlinear, data=d, 
+                           jagcontrol=list(method="rjparallel"),
+                           mcmcextra = list(syntax=extra.fit),
+                           target = "jags")
+saveRDS(fit.custom.nonlinear, file="data/custom_bayes_fit_nonlinear.rds")
+
+## fit the nonlinear dataset, but assume linear models
+fit.bayes.nonlinear = bcfa(model.nonlinear, data=d)
+saveRDS(fit.bayes.nonlinear, file="data/bayes_fit_assume_linear.rds")
+
