@@ -3,9 +3,13 @@ model {
     x1[i] ~ dnorm(mu[i,1], 1/theta[1,1,g[i]])
     x2[i] ~ dnorm(mu[i,2], 1/theta[2,2,g[i]])
     x3a[i] ~ dchisq(mu[i,3])
+    y1[i] ~ dnorm(mu[i,4], 1/theta[4,4,g[i]])
+    y2[i] ~ dnorm(mu[i,5], 1/theta[5,5,g[i]])
+    y3a[i] ~ dnorm(mu[i,6], 1/theta[6,6,g[i]])
 
     # lvs
     eta[i,1] ~ dnorm(mu_eta[i,1], 1/psi[1,1,g[i]])
+    eta[i,2] ~ dnorm(mu_eta[i,2], 1/psi[2,2,g[i]])
   }
 
   # mu definitions
@@ -13,8 +17,12 @@ model {
     mu[i,1] <- nu[1,1,g[i]] + lambda[1,1,g[i]]*eta[i,1]
     mu[i,2] <- nu[2,1,g[i]] + lambda[2,1,g[i]]*eta[i,1]
     mu[i,3] <- nu[3,1,g[i]]^eta[i,1]
+    mu[i,4] <- nu[4,1,g[i]] + lambda[4,2,g[i]]*eta[i,2]
+    mu[i,5] <- nu[5,1,g[i]] + lambda[5,2,g[i]]*eta[i,2]
+    mu[i,6] <- nu[6,1,g[i]] + lambda[6,2,g[i]]*eta[i,2]
 
     mu_eta[i,1] <- alpha[1,1,g[i]]
+    mu_eta[i,2] <- alpha[2,1,g[i]] + beta[2,1,g[i]]*eta[i,1]
   }
 
   # Assignments from parameter vector & equality constraints
@@ -22,35 +30,44 @@ model {
   lambda[2,1,1] <- parvec[2]
   lambda[3,1,1] <- parvec[3]
   psi[1,1,1] <- 1
-  theta[1,1,1] <- pow(parvec[4],2)
-  theta[2,2,1] <- pow(parvec[5],2)
-  theta[3,3,1] <- pow(parvec[6],2)
-  nu[1,1,1] <- parvec[7]
-  nu[2,1,1] <- parvec[8]
-  nu[3,1,1] <- parvec[9]
+  lambda[4,2,1] <- parvec[4]
+  lambda[5,2,1] <- parvec[5]
+  lambda[6,2,1] <- parvec[6]
+  psi[2,2,1] <- 1
+  beta[2,1,1] <- parvec[7]
+  theta[1,1,1] <- pow(parvec[8],2)
+  theta[2,2,1] <- pow(parvec[9],2)
+  theta[3,3,1] <- pow(parvec[10],2)
+  theta[4,4,1] <- pow(parvec[11],2)
+  theta[5,5,1] <- pow(parvec[12],2)
+  theta[6,6,1] <- pow(parvec[13],2)
+  nu[1,1,1] <- parvec[14]
+  nu[2,1,1] <- parvec[15]
+  nu[3,1,1] <- parvec[16]
+  nu[4,1,1] <- parvec[17]
+  nu[5,1,1] <- parvec[18]
+  nu[6,1,1] <- parvec[19]
   alpha[1,1,1] <- 0
+  alpha[2,1,1] <- 0
   # Priors
   parvec[1] ~ dnorm(0,1e-2)
   parvec[2] ~ dnorm(0,1e-2)
   parvec[3] ~ dnorm(0,1e-2)
-  parvec[4] ~ dgamma(1,.5)
-  parvec[5] ~ dgamma(1,.5)
-  parvec[6] ~ dgamma(1,.5)
-  parvec[7] ~ dnorm(0,1e-3)
-  parvec[8] ~ dnorm(0,1e-3)
-  
-  parvec[9] ~ dnorm(0,1e-3)
-  
-   for(i in 1:N.sim) { 
-    x1_pred[i] ~ dnorm(mu_pred[i,1], 1/theta[1,1,1])
-    x2_pred[i] ~ dnorm(mu_pred[i,2], 1/theta[2,2,1])
-    x3a_pred[i] ~ dnorm(mu_pred[i,3], 1/theta[3,3,1])
-   }
-   for(i in 1:N.sim) {   
-    mu_pred[i,1] <- nu[1,1,1] + lambda[1,1,1]*eta[i,1]
-    mu_pred[i,2] <- nu[2,1,1] + lambda[2,1,1]*eta[i,1]
-    mu_pred[i,3] <- nu[3,1,1] + lambda[3,1,1]*eta[i,1]    
-   }
-  }
-
+  parvec[4] ~ dnorm(0,1e-2)
+  parvec[5] ~ dnorm(0,1e-2)
+  parvec[6] ~ dnorm(0,1e-2)
+  parvec[7] ~ dnorm(0,1e-2)
+  parvec[8] ~ dgamma(1,.5)
+  parvec[9] ~ dgamma(1,.5)
+  parvec[10] ~ dgamma(1,.5)
+  parvec[11] ~ dgamma(1,.5)
+  parvec[12] ~ dgamma(1,.5)
+  parvec[13] ~ dgamma(1,.5)
+  parvec[14] ~ dnorm(0,1e-3)
+  parvec[15] ~ dnorm(0,1e-3)
+  parvec[16] ~ dnorm(0,1e-3)
+  parvec[17] ~ dnorm(0,1e-3)
+  parvec[18] ~ dnorm(0,1e-3)
+  parvec[19] ~ dnorm(0,1e-3)
+}
 

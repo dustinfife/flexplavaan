@@ -6,8 +6,8 @@
 require(blavaan)
 require(lavaan)
 d = read.csv("data/exp_data.csv")
-#future::plan("multiprocess")
-export.model = FALSE
+future::plan("multiprocess")
+export.model = TRUE
 
 # this first model uses the nonlinear version of X3/Y3
 model.nonlinear = '
@@ -31,8 +31,8 @@ if (export.model){
   fit.bayes.export = bcfa(model.nonlinear, data=d, mcmcfile=T,
                         target="jags",
                         n.chains = 1,
-                        burnin = 100,
-                        sample = 200)
+                        burnin = 10,
+                        sample = 20)
 }  
 ### add syntax to do the nonlinear model
 extra.fit = "
@@ -52,14 +52,14 @@ saveRDS(fit.lavaan, file="data/fit_lavaan.rds")
 fit.linear = bcfa(model.linear, data=d)
 saveRDS(fit.linear, file="data/initial_fit_linear.rds")
 
-## fit the nonlinear dataset with nonlinear equation
-fit.custom.nonlinear = bcfa(model.nonlinear, data=d, 
-                           jagcontrol=list(method="rjparallel"),
-                           mcmcextra = list(syntax=extra.fit),
-                           target = "jags")
-saveRDS(fit.custom.nonlinear, file="data/custom_bayes_fit_nonlinear.rds")
-
-## fit the nonlinear dataset, but assume linear models
-fit.bayes.nonlinear = bcfa(model.nonlinear, data=d)
-saveRDS(fit.bayes.nonlinear, file="data/bayes_fit_assume_linear.rds")
+# ## fit the nonlinear dataset with nonlinear equation
+# fit.custom.nonlinear = bcfa(model.nonlinear, data=d, 
+#                            jagcontrol=list(method="rjparallel"),
+#                            mcmcextra = list(syntax=extra.fit),
+#                            target = "jags")
+# saveRDS(fit.custom.nonlinear, file="data/custom_bayes_fit_nonlinear.rds")
+# 
+# ## fit the nonlinear dataset, but assume linear models
+# fit.bayes.nonlinear = bcfa(model.nonlinear, data=d)
+# saveRDS(fit.bayes.nonlinear, file="data/bayes_fit_assume_linear.rds")
 

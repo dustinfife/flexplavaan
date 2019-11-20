@@ -7,11 +7,11 @@ d = read.csv("data/exp_data.csv")
 # standard lavaan model ---------------------------------------------------
 
 ### read in lavaan data
-fit.lavaan <- readRDS("data/fit_lavaan.rds")
+fit.lavaan <- readRDS("data/initial_fit_linear.rds")
 
 ## factor scores (estimated during MCMC)
 head(lavPredict(fit.lavaan, method="Bartlett"))
-d[,c("A", "B")] = lavPredict(fit.lavaan, method="Bartlett")
+d[,c("A", "B")] = lavPredict(fit.lavaan)
   flexplot(B~A, data=d)
   flexplot(latent_b~latent_a, data=d)
   flexplot(A~latent_a, data=d)
@@ -19,8 +19,27 @@ d[,c("A", "B")] = lavPredict(fit.lavaan, method="Bartlett")
     ### it's doing pretty good!
   
 ## residualize X2 based on latent variable
-d$x2_residual = residuals(lm(x2~A+B, data=d))
+d$x2_residual = residuals(lm(x2~A, data=d))
 flexplot(x2_residual~x1, data=d, method="lm")
+cor(d$x2_residual, d$x1)
+
+attr(, "sim")$samples
+str(attr(fit.lavaan, "external"))
+str(attr(fit.lavaan, "stansumm"))$mcmcout
+slots(attr(fit.lavaan, "external")$mcmcout)
+
+
+str(fit.lavaan@external$mcmcout@sim$samples[[1]])
+attr(fit.lavaan@external$mcmcout@sim$samples[[1]],"mean_pars")
+
+attr(attr(fit.lavaan, "external")$mcmcout, "model_pars")
+e = d %>% gather(key="estimate", value="value", x2_residual, x2)
+flexplot(value~x1 | estimate, data=e, method="lm", ghost.line="black")
+    ### interesting....we subtract out too much! the relationship becomes negative
+residuals(fit.lavaan)
+
+
+
 residuals(fit.lavaan)
 
 with(d, cor(x2_residual, x1))
