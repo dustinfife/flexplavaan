@@ -13,7 +13,7 @@ new.prior = "x3a[i] ~ dchisq(mu[i,3])"
 fl_new = fl
 fl_new = gsub(old.exp, new.exp, fl_new, fixed=T)
 fl_new = gsub(old.prior, new.prior, fl_new, fixed=T)
-fl_new = gsub(old.obs, new.obs, fl_new, fixed=T)
+#fl_new = gsub(old.obs, new.obs, fl_new, fixed=T)
 
 fileConn<-file("lavExport/sem_nonlinear.jag")
 writeLines(fl_new, fileConn)
