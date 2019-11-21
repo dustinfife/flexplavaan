@@ -7,7 +7,7 @@ require(blavaan)
 require(lavaan)
 d = read.csv("data/exp_data.csv")
 future::plan("multiprocess")
-export.model = TRUE
+export.model = FALSE
 
 # this first model uses the nonlinear version of X3/Y3
 model.nonlinear = '
@@ -25,6 +25,13 @@ model.linear = '
   B ~~ 1*B 
   B ~ A
 '
+install.packages("runjags")
+## fit the nonlinear dataset with nonlinear equation
+fit.custom.nonlinear = bcfa(model.linear, data=d,
+                           jagcontrol=list(method="rjparallel"),
+                           mcmcextra = list(monitor="eta"),
+                           target = "jags")
+saveRDS(fit.custom.nonlinear, file="data/custom_bayes_fit_linear.rds")
 
 ### first model runs quick in jags (to just export syntax)
 if (export.model){
