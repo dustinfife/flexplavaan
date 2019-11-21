@@ -7,21 +7,40 @@ d = read.csv("data/exp_data.csv")
 # standard lavaan model ---------------------------------------------------
 
 ### read in lavaan data
-fit.lavaan <- readRDS("data/initial_fit_linear.rds")
+fit.lavaan <- readRDS("data/custom_bayes_fit_linear.rds")
+names(fit.lavaan@external$mcmcout)
+
+str(fit.lavaan@external$mcmcout$mcmc)
+
+
+etas = dimnames(fit.lavaan@external$mcmcout$mcmc[[1]])[[2]]
+etas = gsub("beta", "xxxx", etas)
+etas = gsub("theta", "xxxx", etas)
+etas = grep("eta", etas, value = T)
+eta1 = grep(",1]", etas, fixed=T, value=T)
+eta2 = grep(",2]", etas, fixed=T, value=T)
+d$A = apply(fit.lavaan@external$mcmcout$mcmc[[1]][,eta1],2, median) 
+d$B = apply(fit.lavaan@external$mcmcout$mcmc[[1]][,eta2],2, median) 
+      
 
 ## factor scores (estimated during MCMC)
-head(lavPredict(fit.lavaan, method="Bartlett"))
-d[,c("A", "B")] = lavPredict(fit.lavaan)
+#head(lavPredict(fit.lavaan, method="Bartlett"))
+#d[,c("A", "B")] = lavPredict(fit.lavaan)
   flexplot(B~A, data=d)
   flexplot(latent_b~latent_a, data=d)
   flexplot(A~latent_a, data=d)
   flexplot(B~latent_b, data=d)
     ### it's doing pretty good!
+  cor(d$B, d$latent_b)
   
 ## residualize X2 based on latent variable
-d$x2_residual = residuals(lm(x2~A, data=d))
-flexplot(x2_residual~x1, data=d, method="lm")
+  flexplot(x2~A, data=d)
+d$x2_residual = residuals(lm(x2~A+B, data=d))
+d$x1_residual = residuals(lm(x1~A+B, data=d))
+flexplot(x2~x1_residual, data=d, method="lm")
 cor(d$x2_residual, d$x1)
+
+flexplot(x2~x1 | A, data=d, method="lm")
 
 attr(, "sim")$samples
 str(attr(fit.lavaan, "external"))
