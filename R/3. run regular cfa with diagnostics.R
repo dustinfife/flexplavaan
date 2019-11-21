@@ -5,9 +5,35 @@ d = read.csv("data/exp_data.csv")
 
 
 # standard lavaan model ---------------------------------------------------
+    #### plot residuals against residuals (x2-x2' versus x1-x1')
 
 ### read in lavaan data
-fit.lavaan <- readRDS("data/custom_bayes_fit_linear.rds")
+fit.lavaan <- readRDS("data/fit_lavaan.rds")
+observed.vars = lavNames(fit.lavaan, type="ov")
+lav_residuals = d[,observed.vars] - lavPredict(fit.lavaan, type="ov")
+
+flexplot(x3b~x2, data=lav_residuals, method="lm")
+
+residuals(fit.lavaan)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# generate predictions from mcmc object -----------------------------------
+
+
 names(fit.lavaan@external$mcmcout)
 
 str(fit.lavaan@external$mcmcout$mcmc)

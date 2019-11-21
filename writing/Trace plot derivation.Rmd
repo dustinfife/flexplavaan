@@ -1,0 +1,123 @@
+---
+title: "Deriving Trace Plots"
+header-includes:
+   - \usepackage{tikz}
+   - \usetikzlibrary{shapes.geometric,arrows}
+   - \usepackage{amsmath}
+output:
+  pdf_document
+---
+
+# The Expected Slope Between Two Indicators, Given the Latent Variable
+
+Suppose we have the factor analysis model shown below. 
+
+\begin{center}
+\begin{tikzpicture}[scale=1] 
+\def\x{latex}
+\draw (0,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {$F$};
+\draw (-2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {$x1$};
+\draw (0,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {$x2$};
+\draw (2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {$x1$};
+\draw[arrows={-\x}] (0,2.5) --(-2.5,.5) node[midway, above] {$a$};
+\draw[arrows={-\x}] (0,2.5) --(0,.5) node[midway, left] {$b$};
+\draw[arrows={-\x}] (0,2.5) --(2.5,.5) node[midway, above] {$c$};
+\end{tikzpicture}
+\end{center}
+
+Assume both indicators and the latent variable are standard normal variables. In this situation, we define the observed variables as follows:
+
+\begin{align}
+\nonumber x_1 &= a F + e_1\\ 
+\nonumber x_2 &= b F + e_2 \\
+\nonumber x_3 &= c F + e_3
+\end{align}
+
+These can be re-expressed in terms of $F$ as follows:
+
+\begin{align}
+\nonumber F = \frac{x_1 - e_1}{a} \\
+\nonumber F = \frac{x_2 - e_2}{b} \\
+\nonumber F = \frac{x_3 - e_3}{c} 
+\end{align}
+
+Suppose we wish to plot the fitted line between $x_1$ and $x_2$ implied by the latent variable model. To do so, we can re-express $x_2$ in terms of $x_1$:
+
+\begin{align}
+\nonumber x_2 &= b F + e_2 \\
+  &= b (\frac{x_1 - e_1}{a}) + e_2
+\end{align}
+
+Computing the expectation, we get
+
+\begin{align}
+\nonumber E[x_2|x_1] &= E\left[b(\frac{x_1 - e_1}{a}) + e_2\right] \\
+\nonumber                 &= \frac{b}{a}E[(x_1 - e_1)] + E[e_2] \\
+\nonumber                 &= \frac{b}{a}E[x_1] - E[e_1] + E[e_2] \\
+                &= \frac{b}{a}E[x_1] \label{eq:1}
+\end{align}
+
+Also, since these variables are standardized, Equation \ref{eq:1} is both the slope of the line predicting $x_2$ from $x_1$, as well as the correlation coefficient, $\rho$. 
+
+Recall that latent variable models explicitly model the unreliability in indicators. As such, \ref{eq:1} is the "corrected" estimate of the correlation between $x_1$ and $x_2$. As such, the regression line generated from Equation \ref{eq:1} will visually overestimate the strength of the relationship, as demonstrated below:
+
+```{r, message=FALSE, warning=FALSE, fig.cap="Scatterplot of the x1/x2 relationship. The red line shows the implied fit between the two variables under the assumption of perfect reliability. The blue line shows the actual fitted relationship."}
+require(lavaan)
+require(tidyverse)
+n = 500
+slopes = c(.5, .5, .5)
+latent = rnorm(n)
+
+# create three indicators
+x1 = slopes[1]*latent + rnorm(n,0, sqrt(1-slopes[1]^2))
+x2 = slopes[2]*latent + rnorm(n,0, sqrt(1-slopes[2]^2))
+x3 = slopes[3]*latent + rnorm(n,0, sqrt(1-slopes[3]^2))
+d = data.frame(x1=x1, x2=x2, x3=x3)
+
+# model in lavaan
+model.linear = '
+  A =~ x1 + x2 + x3
+  A ~~ A
+'
+fitted = cfa(model.linear, data=d)
+
+  # create trace plot based on the assumption of perfect reliability
+m = data.frame(x1 = seq(from=min(d$x1), to=max(d$x1), length.out=20))
+m$latent = (slopes[2]/slopes[1])*m$x1  ### from Equation 1
+ggplot(data=d, aes(x=x1,y=x2)) +
+  geom_point() + 
+  geom_line(data=m, aes(x1, latent), col="red") +
+  geom_smooth(method="lm")
+```
+
+For example, of $b$ and $a$ are both 0.5, Equation \ref{eq:1} suggests the slope is one (indicating a perfect correlation between these standardized variances). This is clearly not the case. As such, the slope needs to be "uncorrected" for unreliability. 
+
+Recall the standard correction for unreliability
+
+\begin{equation}
+\rho = \frac{r}{\sqrt{\rho_{xx}\rho_{yy}}}
+\label{eq:two}
+\end{equation}
+
+To "uncorrect" this estimate, we simply solve for $r$
+
+\begin{equation}
+r = \rho \sqrt{\rho_{xx}\rho_{yy}}
+\label{eq:three}
+\end{equation}
+
+We can then multiply Equation \ref{eq:three} by Equation \ref{eq:1}:
+
+\begin{align}
+E[x_2|x_1] &= \frac{b}{a}E[x_1]\sqrt{\rho_{xx}\rho_{yy}} \\
+          &= \frac{b}{a}E[x_1]\sqrt{a^2 b^2} \\
+          &= \frac{b}{a}E[x_1]a*b \label{eq:4} \\
+          &= b^2 E[x_1] \label{eq:4} 
+\end{align}
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
