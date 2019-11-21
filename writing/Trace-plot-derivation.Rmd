@@ -1,19 +1,31 @@
 ---
-title: "Deriving Trace Plots"
+title: "Seeing the Impossible: Visualizing Latent Variable Models"
 header-includes:
    - \usepackage{tikz}
    - \usetikzlibrary{shapes.geometric,arrows}
    - \usepackage{amsmath}
 output:
   pdf_document
+bibliography: ../references.bib
 ---
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 require(knitr)
+require(GGally)
+require(flexplot)
 opts_chunk$set(message=FALSE, echo = FALSE, warning = FALSE)
+source('../R/ggally_pairs_function.R')
 ```
-# The Expected Slope Between Two Indicators, Given the Latent Variable
+# Brief Introduction
+
+SEM is a powerful tool that is infinitely flexible and able to handle diverse sorts of modeling procedures. However, it has two fatal flaws. First, latent variables are, by definition, unobserved. As such, data visualization, a critical component of model building is not an easy task. Although some have advocated for the use of scatterplots of latent variables [@Hallgren2019], these plots assume the model has accurately estimated the parameters, which may or may not be the case. Second, standard latent variable models are estimated from summary statistics, such as means and covariances. These summary statistics may be misleading if model assumptions have been violated (e.g., if the data are not normally distributed or if relationships are nonlinear). Although there are tools that allow users to *model* nonnormal data and nonlinear patterns, few *diagnostic* tools exist that allow users to assess the degree to which assumptions have been met (and/or whether violations of these assumptions are problematic). 
+
+To overcome both of these limitation, we develop visualization tools designed for latent variable models. These tools will not only provide diagnostic checks, but they will allow both researchers and lay audiences to intuitively understand the fit of latent variable models. 
+
+# Diagnostic Plots
+
+## Trace Plots: Estimating the Model-Implied Slope
 
 Suppose we have the factor analysis model shown below. 
 
@@ -64,13 +76,15 @@ Computing the expectation, we get
 
 Also, since these variables are standardized, Equation \ref{eq:1} is both the slope of the line predicting $x_2$ from $x_1$, as well as the correlation coefficient, $\rho$. 
 
-Recall that latent variable models explicitly model the unreliability in indicators. As such, \ref{eq:1} is the "corrected" estimate of the correlation between $x_1$ and $x_2$. As such, the regression line generated from Equation \ref{eq:1} will visually overestimate the strength of the relationship, as demonstrated below:
+Recall that latent variable models explicitly model the unreliability in indicators. In other words, Equation \ref{eq:1} is the "corrected" estimate of the correlation between $x_1$ and $x_2$. As such, the regression line generated from Equation \ref{eq:1} will visually overestimate the strength of the relationship, as demonstrated in Figure \ref{fig:first}.For example, iff $b$ and $a$ are both 0.5, Equation \ref{eq:1} suggests the slope is one (indicating a perfect correlation between these standardized variances). This is clearly not the case. As such, the slope needs to be "uncorrected" for unreliability. 
 
-```{r, message=FALSE, warning=FALSE, fig.cap="Scatterplot of the x1/x2 relationship. The red line shows the implied fit between the two variables under the assumption of perfect reliability. The blue line shows the actual fitted relationship."}
+
+```{r, message=FALSE, warning=FALSE, fig.cap="Scatterplot of the x1/x2 relationship. The red line shows the implied fit between the two variables under the assumption of perfect reliability. The blue line shows the actual fitted relationship. \\label{fig:first}", fig.width=3, fig.height=2}
 require(lavaan)
 require(tidyverse)
+set.seed(1212)
 n = 500
-slopes = c(.5, .5, .5)
+slopes = c(.75, .75, .75)
 latent = rnorm(n)
 
 # create three indicators
@@ -95,9 +109,9 @@ ggplot(data=d, aes(x=x1,y=x2)) +
   geom_smooth(method="lm")
 ```
 
-For example, of $b$ and $a$ are both 0.5, Equation \ref{eq:1} suggests the slope is one (indicating a perfect correlation between these standardized variances). This is clearly not the case. As such, the slope needs to be "uncorrected" for unreliability. 
 
-Recall the standard correction for unreliability
+
+Recall the standard correction for unreliability:
 
 \begin{equation}
 \rho = \frac{r}{\sqrt{\rho_{xx}\rho_{yy}}}
@@ -120,12 +134,89 @@ We can then multiply Equation \ref{eq:three} by Equation \ref{eq:1}:
           &= b^2 E[x_1] \label{eq:4} 
 \end{align}
 
-Using Equation \ref{eq:4}, we now get a line that closely approximates the actual relationship between the two variables:
+Using Equation \ref{eq:4}, we now get a line that closely approximates the actual relationship between the two variables (Figure \ref{fig:second}. 
 
-```{r}
+```{r, fig.cap="Scatterplot of the x1/x2 relationship, but this time, the red line shows the implied fit between the two variables without perfect reliability. As before, the blue line shows the actual fitted relationship. \\label{fig:second}", fig.width=3, fig.height=2}
+
 m$latent = (slopes[2]^2)*m$x1  ### from Equation 1
 ggplot(data=d, aes(x=x1,y=x2)) +
   geom_point() + 
   geom_line(data=m, aes(x1, latent), col="red") +
   geom_smooth(method="lm")
 ```
+
+We could then apply this command continuously to all observed variables in a scatterplot matrix (using, say, the upper diagonal), as in Figure \ref{fig:third}. As before, the red line indicates the model-implied fit. This time, however, the blue line is the fit of a loess line (which will allow for the detection of nonlinear patterns). 
+
+```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:third}", fig.width=4, fig.height=4}
+ggpairs(d[,c("x1", "x2", "x3")],
+        lower = NULL,
+        upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
+        ) + theme_bw()
+```
+
+## Disturbance Dependence Plots: Removing the Effect of the Latent Variable
+
+It may also be interesting to utilize "disturbance dependence plots," or to plot the relationship between the variables on interest, once the effect of the latent variable has been removed. This is similar to a residual dependence plot in regression models, but we use different terminology to avoid confusion (since residuals in SEM often refer to the residual correlation matrix). 
+
+To generate these disturbance terms, we need only to generate predicted $x_2$ scores from Equation \ref{eq:4}, then subtract those from the observed $x_2$ scores:
+
+\begin{align}
+\nonumber  E[x_2|F, x_1] &= x_2 - b^2 E[x_1]  \\
+\end{align}
+
+
+We can then plot the relationship between $x_1$ and $x_2$ after removing the effect of the latent variable. If the data are locally independent, we should observe no relationship. The expected relationship (i.e., a line centered on zero with no slope) is colored as red. We could then add this plot to the scatterplot matrix in, say, the lower diagonals, as in Figure \ref{fig:five}. 
+
+```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables. The upper triangle show the model-implied fit between the indicators, while the lower triangle shows the disturbance dependence plots. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:five}", fig.width=4, fig.height=3}
+ggpairs(d[,c("x1", "x2", "x3")],
+        lower = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=TRUE)),
+        upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
+        ) + theme_bw()
+```
+
+
+
+## Detecting Deviations
+
+These diagnostic plots are designed to detect deviations from the model's assumptions. In the example below, I'm going to simulate a situation where a) $x_1$ and $x_2$ are locally dependent, and b) $x_3$ has a nonlinear relationship with the latent variable. Notice from the plot below that the upper diagonals indicate our model's fit (red line) is failing to capture important nonlinear relationships with $x_3$ and it overestimates the relationship between $x_1$ and $x_2$. 
+
+```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables, but this time with local dependence between x1/x2 and a nonlinear relationship between the latent variable and x3. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:sixth}", fig.width=4, fig.height=3}
+require(lavaan)
+require(tidyverse)
+set.seed(1212)
+n = 500
+slopes = c(.75, .75, .75)
+residual.correlation = .5
+quadratic = .5
+latent = rnorm(n)
+
+# create three indicators
+x1 = slopes[1]*latent + rnorm(n,0, sqrt(1-slopes[1]^2))
+x2 = slopes[2]*latent + rnorm(n,0, sqrt(1-slopes[2]^2)) + residual.correlation*x1
+x3 = slopes[3]*latent + quadratic*latent^2 + rnorm(n,0, sqrt(1-slopes[3]^2))
+d = data.frame(x1=x1, x2=x2, x3=x3)
+
+# model in lavaan
+model.linear = '
+  A =~ x1 + x2 + x3
+  A ~~ A
+'
+fitted = cfa(model.linear, data=d)
+
+ggpairs(d[,c("x1", "x2", "x3")],
+        lower = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=TRUE)),
+        upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
+        ) + theme_bw()
+```
+
+# Model Plots
+
+
+Once one has iterated through the diagnostic plots, they can be more confident the factor scores are accurately estimated. At that point, the user may choose to plot the relationship between each indicator and the latent variable(s), or they may choose to plot the relationship between multiple latent variables. However, representing these as a scatterplot can be misleading because these are estimated scores, not observed scores. As such, I recommend adding some visual representation of uncertainty (e.g., each point is an ellipse whose size is an indicator of our uncertainty). This could, of course, become very busy very quickly. However, one could sample datapoints to represent latent scores or reduce opacity. These options are available and easy to use in my R package, `flexplot`. 
+
+\pagebreak 
+
+# References
+
+
+

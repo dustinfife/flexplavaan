@@ -3,7 +3,7 @@
 
 set.seed(12121)
 ### latent variable of "force"'ness
-latent_a = rnorm(300)
+latent_a = rnorm(3000)
     b0 = .5; b1 = .4;b2 = 0;# b2 =-1*b0
     e = sqrt(1-(b1^2+((b2^2)*2)))
 latent_b = b0 + b1*latent_a + b2*(latent_a^2) + rnorm(length(latent_a), 0, e)
