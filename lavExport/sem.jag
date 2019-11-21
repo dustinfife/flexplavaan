@@ -69,4 +69,13 @@ model {
   parvec[17] ~ dnorm(0,1e-3)
   parvec[18] ~ dnorm(0,1e-3)
   parvec[19] ~ dnorm(0,1e-3)
+  
+  for (i in 1:N){
+  mu_2[i,3] <- nu[3,1,g[i]]^eta[i,1]
+  x3a_2[i] ~ dnorm(mu_2[i,3], 1/theta[3,3,g[i]])
+  mu_2[i,6] <- nu[6,1,g[i]]^eta[i,2]
+  y3a_2[i] ~ dnorm(mu_2[i,6], 1/theta[6,6,g[i]])
+  mu2_eta[i,2] <- alpha[2,1,g[i]] + beta[2,1,g[i]]*eta[i,1]
+  }
+
 }
