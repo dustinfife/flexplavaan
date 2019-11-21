@@ -1,5 +1,7 @@
 fifer::clear()
-n = 50000
+require(lavaan) 
+require(ggplot2)
+n = 5000
 slopes = c(.5, .5, .5)
 latent = rnorm(n)
 
@@ -15,17 +17,17 @@ model.linear = '
   A ~~ A
 '
 fitted = cfa(model.linear, data=d)
-summary(fitted)
+
 # create residuals
 observed.vars = lavNames(fitted, type="ov")
 lav_residuals = d[,observed.vars] - lavPredict(fitted, type="ov")
 
-# plot(x3~x2, data=lav_residuals)
-# abline(lm(x3~x2, data=lav_residuals))
-# plot(x3~x1, data=lav_residuals)
-# abline(lm(x3~x1, data=lav_residuals))
-# plot(x1~x2, data=lav_residuals)
-# abline(lm(x1~x2, data=lav_residuals))
+plot(x3~x2, data=lav_residuals)
+abline(lm(x3~x2, data=lav_residuals))
+plot(x3~x1, data=lav_residuals)
+abline(lm(x3~x1, data=lav_residuals))
+plot(x1~x2, data=lav_residuals)
+abline(lm(x1~x2, data=lav_residuals))
 
 # trace plots - the expected fit between x1 and x2, given the latent variable
   # new dataset that spans the range of x1
@@ -41,3 +43,5 @@ ggplot(data=d, aes(x=x1,y=x2)) +
 
 #### They're not the same because of MEASUREMENT ERROR
 #### so I need to reduce the slope proportional to measurement error
+
+flexplot::flexplot(x1~x2 | x3, data=d)
