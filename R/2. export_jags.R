@@ -6,7 +6,6 @@
 require(blavaan)
 require(lavaan)
 d = read.csv("data/exp_data.csv")
-future::plan("multiprocess")
 export.model = FALSE
 
 # this first model uses the nonlinear version of X3/Y3
@@ -25,22 +24,17 @@ model.linear = '
   B ~~ 1*B 
   B ~ A
 '
-install.packages("runjags")
-## fit the nonlinear dataset with nonlinear equation
-fit.custom.nonlinear = bcfa(model.linear, data=d,
-                           jagcontrol=list(method="rjparallel"),
-                           mcmcextra = list(monitor="eta"),
-                           target = "jags")
-saveRDS(fit.custom.nonlinear, file="data/custom_bayes_fit_linear.rds")
 
-### first model runs quick in jags (to just export syntax)
-if (export.model){
-  fit.bayes.export = bcfa(model.nonlinear, data=d, mcmcfile=T,
-                        target="jags",
-                        n.chains = 1,
-                        burnin = 10,
-                        sample = 20)
-}  
+
+# run a standard lavaan model ---------------------------------------------
+fit.lavaan = cfa(model.linear, data=d)
+saveRDS(fit.lavaan, file="data/fit_lavaan.rds")
+
+
+
+# run a custom bayesian model to account for nonlinearity -----------------
+future::plan("multiprocess")
+require(runjags)
 ### add syntax to do the nonlinear model
 extra.fit = "
 for (i in 1:N){
@@ -50,10 +44,23 @@ for (i in 1:N){
   y3a_2[i] ~ dnorm(mu_2[i,6], 1/theta[6,6,g[i]])  
   mu2_eta[i,2] <- alpha[2,1,g[i]] + beta[2,1,g[i]]*eta[i,1]
 }"
+## fit the nonlinear dataset with nonlinear equation
+fit.custom.nonlinear = bcfa(model.linear, data=d,
+                           jagcontrol=list(method="rjparallel"),
+                           mcmcextra = list(monitor="eta"),
+                           target = "jags")
+saveRDS(fit.custom.nonlinear, file="data/custom_bayes_fit_linear.rds")
 
-## fit a standard lavaan model
-fit.lavaan = cfa(model.linear, data=d)
-saveRDS(fit.lavaan, file="data/fit_lavaan.rds")
+
+# syntax to export the jags code ------------------------------------------
+### first model runs quick in jags (to just export syntax)
+if (export.model){
+  fit.bayes.export = bcfa(model.nonlinear, data=d, mcmcfile=T,
+                        target="jags",
+                        n.chains = 1,
+                        burnin = 10,
+                        sample = 20)
+}  
 
 ## fit the linear dataset assuming a linear models
 fit.linear = bcfa(model.linear, data=d)
