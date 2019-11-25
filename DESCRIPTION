@@ -1,0 +1,19 @@
+Package: flexplavaan
+Title: Visualizing Latent Variable Models Using Flexplot
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Dustin",
+           family = "Fife",
+           role = c("aut", "cre"),
+           email = "fife.dustin@gmail.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: `flexplavaan` is a package designed to visualize  latent variable models
+  with raw data. Basic functionality includes disturbance dependence plots, trace plots,
+  model-implied plots, and the ability to compare fits between two latent variable models. 
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    ggplot2,
+    lavaan,
+    blavaan
