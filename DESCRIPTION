@@ -16,4 +16,12 @@ LazyData: true
 Imports: 
     ggplot2,
     lavaan,
-    blavaan
+    blavaan,
+    flexplot,
+    GGally,
+    purrr,
+    dplyr
+Suggests: 
+    MASS,
+    testthat
+RoxygenNote: 6.1.1

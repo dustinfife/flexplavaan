@@ -1,2 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+writing/
+^.*\.csv$
+R/scratch/
