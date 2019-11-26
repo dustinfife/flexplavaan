@@ -25,6 +25,14 @@ model.linear = '
   B ~ A
 '
 
+## fit the nonlinear dataset with nonlinear equation
+fit.custom.nonlinear = bcfa(model.linear, data=d,
+                            jagcontrol=list(method="rjparallel"),
+                            mcmcextra = list(monitor=c("eta", "mu")),
+                            target = "jags")
+saveRDS(fit.custom.nonlinear, file="data/custom_bayes_fit_linear.rds")
+
+
 
 # run a standard lavaan model ---------------------------------------------
 fit.lavaan = cfa(model.linear, data=d)
