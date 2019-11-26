@@ -34,5 +34,50 @@ removing the model-implied effects. If any relationship remains, it suggests the
 to capture important information.
 }
 \examples{
+# fit a correctly specified model
+require(lavaan)
+data("correct_large")
+data("crossloadings_large")
 
+model = "
+f1 =~ x1 + x2 + x3
+f2 =~ y1 + y2 + y3
+f1 ~ f2
+"
+  fit.lavaan = cfa(model, data=correct_large)
+  viz_diagnostics(data = correct_large, mapping = aes(x1, x2), fit.lavaan, plot="trace")
+  viz_diagnostics(data = correct_large, mapping = aes(x1, x2), fit.lavaan, plot="disturbance")
+  viz_diagnostics(data = correct_large, mapping = aes(x1, y2), fit.lavaan, plot="trace")
+  viz_diagnostics(data = correct_large, mapping = aes(x1, y2), fit.lavaan, plot="disturbance")  
+  
+  viz_diagnostics(data = crossloadings_large, mapping = aes(x1, x2), fit.lavaan, plot="trace")
+  viz_diagnostics(data = crossloadings_large, mapping = aes(x1, x2), fit.lavaan, plot="disturbance")
+  viz_diagnostics(data = crossloadings_large, mapping = aes(x1, y1), fit.lavaan, plot="trace")
+  viz_diagnostics(data = crossloadings_large, mapping = aes(x1, y1), fit.lavaan, plot="disturbance")  
+
+
+data("mugglevwizard")
+### fit measurement model
+model_witch = '
+witch =~ a*strange + b*relatives + c*wingardium
+
+witch ~~ witch
+'
+require(lavaan)
+mod = cfa(model_witch, data=mugglevwizard)
+viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, strange), fit.lavaan = mod, plot="trace")
+viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, relatives), fit.lavaan = mod, plot="trace")
+expect_error(viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, darkarts), fit.lavaan = mod, plot="trace"))
+
+
+model_witch = "
+witch =~ a*strange + b*relatives + c*wingardium
+owl =~ d*darkarts + e*potions + f*history
+witch ~ owl
+witch ~~ witch
+owl ~~ owl
+"
+mod = cfa(model_witch, data=mugglevwizard)
+viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, darkarts), fit.lavaan = mod, plot="trace")
+viz_diagnostics(data = mugglevwizard, mapping = aes(potions, darkarts), fit.lavaan = mod, plot="disturbance")
 }
