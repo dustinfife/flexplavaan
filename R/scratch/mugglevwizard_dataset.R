@@ -15,6 +15,7 @@ x2 = round(mx/(1 + exp(-slope*(latent-mid)))  + rpois(n, 0))
   b0 = 1-6*min(latent) 
 x3 = b0 + .9*6*latent + (rnorm(n, 0, sqrt(1-.9^2)*6))
 x3[x3<0] = 0
+plot(x1, x2)
 
 y1 = 70 + .9*15*latent2 + rnorm(n,0, sqrt(1-.9^2)*15)
 y2 = 70 + .6*15*latent2 + rnorm(n,0, sqrt(1-.6^2)*15)

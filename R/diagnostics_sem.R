@@ -20,66 +20,185 @@
 #' @import flexplot ggplot2
 #'
 #' @examples
+#' # fit a correctly specified model
+#' require(lavaan)
+#' data("correct_large")
+#' data("crossloadings_large")
 #' 
-
-data("mugglevwizard")
-### fit measurement model
-model_witch = "
-witch =~ a*strange + b*relatives + c*wingardium
-witch ~~ witch
-"
-require(lavaan)
-mod = cfa(model_witch, data=mugglevwizard)
-viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, strange), fit.lavaan = mod, plot="trace")
-
-#data = mugglevwizard; mapping = aes(relatives, strange); fit.lavaan = mod; plot="trace"
-viz_diagnostics <- function(data, mapping, fit.lavaan, alpha=.5, plot=c("trace", "disturbance"), ...) {
+#' model = "
+#' f1 =~ x1 + x2 + x3
+#' f2 =~ y1 + y2 + y3
+#' f1 ~ f2
+#' "
+#'   fit.lavaan = cfa(model, data=correct_large)
+#'   viz_diagnostics(data = correct_large, mapping = aes(x1, x2), fit.lavaan, plot="trace")
+#'   viz_diagnostics(data = correct_large, mapping = aes(x1, x2), fit.lavaan, plot="disturbance")
+#'   viz_diagnostics(data = correct_large, mapping = aes(x1, y2), fit.lavaan, plot="trace")
+#'   viz_diagnostics(data = correct_large, mapping = aes(x1, y2), fit.lavaan, plot="disturbance")  
+#'   
+#'   viz_diagnostics(data = crossloadings_large, mapping = aes(x1, x2), fit.lavaan, plot="trace")
+#'   viz_diagnostics(data = crossloadings_large, mapping = aes(x1, x2), fit.lavaan, plot="disturbance")
+#'   viz_diagnostics(data = crossloadings_large, mapping = aes(x1, y1), fit.lavaan, plot="trace")
+#'   viz_diagnostics(data = crossloadings_large, mapping = aes(x1, y1), fit.lavaan, plot="disturbance")  
+#' 
+#' 
+#' data("mugglevwizard")
+#' ### fit measurement model
+#' model_witch = '
+#' witch =~ a*strange + b*relatives + c*wingardium
+#' 
+#' witch ~~ witch
+#' '
+#' require(lavaan)
+#' mod = cfa(model_witch, data=mugglevwizard)
+#' viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, strange), fit.lavaan = mod, plot="trace")
+#' viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, relatives), fit.lavaan = mod, plot="trace")
+#' expect_error(viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, darkarts), fit.lavaan = mod, plot="trace"))
+#' 
+#' 
+#' model_witch = "
+#' witch =~ a*strange + b*relatives + c*wingardium
+#' owl =~ d*darkarts + e*potions + f*history
+#' witch ~ owl
+#' witch ~~ witch
+#' owl ~~ owl
+#' "
+#' mod = cfa(model_witch, data=mugglevwizard)
+#' viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, darkarts), fit.lavaan = mod, plot="trace")
+#' viz_diagnostics(data = mugglevwizard, mapping = aes(potions, darkarts), fit.lavaan = mod, plot="disturbance")
+viz_diagnostics <- function(data, mapping, fit.lavaan, fit.lavaan2 = NULL, alpha=.5, plot=c("trace", "disturbance", "histogram"), ...) {
   
-  ### plot ggplot object so I can extract the elements
-  p = ggplot(data=data, mapping=mapping)
-  
-  ### extract name of variable in aes
-  y = p$labels$y
-  x = p$labels$x
-  
+  plot = match.arg(plot, c("trace", "disturbance", "histogram"))
   ### extract name of latent variables
   observed = lavNames(fit.lavaan)
   latent.names = lavNames(fit.lavaan, type="lv")
-  
-  ### make a sequence for the x axis
-  new.x = data.frame(x = seq(from=min(data[,x]), to=max(data[,x]), length.out=10))
-  names(new.x) = x
-  
-  ### find index for the variable of interest
-  y.location = which(observed==y)
-  
-  ## extract fit
-  new_data = create_new_data(data, condition.vars=c(x,y))
-  prediction = lavPredict(fit.lavaan, type="ov", newdata=new_data) %>% data.frame %>% head
-  
-  
-  loadings = inspect(fit.lavaan,what="std")$lambda ## factor loading matrix
-  b = loadings[y,]
-  coef(fit.lavaan)
-  ### estimate the fit (for the observed and new data)
-  observed.pred = b^2*data[,x]
-  new.x[,y] = b^2*new.x
-  
-  
-  residual_name = paste0(y, "_resid")
-  data[,residual_name] = data[,y] - observed.pred
-  
-  ### now add to ggplot object
-  if (plot=="trace"){
-    flexplot_form = flexplot::make.formula(y, x)
-    flexplot::flexplot(flexplot_form, data=data, alpha=alpha, method="loess") + geom_line(data=new.x, aes_string(x,y), col="red")
+
+  ### plot ggplot object so I can extract the elements
+  if (dplyr::as_label(mapping$y) == "NULL"){
+    flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
+    flexplot::flexplot(flexplot_form, data=data)
   } else {
-    flexplot_form = flexplot::make.formula(residual_name, x)
-    flexplot::flexplot(flexplot_form, data=data, alpha=alpha, method="loess") + labs(y=paste0(y, " | latent")) + geom_hline(yintercept=0, col="red")
+  
+    variables = c(dplyr::as_label(mapping$x), dplyr::as_label(mapping$y))
+    
+    ### extract name of variable in aes
+    y = variables[1]
+    x = variables[2]
+    
+    if (!all(variables %in% names(data))){
+      problem.vars = which(!(variables %in% names(data)))
+      var = ifelse(length(problem.vars>1), 
+                    paste0("variables ", variables[problem.vars], " are"), 
+                    paste0("variable ", variables[problem.vars], " is")) 
+      msg = paste0("The ", var, " not in your actual dataset.")
+      stop(msg)
+    }
+    
+    if (!all(variables %in% observed)){
+      problem.vars = which(!(variables %in% observed))
+      var = ifelse(length(problem.vars>1), 
+                  paste0("variables ", variables[problem.vars], " are"), 
+                  paste0("variable ", variables[problem.vars], " is"))
+      msg = paste0("The ", var, " not in your actual dataset.")
+      stop(msg)
+    }  
+    
+  
+    estimated_fits = estimate_linear_fit(fit.lavaan, x, y, data)
+      new_data = data.frame(x=estimated_fits$x_new, y=estimated_fits$y_new)
+      names(new_data) = c(x, y)
+      data[,"residuals"] = estimated_fits$residuals
+      
+    if (!is.null(fit.lavaan2)){
+      estimated_fits = estimate_linear_fit(fit.lavaan2, x, y, data)
+      new_data$y2 = estimated_fits$y_new
+      data[,"residuals2"] = estimated_fits$residuals      
+    }
+    
+    # ### reliability is needed for the correction factor
+    # rel.x = sum(inspect(fit.lavaan,what="std")$lambda[x,])^2  ### DO YOU SUM FACTOR LOADINGS TO GET RELIABILITY?
+    # rel.y = sum(inspect(fit.lavaan,what="std")$lambda[y,])^2
+    # 
+    # ### compute model-implied slope between the two
+    # predicted_data = lavPredict(fit.lavaan, type="ov")
+    # estimated.slope = coef(lm(flexplot::make.formula(y, x), predicted_data))[2]
+    # ### slope = sd(y)/sd(x) = maximum possible slope between the two, but multiply by f(reliability)
+    # corrected.slope = estimated.slope*sqrt(rel.x*rel.y) 
+    # corrected.intercept = mean(data[,y]) - corrected.slope * mean(data[,x])
+    # ### maximum possible value * sqrt(reliability product)
+    # 
+    # x_new = seq(from=min(data[,x]), to=max(data[,x]), length.out=20)
+    # y_new = corrected.intercept + corrected.slope*x_new
+    # new_data = data.frame(x_new, y_new) %>% setNames(c(x, y))
+    # 
+    # residual_name = paste0(y, "_resid")
+    # data[,residual_name] = data[,y] - (corrected.intercept + corrected.slope*data[,x])
+    # 
+    # if (!is.null(fit.lavaan2)){
+    #   predicted_data = lavPredict(fit.lavaan2, type="ov")
+    #   data[,residual_name2] = data[,y] - (corrected.intercept + corrected.slope*data[,x])
+    # }
+    
+    ### now add to ggplot object
+    if (plot=="trace"){
+      flexplot_form = flexplot::make.formula(y, x)
+      
+      if (!is.null(fit.lavaan2)){
+        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, suppress_smooth = T, se=F) + 
+            geom_line(data=new_data, aes_string(x,y), col=rgb(248,118,109, maxColorValue = 255)) + 
+            geom_line(data=new_data, aes_string(x,"y2"), col=rgb(1,191,196, maxColorValue = 255))
+      } else {
+        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, method="loess", se=F) + 
+          geom_line(data=new_data, aes_string(x,y), col=rgb(248,118,109, maxColorValue = 255))  
+      }
+      return(p)
+    } else if (plot=="disturbance") {
+      ### convert data to long format to make dots different
+      if (!is.null(fit.lavaan2)){
+        data2 = data[,c(x,"residuals", "residuals2")] %>% tidyr::gather("model", "residuals", c("residuals", "residuals2")) %>% setNames(c(x,"model","residuals"))
+        data2$model = factor(data2$model, levels=c("residuals","residuals2"), labels=c("Model 1", "Model 2"))
+        f = make.formula("residuals", c(x, "model"))
+        p = flexplot::flexplot(f, data=data2, alpha = .2) + geom_hline(yintercept = 0)
+      } else {
+        flexplot_form = flexplot::make.formula("residuals", x)
+        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, method="loess") + labs(y=paste0(y, " | latent")) + geom_hline(yintercept=0, col="red")
+      }
+      return(p)
+    } 
   }
 }
 
-
+#' Visualize a linear lavaan model 
+#'
+#' This function generates diagnostic plots or model plots of a lavaan object.
+#' @param object a lavaan object
+#' @param object2 a second lavaan object (optional). This is used to visually compare
+#' the fit of two different models. 
+#' @param plot what should be plotted? User can specify "diagnostics" or "model"
+#' @param ... Other arguments passed to flexplot
+#' @import GGally
+#' @export
+#' @example 
+#' require(lavaan)
+#' data("correct_small")
+#' 
+#' model = "
+#' f1 =~ x1 + x2 + x3
+#' f2 =~ y1 + y2 + y3
+#' f1 ~ f2
+#' "
+#'   fit.lavaan = cfa(model, data=correct_small)
+#'   visualize(fit.lavaan)
+visualize.lavaan = function(object, object2, plot=c("all", "residuals", "model"), formula = NULL,...){
+  observed = lavNames(object)
+  d = data.frame(lavInspect(object, "data"))
+  names(d) = observed
+  ggpairs(d[,observed],
+          lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="disturbance")),
+          upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace")),
+          diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram"))
+          )
+}  
 
 #' Wizard/Witch Propensity Scores for 500 Students at Hogwarts 
 #'
@@ -99,46 +218,3 @@ viz_diagnostics <- function(data, mapping, fit.lavaan, alpha=.5, plot=c("trace",
 #' }
 #' @source These data are proprietary and obtained through the school of Hogwarts. 
 "mugglevwizard"
-
-
-# 
-# require(GGally); require(lavaan); require(flexplot)
-# observed = lavNames(fit.lavaan)
-# ggpairs(d[,observed], 
-#         lower = list(continuous = wrap(my_bin,fit.lavaan = fit.lavaan, alpha = .2)),
-#         upper = list(continuous = wrap(my_bin,fit.lavaan = fit.lavaan, alpha = .2, residuals=TRUE)),
-#         )
-# 
-# 
-# head(data)
-# data[,c("latent_a_estimated", "latent_b_estimated")] = lavPredict(fit.lavaan, type="lv", method="Bartlett")
-# data$resids = residuals(lm(x2~A, data=data))
-# flexplot(resids~x1, data=data, method="lm")
-# plo
-# fit.lavaan$call
-# head(data)
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# flexplot(latent_b_estimated~latent_b, data=data)
-# ### plot the relationship between x1 and x2
-# 
-# 
-# ## residualize X2 based on latent variable
-# d$x2_residual = residuals(lm(x2~latent_a, data=d))
-# flexplot(x2_residual~x1, data=d)
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# #
