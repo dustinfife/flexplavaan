@@ -20,3 +20,17 @@ coef(fit.lavaan)
 coef(fit.lavaan2)
 
 
+    #### a plot of factor scores sorted by size for both models
+preds1 = lavPredict(fit.lavaan)
+preds2 = lavPredict(fit.lavaan2)
+predicted.values = data.frame(rbind(preds1, preds1))
+names(predicted.values) = c("f1", "f2")
+predicted.values$model = c(rep("model1", times=nrow(preds1)), rep("model2", times=nrow(preds2)))
+head(predicted.values)
+flexplot(f2~f1 + model, data=predicted.values)
+latent = predicted.values %>% 
+  tidyr::gather("latent.variable", "score", f1:f2) %>% 
+  dplyr::arrange(score) %>% 
+  dplyr::mutate(index=1:nrow(.))
+
+flexplot(score~index + model | latent.variable, data=latent, suppress_smooth = T)
