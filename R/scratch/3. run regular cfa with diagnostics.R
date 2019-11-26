@@ -1,5 +1,5 @@
   ### this script reads in the CFA models and does diagnostic plots
-require(tidyverse); require(blavaan); require(flexplot)
+require(tidyverse); require(blavaan); require(flexplot); require(lavaan)
 source("R/functions_vizsem.R")
 d = read.csv("data/exp_data.csv")
 
@@ -15,11 +15,13 @@ lav_residuals = d[,observed.vars] - lavPredict(fit.lavaan, type="ov")
 flexplot(x3b~x2, data=lav_residuals, method="lm")
 
 residuals(fit.lavaan)
+names(fit.lavaan)
+?blavaan
+@external$mcmc)
 
 
 
-
-
+?bcfa
 
 
 
