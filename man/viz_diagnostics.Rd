@@ -4,8 +4,9 @@
 \alias{viz_diagnostics}
 \title{Visualize Diagnostics for a lavaan object}
 \usage{
-viz_diagnostics(data, mapping, fit.lavaan, alpha = 0.5,
-  plot = c("trace", "disturbance"), ...)
+viz_diagnostics(data, mapping, fit.lavaan, fit.lavaan2 = NULL,
+  invert.map = FALSE, alpha = 0.5, plot = c("trace", "disturbance",
+  "histogram"), ...)
 }
 \arguments{
 \item{data}{The dataset containing the raw (item) observations}
@@ -13,6 +14,9 @@ viz_diagnostics(data, mapping, fit.lavaan, alpha = 0.5,
 \item{mapping}{A ggplot-defined mapping (e.g., \code{aes(x=x, y=y)}).}
 
 \item{fit.lavaan}{A fitted \code{\link{lavaan::lavaan}} object}
+
+\item{invert.map}{Should the x/y axes be flipped in the mapping? This is important when using viz_diagnostics
+within \code{\link{GGally::ggpairs}}, otherwise the residuals don't match the "trace" plots.}
 
 \item{alpha}{The transparency of the datapoints in the scatterplot. Defaults to 0.5}
 
