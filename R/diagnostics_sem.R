@@ -13,6 +13,8 @@
 #' @param fit.lavaan A fitted \code{\link{lavaan::lavaan}} object
 #' @param alpha The transparency of the datapoints in the scatterplot. Defaults to 0.5
 #' @param plot One of the following: "trace" or "disturbance" 
+#' @param invert.map Should the x/y axes be flipped in the mapping? This is important when using viz_diagnostics
+#' within \code{\link{GGally::ggpairs}}, otherwise the residuals don't match the "trace" plots. 
 #' @param ... Other arguments passed to \code{\link{ggplot2::ggplot}}
 #'
 #' @return a plot of the desired relationship
@@ -66,8 +68,10 @@
 #' mod = cfa(model_witch, data=mugglevwizard)
 #' viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, darkarts), fit.lavaan = mod, plot="trace")
 #' viz_diagnostics(data = mugglevwizard, mapping = aes(potions, darkarts), fit.lavaan = mod, plot="disturbance")
-viz_diagnostics <- function(data, mapping, fit.lavaan, fit.lavaan2 = NULL, alpha=.5, plot=c("trace", "disturbance", "histogram"), ...) {
-  
+viz_diagnostics <- function(data, mapping, 
+                            fit.lavaan, fit.lavaan2 = NULL, 
+                            invert.map=FALSE, alpha=.5, plot=c("trace", "disturbance", "histogram"), ...) {
+  #browser()
   plot = match.arg(plot, c("trace", "disturbance", "histogram"))
   ### extract name of latent variables
   observed = lavNames(fit.lavaan)
@@ -78,12 +82,17 @@ viz_diagnostics <- function(data, mapping, fit.lavaan, fit.lavaan2 = NULL, alpha
     flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
     flexplot::flexplot(flexplot_form, data=data)
   } else {
-  
+    #browser()
     variables = c(dplyr::as_label(mapping$x), dplyr::as_label(mapping$y))
     
     ### extract name of variable in aes
-    y = variables[1]
-    x = variables[2]
+    if (invert.map){
+      x = variables[2]
+      y = variables[1]   
+    } else {
+      y = variables[2]
+      x = variables[1]
+    }
     
     if (!all(variables %in% names(data))){
       problem.vars = which(!(variables %in% names(data)))
@@ -104,7 +113,7 @@ viz_diagnostics <- function(data, mapping, fit.lavaan, fit.lavaan2 = NULL, alpha
     }  
     
   
-    estimated_fits = estimate_linear_fit(fit.lavaan, x, y, data)
+    estimated_fits = estimate_linear_fit(fit.lavaan, x=x, y=y, data)
       new_data = data.frame(x=estimated_fits$x_new, y=estimated_fits$y_new)
       names(new_data) = c(x, y)
       data[,"residuals"] = estimated_fits$residuals
@@ -115,41 +124,21 @@ viz_diagnostics <- function(data, mapping, fit.lavaan, fit.lavaan2 = NULL, alpha
       data[,"residuals2"] = estimated_fits$residuals      
     }
     
-    # ### reliability is needed for the correction factor
-    # rel.x = sum(inspect(fit.lavaan,what="std")$lambda[x,])^2  ### DO YOU SUM FACTOR LOADINGS TO GET RELIABILITY?
-    # rel.y = sum(inspect(fit.lavaan,what="std")$lambda[y,])^2
-    # 
-    # ### compute model-implied slope between the two
-    # predicted_data = lavPredict(fit.lavaan, type="ov")
-    # estimated.slope = coef(lm(flexplot::make.formula(y, x), predicted_data))[2]
-    # ### slope = sd(y)/sd(x) = maximum possible slope between the two, but multiply by f(reliability)
-    # corrected.slope = estimated.slope*sqrt(rel.x*rel.y) 
-    # corrected.intercept = mean(data[,y]) - corrected.slope * mean(data[,x])
-    # ### maximum possible value * sqrt(reliability product)
-    # 
-    # x_new = seq(from=min(data[,x]), to=max(data[,x]), length.out=20)
-    # y_new = corrected.intercept + corrected.slope*x_new
-    # new_data = data.frame(x_new, y_new) %>% setNames(c(x, y))
-    # 
-    # residual_name = paste0(y, "_resid")
-    # data[,residual_name] = data[,y] - (corrected.intercept + corrected.slope*data[,x])
-    # 
-    # if (!is.null(fit.lavaan2)){
-    #   predicted_data = lavPredict(fit.lavaan2, type="ov")
-    #   data[,residual_name2] = data[,y] - (corrected.intercept + corrected.slope*data[,x])
-    # }
-    
     ### now add to ggplot object
     if (plot=="trace"){
       flexplot_form = flexplot::make.formula(y, x)
       
       if (!is.null(fit.lavaan2)){
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, suppress_smooth = T, se=F) + 
-            geom_line(data=new_data, aes_string(x,y), col=rgb(248,118,109, maxColorValue = 255)) + 
-            geom_line(data=new_data, aes_string(x,"y2"), col=rgb(1,191,196, maxColorValue = 255))
+        
+        n = new_data %>% 
+          tidyr::gather(key="Model", value=y, c(!!y,"y2")) %>% 
+          dplyr::mutate(Model = factor(Model, levels=c(!!y, "y2"), labels=c(deparse(substitute(fit.lavaan)),deparse(substitute(fit.lavaan2)))))
+       p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, ...) + 
+          geom_line(data=n, aes_string(x,"y", col="Model"))
+
       } else {
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, method="loess", se=F) + 
-          geom_line(data=new_data, aes_string(x,y), col=rgb(248,118,109, maxColorValue = 255))  
+        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, ...) + 
+          geom_line(data=new_data, aes_string(x,y), col=rgb(1,191,196, maxColorValue = 255))  
       }
       return(p)
     } else if (plot=="disturbance") {
@@ -158,10 +147,10 @@ viz_diagnostics <- function(data, mapping, fit.lavaan, fit.lavaan2 = NULL, alpha
         data2 = data[,c(x,"residuals", "residuals2")] %>% tidyr::gather("model", "residuals", c("residuals", "residuals2")) %>% setNames(c(x,"model","residuals"))
         data2$model = factor(data2$model, levels=c("residuals","residuals2"), labels=c("Model 1", "Model 2"))
         f = make.formula("residuals", c(x, "model"))
-        p = flexplot::flexplot(f, data=data2, alpha = .2) + geom_hline(yintercept = 0)
+        p = flexplot::flexplot(f, data=data2, alpha = .2,...) + geom_hline(yintercept = 0)
       } else {
         flexplot_form = flexplot::make.formula("residuals", x)
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, method="loess") + labs(y=paste0(y, " | latent")) + geom_hline(yintercept=0, col="red")
+        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, ...) + labs(y=paste0(y, " | latent")) + geom_hline(yintercept=0, col="red")
       }
       return(p)
     } 
@@ -189,14 +178,15 @@ viz_diagnostics <- function(data, mapping, fit.lavaan, fit.lavaan2 = NULL, alpha
 #' "
 #'   fit.lavaan = cfa(model, data=correct_small)
 #'   visualize(fit.lavaan)
-visualize.lavaan = function(object, object2, plot=c("all", "residuals", "model"), formula = NULL,...){
+visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "residuals", "model"), formula = NULL,...){
   observed = lavNames(object)
   d = data.frame(lavInspect(object, "data"))
   names(d) = observed
-  ggpairs(d[,observed],
-          lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="disturbance")),
-          upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace")),
-          diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram"))
+  if (!is.null(subset)) observed = observed[subset]
+  ggpairs(d[,observed], legend=c(1,2),
+          lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
+          upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
+          diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...))
           )
 }  
 

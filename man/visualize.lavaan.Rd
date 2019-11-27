@@ -4,11 +4,14 @@
 \alias{visualize.lavaan}
 \title{Visualize a linear lavaan model}
 \usage{
-\method{visualize}{lavaan}(object, plot = c("all", "residuals", "model"),
-  formula = NULL, ...)
+\method{visualize}{lavaan}(object, object2 = NULL, subset = NULL,
+  plot = c("all", "residuals", "model"), formula = NULL, ...)
 }
 \arguments{
 \item{object}{a lavaan object}
+
+\item{object2}{a second lavaan object (optional). This is used to visually compare
+the fit of two different models.}
 
 \item{plot}{what should be plotted? User can specify "diagnostics" or "model"}
 
