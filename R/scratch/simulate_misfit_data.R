@@ -116,25 +116,3 @@ fitMeasures(mod2, "rmsea")
 visualize(mod1, mod2, method="lm")
 viz_diagnostics(residualcov, aes(V2, V1), fit.lavaan = mod1, fit.lavaan2 = mod2)
 summary(mod2, standardized=TRUE)
-
-
-
-
-
-set.seed(3)
-items = 5
-a = rnorm(round(runif(1, 500, 800)))
-sl = runif(items, .5, .9)
-sds = runif(items, 1, 1)
-missingfactor = 1:items %>% map_dfc(~linearmodel(.x, a, sl, sds)) %>% as.data.frame
-missingfactor$V1 = 1.7* missingfactor$V2 + missingfactor$V1
-missingfactor$V3 = .5 * missingfactor$V2 + missingfactor$V3
-missingfactor$V5 = .3 * missingfactor$V4 + missingfactor$V5
-model = paste0("f = ~ ", paste0("V", 1:items, collapse=" + "))
-mod = cfa(model, data=missingfactor)
-fitMeasures(mod, "rmsea")
-standardizedsolution(mod)
-visualize(mod, subset=1:5)
-
-
-#
