@@ -16,7 +16,7 @@ d = 1:6 %>% purrr::map(~fifer::rescale(d[,.x], new.mean = means[.x], new.sd = sd
   setNames(names(d))
 
 crossloadings_large = d
-crossloadings_small = d[1:500,]
+crossloadings_small = d[1:1000,]
 usethis::use_data(crossloadings_large, overwrite = TRUE)
 usethis::use_data(crossloadings_small, overwrite = TRUE)
 
