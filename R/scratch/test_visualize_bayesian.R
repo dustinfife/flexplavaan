@@ -1,5 +1,39 @@
 bayes_fit_crossloadings_correct = readRDS(file="data/bayes_fit_crossloadings_correct.rds")
-require(blavaan); require(flexplot); require(tidybayes)
+require(blavaan); 
+require(flexplot); 
+require(tidybayes); 
+require(fifer); 
+require(tidyverse)
+require(GGally)
+install.packages("ggplot2")
+
+lvs = data.frame(blavInspect(bayes_fit_crossloadings_correct, 'lvmeans'))
+names(lvs) = c("f1", "f2")
+p = viz_diagnostics(data = crossloadings_large, mapping = aes(x1, x2), 
+                fit.lavaan=bayes_fit_crossloadings_correct, plot="trace")
+p + geom_smooth()
+
+fit.lavaan = bayes_fit_crossloadings_correct
+x = "x2"; y = "x3"
+data = crossloadings_large
+
+
+
+
+viz_diagnostics(data = crossloadings_large, mapping = aes(x1, x2), 
+                fit.lavaan=bayes_fit_crossloadings_correct, plot="trace")
+
+visualize(bayes_fit_crossloadings_correct)
+summary(bayes_fit_crossloadings_correct, standardized=T)
+
+
+
+data = cbind(crossloadings_large, lvs) %>% 
+  data.frame %>% 
+  mutate(f2_new = rescale(f2, mean(x2), sd(x2)))
+
+
+
 
 
 # Use tidybayes to extract parameters -------------------------------------
