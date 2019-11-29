@@ -78,7 +78,7 @@ viz_diagnostics <- function(data, mapping,
   latent.names = lavNames(fit.lavaan, type="lv")
 
   ### plot ggplot object so I can extract the elements
-  if (dplyr::as_label(mapping$y) == "NULL"){
+  if (dplyr::as_label(mapping$y) == "NULL" | plot=="histogram"){
     flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
     flexplot::flexplot(flexplot_form, data=data)
   } else {
@@ -117,7 +117,7 @@ viz_diagnostics <- function(data, mapping,
       new_data = data.frame(x=estimated_fits$x_new, y=estimated_fits$y_new)
       names(new_data) = c(x, y)
       data[,"residuals"] = estimated_fits$residuals
-      
+      #browser()
     if (!is.null(fit.lavaan2)){
       estimated_fits = estimate_linear_fit(fit.lavaan2, x, y, data)
       new_data$y2 = estimated_fits$y_new
@@ -182,12 +182,20 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
   observed = lavNames(object)
   d = data.frame(lavInspect(object, "data"))
   names(d) = observed
-  if (!is.null(subset)) observed = observed[subset]
-  ggpairs(d[,observed], legend=c(1,2),
-          lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
-          upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
-          diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...))
-          )
+  if (!is.null(subset)) {
+    observed = observed[subset]
+    ggpairs(d[,observed], legend=c(1,2),
+            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
+            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...))
+      )
+  } else {  
+    ggpairs(d[,observed], 
+        lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
+        upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
+        diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...))
+        )
+  }  
 }  
 
 #' Wizard/Witch Propensity Scores for 500 Students at Hogwarts 

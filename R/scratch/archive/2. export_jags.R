@@ -43,6 +43,15 @@ saveRDS(fit.lavaan, file="data/fit_lavaan.rds")
 # run a custom bayesian model to account for nonlinearity -----------------
 future::plan("multiprocess")
 require(runjags)
+# this first model uses the linear version of X3/Y3
+model.linear = '
+  A =~ NA*x1 + x2 + x3b
+  A ~~ 1*A
+  B =~ NA*y1 + y2 + y3b
+  B ~~ 1*B 
+  B ~ A
+'
+d = read.csv("data/exp_data.csv")
 ### add syntax to do the nonlinear model
 extra.fit = "
 for (i in 1:N){
@@ -56,7 +65,7 @@ for (i in 1:N){
 fit.custom.nonlinear = bcfa(model.linear, data=d,
                            jagcontrol=list(method="rjparallel"),
                            mcmcextra = list(monitor="eta"),
-                           target = "jags")
+                           target = "jags", test = "none")
 saveRDS(fit.custom.nonlinear, file="data/custom_bayes_fit_linear.rds")
 
 

@@ -1,17 +1,31 @@
-bayes_fit_crossloadings_correct = readRDS(file="data/bayes_fit_crossloadings_correct.rds")
+#bayes_fit_crossloadings_correct = readRDS(file="data/bayes_fit_crossloadings_correct.rds")
 require(blavaan); 
 require(flexplot); 
 require(tidybayes); 
 require(fifer); 
 require(tidyverse)
 require(GGally)
-install.packages("ggplot2")
 
+
+data(nonlinear)
+
+d = nonlinear
+fit.custom.nonlinear = readRDS(file="data/nonlinear_fit_bayes.rds")
+head(d)
+viz_diagnostics(data = d, mapping = aes(X1, X2), 
+                fit.lavaan=fit.custom.nonlinear, 
+                plot="trace", suppress_smooth=T)
+
+lavNames(fit.custom.nonlinear)
+#visualize(custom.bayes)
+
+
+  
 lvs = data.frame(blavInspect(bayes_fit_crossloadings_correct, 'lvmeans'))
 names(lvs) = c("f1", "f2")
 p = viz_diagnostics(data = crossloadings_large, mapping = aes(x1, x2), 
-                fit.lavaan=bayes_fit_crossloadings_correct, plot="trace")
-p + geom_smooth()
+                fit.lavaan=bayes_fit_crossloadings_correct, plot="trace", suppress_smooth=F)
+p 
 
 fit.lavaan = bayes_fit_crossloadings_correct
 x = "x2"; y = "x3"
