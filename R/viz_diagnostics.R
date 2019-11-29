@@ -157,6 +157,7 @@ viz_diagnostics <- function(data, mapping,
   }
 }
 
+<<<<<<< Updated upstream:R/diagnostics_sem.R
 #' Visualize a linear lavaan model 
 #'
 #' This function generates diagnostic plots or model plots of a lavaan object.
@@ -216,3 +217,5 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
 #' }
 #' @source These data are proprietary and obtained through the school of Hogwarts. 
 "mugglevwizard"
+=======
+>>>>>>> Stashed changes:R/viz_diagnostics.R
