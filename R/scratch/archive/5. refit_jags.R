@@ -3,19 +3,26 @@
 require(blavaan)
 require(tidyverse)
 require(runjags)
-source("R/functions_vizsem.R")
+#source("R/functions_vizsem.R")
 d = read.csv("data/exp_data.csv")
-future::plan("multiprocess")
+data(nonlinear)
 
 
 load("lavExport/semjags.rda")
+names(jagtrans$data)[7:8] = c("max", "midpoint")
 
 jagtrans$monitors = c(jagtrans$monitors, "eta") ### monitor the latent variable
-jagtrans$data = prediction_matrix(d, jagtrans$data)
-fit.nonlinear.custom <- run.jags("lavExport/sem_nonlinear.jag", monitor = jagtrans$monitors,
-                                 data = jagtrans$data, inits = jagtrans$inits, method = "parallel",
+jagtrans$monitors[8:10] = gsub("nu", "max", jagtrans$monitors[8:10])
+jagtrans$monitors[1:3] = gsub("lambda", "midpoint", jagtrans$monitors[1:3])
+fit.nonlinear.custom <- run.jags("lavExport/sem.jag", monitor = jagtrans$monitors,
+                                 data = jagtrans$data, method = "parallel",
                                  n.chains = 3)
 results = summary(fit.nonlinear.custom)
+fit.lavaan = results
+
+
+
+
 fit.nonlinear.custom$results = results
 saveRDS(fit.nonlinear.custom, file="data/custom_fit_nonlinear.rds")
 

@@ -49,7 +49,7 @@ enhancement = 1:5 %>%
   map_dfc(~logistic(x=latent, max=5, slope=slopes[.x], intercept=runif(1,.1, 4))) %>% 
   mutate_all(function(x) x + rnorm(length(latent), 0, .033))
 #enhancement$latent = latent
-#pairs(enhancement)
+pairs(enhancement)
 
 # fit the model
 model = "
@@ -60,16 +60,55 @@ summary(mod, fit.measures=TRUE)
 
 # nonlinear relationships -------------------------------------------------
 set.seed(1212)
-items = 30
+items = 3
 latent = rbeta(round(runif(1, 900, 1000)), 1, 5)
 slopes = seq(from=.01, to=.2, length.out=items)
 nonlinear = 1:items %>% 
   map_dfc(~mme(x=latent, max=5, midpoint=slopes[.x])) %>% 
-  mutate_all(function(x) x + rnorm(length(latent), 0, .25 + x*.1)) %>% 
+  mutate_all(function(x) x + rnorm(length(latent), 0, .5)) %>%  #.25 + x*.1)) %>% 
   mutate_all(trim, max=6, min=0) %>% 
   as.data.frame
 nonlinear$latent = latent
+  ### create new variables to add to JAGs
+nonlinear$X1 = nonlinear$V1
+nonlinear$X2 = nonlinear$V2
+nonlinear$X3 = nonlinear$V3
+usethis::use_data(nonlinear, overwrite = TRUE)
 
+extra.fit = "
+for (i in 1:N){
+  mu_2[i,1] <- (max[1]*(eta[i,1]))/(midpoint[1] + eta[i,1])
+  mu_2[i,2] <- (max[2]*(eta[i,1]))/(midpoint[2] + eta[i,1])
+  mu_2[i,3] <- (max[3]*(eta[i,1]))/(midpoint[3] + eta[i,1])
+  X1[i] ~ dnorm(mu_2[i,1], 1/theta[1,1,g[i]])
+  X2[i] ~ dnorm(mu_2[i,2], 1/theta[2,2,g[i]])
+  X3[i] ~ dnorm(mu_2[i,3], 1/theta[3,3,g[i]])
+}
+  max[1] ~ dunif(1,10)
+  max[2] ~ dunif(1,10)
+  max[3] ~ dunif(1,10)
+  
+  midpoint[1] ~ dunif(1,10)
+  midpoint[2] ~ dunif(1,10)
+  midpoint[3] ~ dunif(1,10)
+
+"
+
+model.linear = '
+  A =~ V1 + V2 + V3
+'
+
+## fit the nonlinear dataset with nonlinear equation
+nonlinear_fit_bayes = bcfa(model.linear, data=nonlinear,
+                            save.lvs = TRUE,
+                            mcmcfile = TRUE,
+                            jagcontrol=list(method="rjparallel"),
+                            mcmcextra = list(syntax=extra.fit),
+                            target = "jags", test = "none")
+summary(nonlinear_fit_bayes)
+saveRDS(nonlinear_fit_bayes, file="data/nonlinear_fit_bayes.rds")
+visualize(nonlinear_fit_bayes)
+?bcfa
 # fit the model
 model = paste0("f = ~ ", paste0("V", 1:items, collapse=" + "))
 mod = cfa(model, data=nonlinear)

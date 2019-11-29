@@ -12,22 +12,13 @@ f2 =~ y1 + y2 + y3
 f1 ~ f2
 "
 
-require(blavaan)
-fit.lavaan = bcfa(model_correct, data=crossloadings_small)
-
-    #### use estimate x1/x2 to compute quadriture points for each section
-str(fit.lavaan)
-
-
-
-
-
 require(lavaan)
 fit.lavaan = cfa(model_correct, data=crossloadings_small)
 fit.lavaan2 = cfa(model_missspecified, data=crossloadings_small)
 #viz_diagnostics(data = crossloadings_small, mapping = aes(x1,y1), fit.lavaan = fit.lavaan, fit.lavaan2 = fit.lavaan2, plot="trace")
 visualize(fit.lavaan, fit.lavaan2)
-coef(fit.lavaan)
+viz_diagnostics(data = crossloadings_small, 
+                mapping = aes(x2,x2), fit.lavaan = fit.lavaan, fit.lavaan2 = fit.lavaan2, plot="histogram")
 coef(fit.lavaan2)
 
 

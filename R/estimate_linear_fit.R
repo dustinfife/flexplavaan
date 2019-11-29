@@ -1,20 +1,56 @@
 estimate_linear_fit = function(fit.lavaan, x, y, data){
   
-  if (class(fit.lavaan)=="blavaan"){
+  if (class(fit.lavaan)=="matrix"){
     
-    rel.x = sum(inspect(fit.lavaan,what="std")$lambda[x,])^2  ### DO YOU SUM FACTOR LOADINGS TO GET RELIABILITY?
-    rel.y = sum(inspect(fit.lavaan,what="std")$lambda[y,])^2
-    
-    lvs = data.frame(blavInspect(fit.lavaan, 'lvmeans')) %>% 
-      mutate(f = X1) %>% 
-      select(f)
+    rel.x = var(nonlinear$V1)-fit.lavaan["theta[1,1,1]","Mean"]^2
+    rel.y = 1- (fit.lavaan["theta[2,2,1]","Mean"]^2/var(nonlinear$V2))
+  
+    lvs = startsWith(dimnames(fit.lavaan)[[1]], "eta")
+    lvs = fit.lavaan[lvs,"Mean"] %>% as.data.frame %>% setNames("f")
     
     newdata = cbind(data, lvs) %>% 
       data.frame %>% 
       mutate(!!"f" := rescale(f, mean(!!(as.name(y))), sd(!!(as.name(y)))))
+    
+    x_new = quantile(newdata[,x], probs = seq(from=0, to=1, length.out=80)) %>% as.numeric
+    y_new = quantile(newdata[,"f"], probs = seq(from=0, to=1, length.out=80)) %>% as.numeric
+    y_new = mean(y_new) + sqrt(rel.x*rel.y) * (y_new-mean(y_new))
+    y_new = y_new - 3
+    # transform f to reduce it's slope by reliability
+    fnew = newdata[["f"]]
+    newdata[["f"]] = mean(fnew) + sqrt(rel.x*rel.y) * (fnew-mean(fnew))    
+    residuals = newdata[[y]] - newdata[["f"]]
+    
+    flexplot(V2~V1, data=data) +
+      geom_line(data=data.frame(x_new=x_new, y_new=y_new), aes(x_new, y_new), col="red")
+    
+  }  
+  
+  
+  
+  if (class(fit.lavaan)=="blavaan"){
+    
+    lambda = inspect(fit.lavaan,what="std")$lambda
+    rel.x = sum(lambda[x,])^2  ### DO YOU SUM FACTOR LOADINGS TO GET RELIABILITY?
+    rel.y = sum(lambda[y,])^2
+    factors = names(which(abs(lambda[y,])>0))
+    
+    lvs = data.frame(blavInspect(fit.lavaan, 'lvmeans')) %>% 
+      setNames(dimnames(lambda)[[2]]) %>% 
+      mutate(!!"f" := !!(as.name(factors))) %>%
+      select("f")
+    
+    newdata = cbind(data, lvs) %>% 
+      data.frame %>% 
+      mutate(!!"f" := rescale(f, mean(!!(as.name(y))), sd(!!(as.name(y)))))
+    
     x_new = quantile(newdata[,x], probs = seq(from=0, to=1, length.out=30)) %>% as.numeric
     y_new = quantile(newdata[,"f"], probs = seq(from=0, to=1, length.out=30)) %>% as.numeric
     y_new = mean(y_new) + sqrt(rel.x*rel.y) * (y_new-mean(y_new))
+    
+    # transform f to reduce it's slope by reliability
+    fnew = newdata[["f"]]
+    newdata[["f"]] = mean(fnew) + sqrt(rel.x*rel.y) * (fnew-mean(fnew))    
     residuals = newdata[[y]] - newdata[["f"]]
   } else {
   
