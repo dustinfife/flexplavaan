@@ -1,12 +1,19 @@
+
 estimate_linear_fit = function(fit.lavaan, x, y, data){
   
   if (class(fit.lavaan)=="matrix"){
-    
-    rel.x = var(nonlinear$V1)-fit.lavaan["theta[1,1,1]","Mean"]^2
+    data(nonlinear)
+    data = nonlinear
+    fit.lavaan = results
+    x = "V3"; y = "V2"
+    rel.x = var(nonlinear$V3)-fit.lavaan["theta[1,1,1]","Mean"]^2
     rel.y = 1- (fit.lavaan["theta[2,2,1]","Mean"]^2/var(nonlinear$V2))
   
     lvs = startsWith(dimnames(fit.lavaan)[[1]], "eta")
-    lvs = fit.lavaan[lvs,"Mean"] %>% as.data.frame %>% setNames("f")
+    lvs = fit.lavaan[lvs,"Mean"] #%>% as.data.frame 
+    data$f2 = lvs
+    head(data)
+    flexplot::flexplot(f2~latent, data=data)
     
     newdata = cbind(data, lvs) %>% 
       data.frame %>% 
@@ -21,7 +28,7 @@ estimate_linear_fit = function(fit.lavaan, x, y, data){
     newdata[["f"]] = mean(fnew) + sqrt(rel.x*rel.y) * (fnew-mean(fnew))    
     residuals = newdata[[y]] - newdata[["f"]]
     
-    flexplot(V2~V1, data=data) +
+    flexplot(V3~V2, data=data) +
       geom_line(data=data.frame(x_new=x_new, y_new=y_new), aes(x_new, y_new), col="red")
     
   }  

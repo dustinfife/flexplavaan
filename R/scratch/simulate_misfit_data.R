@@ -99,16 +99,16 @@ model.linear = '
 '
 
 ## fit the nonlinear dataset with nonlinear equation
-nonlinear_fit_bayes = bcfa(model.linear, data=nonlinear,
-                            save.lvs = TRUE,
-                            mcmcfile = TRUE,
-                            jagcontrol=list(method="rjparallel"),
-                            mcmcextra = list(syntax=extra.fit),
-                            target = "jags", test = "none")
-summary(nonlinear_fit_bayes)
-saveRDS(nonlinear_fit_bayes, file="data/nonlinear_fit_bayes.rds")
-visualize(nonlinear_fit_bayes)
-?bcfa
+# nonlinear_fit_bayes = bcfa(model.linear, data=nonlinear,
+#                             save.lvs = TRUE,
+#                             mcmcfile = TRUE,
+#                             jagcontrol=list(method="rjparallel"),
+#                             mcmcextra = list(syntax=extra.fit),
+#                             target = "jags", test = "none")
+# summary(nonlinear_fit_bayes)
+# saveRDS(nonlinear_fit_bayes, file="data/nonlinear_fit_bayes.rds")
+# visualize(nonlinear_fit_bayes)
+
 # fit the model
 model = paste0("f = ~ ", paste0("V", 1:items, collapse=" + "))
 mod = cfa(model, data=nonlinear)
