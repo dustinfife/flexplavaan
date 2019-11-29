@@ -18,6 +18,7 @@ fit.nonlinear.custom <- run.jags("lavExport/sem.jag", monitor = jagtrans$monitor
                                  data = jagtrans$data, method = "parallel",
                                  n.chains = 3)
 results = summary(fit.nonlinear.custom)
+saveRDS(results, file="data/fit.nonlinear.custom.rds")
 fit.lavaan = results
 
 
