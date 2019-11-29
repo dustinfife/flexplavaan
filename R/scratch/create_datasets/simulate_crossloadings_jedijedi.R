@@ -11,7 +11,7 @@ jedi_score = .5*force_score + rnorm(n, sqrt(1-.5^2))
 fitness = 50 + .6*(11)*force_score + rnorm(n,0, sqrt(1-.6^2)*11) ### minutes required to complete obstacle course
 saber = 0 + .7*(15)*force_score + rnorm(n,0, sqrt(1-.7^2)*15)  ### hits on opponent vs. hits on you
 midichlorian = 200 + .8*(50)*force_score + rnorm(n,0, sqrt(1-.8^2)*50)
-force_history = 70 + .3*(15)*force_score + .4*(15)*jedi_score + rnorm(n,0, sqrt(1-.8^2)*15)
+force_history = 70 + .2*(15)*force_score + .6*(15)*jedi_score + rnorm(n,0, sqrt(1-.8^2)*15)
 
 exam_one = 70 + .6*(15)*jedi_score + rnorm(n,0, sqrt(1-.6^2)*15)
 exam_two = 70 + .7*(15)*jedi_score + rnorm(n,0, sqrt(1-.7^2)*15)

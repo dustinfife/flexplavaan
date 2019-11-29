@@ -23,8 +23,8 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
   observed = lavNames(object)
   d = data.frame(lavInspect(object, "data"))
   names(d) = observed
-  if (!is.null(subset)) {
-    observed = observed[subset]
+  if (!is.null(subset)) observed = observed[subset]
+  if (!is.null(object2)) {
     legend=c(1,2)
   } else {
     legend = NULL
