@@ -14,8 +14,8 @@ bibliography: ../references.bib
 require(knitr)
 require(GGally)
 require(flexplot)
-opts_chunk$set(message=FALSE, echo = FALSE, warning = FALSE)
-source('../R/ggally_pairs_function.R')
+opts_chunk$set(message=FALSE, echo = TRUE, warning = FALSE)
+source('../R/scratch/ggally_pairs_function.R')
 ```
 # Brief Introduction
 
@@ -79,7 +79,7 @@ Also, since these variables are standardized, Equation \ref{eq:1} is both the sl
 Recall that latent variable models explicitly model the unreliability in indicators. In other words, Equation \ref{eq:1} is the "corrected" estimate of the correlation between $x_1$ and $x_2$. As such, the regression line generated from Equation \ref{eq:1} will visually overestimate the strength of the relationship, as demonstrated in Figure \ref{fig:first}.For example, iff $b$ and $a$ are both 0.5, Equation \ref{eq:1} suggests the slope is one (indicating a perfect correlation between these standardized variances). This is clearly not the case. As such, the slope needs to be "uncorrected" for unreliability. 
 
 
-```{r, message=FALSE, warning=FALSE, fig.cap="Scatterplot of the x1/x2 relationship. The red line shows the implied fit between the two variables under the assumption of perfect reliability. The blue line shows the actual fitted relationship. \\label{fig:first}", fig.width=3, fig.height=2}
+```{r, message=FALSE, warning=FALSE, fig.cap="Scatterplot of the x1/x2 relationship. The red line shows the implied fit between the two variables under the assumption of perfect reliability. The blue line shows the actual fitted relationship. \\label{fig:first}"}
 require(lavaan)
 require(tidyverse)
 set.seed(1212)
@@ -106,7 +106,8 @@ m$latent = (slopes[2]/slopes[1])*m$x1  ### from Equation 1
 ggplot(data=d, aes(x=x1,y=x2)) +
   geom_point() + 
   geom_line(data=m, aes(x1, latent), col="red") +
-  geom_smooth(method="lm")
+  geom_smooth(method="lm") + 
+  labs(x="Exam One", y="Exam Two")
 ```
 
 
@@ -125,6 +126,22 @@ r = \rho \sqrt{\rho_{xx}\rho_{yy}}
 \label{eq:three}
 \end{equation}
 
+Recall the relationship between $r$ and the slope ($\beta$)
+
+\begin{equation}
+\beta = r \frac{\sigma_{x}}{\sigma_{y}}
+\label{eq:three}
+\end{equation}
+
+Or, under perfect reliability,
+
+\begin{equation}
+\beta = \frac{\sigma_{x}}{\sigma_{y}}
+\label{eq:three}
+\end{equation}
+
+
+
 We can then multiply Equation \ref{eq:three} by Equation \ref{eq:1}:
 
 \begin{align}
@@ -136,22 +153,24 @@ We can then multiply Equation \ref{eq:three} by Equation \ref{eq:1}:
 
 Using Equation \ref{eq:4}, we now get a line that closely approximates the actual relationship between the two variables (Figure \ref{fig:second}. 
 
-```{r, fig.cap="Scatterplot of the x1/x2 relationship, but this time, the red line shows the implied fit between the two variables without perfect reliability. As before, the blue line shows the actual fitted relationship. \\label{fig:second}", fig.width=3, fig.height=2}
+```{r, fig.cap="Scatterplot of the x1/x2 relationship, but this time, the red line shows the implied fit between the two variables without perfect reliability. As before, the blue line shows the actual fitted relationship. \\label{fig:second}"}
 
 m$latent = (slopes[2]^2)*m$x1  ### from Equation 1
-ggplot(data=d, aes(x=x1,y=x2)) +
-  geom_point() + 
-  geom_line(data=m, aes(x1, latent), col="red") +
-  geom_smooth(method="lm")
+# ggplot(data=d, aes(x=x1,y=x2)) +
+#   geom_point() + 
+#   geom_line(data=m, aes(x1, latent), col="red") +
+#   geom_smooth(method="lm") + 
+#   labs(x="Exam One", y="Exam Two") +
+#   theme_bw()
 ```
 
 We could then apply this command continuously to all observed variables in a scatterplot matrix (using, say, the upper diagonal), as in Figure \ref{fig:third}. As before, the red line indicates the model-implied fit. This time, however, the blue line is the fit of a loess line (which will allow for the detection of nonlinear patterns). 
 
 ```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:third}", fig.width=4, fig.height=4}
-ggpairs(d[,c("x1", "x2", "x3")],
-        lower = NULL,
-        upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
-        ) + theme_bw()
+# ggpairs(d[,c("x1", "x2", "x3")],
+#         lower = NULL,
+#         upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
+#         ) + theme_bw()
 ```
 
 ## Disturbance Dependence Plots: Removing the Effect of the Latent Variable
@@ -168,10 +187,10 @@ To generate these disturbance terms, we need only to generate predicted $x_2$ sc
 We can then plot the relationship between $x_1$ and $x_2$ after removing the effect of the latent variable. If the data are locally independent, we should observe no relationship. The expected relationship (i.e., a line centered on zero with no slope) is colored as red. We could then add this plot to the scatterplot matrix in, say, the lower diagonals, as in Figure \ref{fig:five}. 
 
 ```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables. The upper triangle show the model-implied fit between the indicators, while the lower triangle shows the disturbance dependence plots. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:five}", fig.width=4, fig.height=3}
-ggpairs(d[,c("x1", "x2", "x3")],
-        lower = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=TRUE)),
-        upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
-        ) + theme_bw()
+# ggpairs(d[,c("x1", "x2", "x3")],
+#         lower = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=TRUE)),
+#         upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
+#         ) + theme_bw()
 ```
 
 
@@ -203,10 +222,10 @@ model.linear = '
 '
 fitted = cfa(model.linear, data=d)
 
-ggpairs(d[,c("x1", "x2", "x3")],
-        lower = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=TRUE)),
-        upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
-        ) + theme_bw()
+# ggpairs(d[,c("x1", "x2", "x3")],
+#         lower = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=TRUE)),
+#         upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
+#         ) + theme_bw()
 ```
 
 # Model Plots
@@ -217,6 +236,128 @@ Once one has iterated through the diagnostic plots, they can be more confident t
 \pagebreak 
 
 # References
+
+## Stats Jedi Dataset
+
+## Harry Potter Dataset
+
+Suppose we have the following nonlinear relationship between observed variable $X$ and latent $F$: 
+
+\begin{equation}
+X = \frac{M}{1 + exp^{-x_1(F-x_0)}}
+\label{eq:three}
+\end{equation}
+
+Solving for $F$, we get
+
+\begin{equation}
+F = \frac{-1}{x_1}log\left(\frac{M}{X}\right) -x_1
+\label{eq:three}
+\end{equation}
+
+Let's assume the variable $Y$ is a linear function of $F$:
+
+\begin{equation}
+Y = y_0 + y_1 F
+\label{eq:three}
+\end{equation}
+
+Solving for $F$, we get
+
+\begin{equation}
+F = \frac{Y-y_0}{y_1}
+\label{eq:three}
+\end{equation}
+
+Now suppose we wish to estimate the value of $Y$ for a given $X$. To do so, we can use substitution:
+
+
+
+## Scratch
+
+\begin{center}
+\begin{tikzpicture}[scale=1] 
+\def\x{latex}
+\draw (0,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {Stats Jedi};
+\draw (-2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam 1};
+\draw (0,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam 2};
+\draw (2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam 3};
+\draw[arrows={-\x}] (0,2.5) --(-2.5,.5) node[midway, above] {$a$};
+\draw[arrows={-\x}] (0,2.5) --(0,.5) node[midway, left] {$b$};
+\draw[arrows={-\x}] (0,2.5) --(2.5,.5) node[midway, above] {$c$};
+\end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+\begin{tikzpicture}[scale=1] 
+\def\x{latex}
+
+\draw (0,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {Force};
+\draw (7.5,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {Jedi};
+\draw (-2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {fitness};
+\draw (0,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {saber};
+\draw (2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {midichlorian};
+\draw (5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {history};
+\draw (7.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam one};
+\draw (10,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam two};
+\draw (12.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam three};
+
+\draw[arrows={-\x}] (0,2.5) --(-2.5,.5) node[midway, above] {$a$};
+\draw[arrows={-\x}] (0,2.5) --(0,.5) node[midway, left] {$b$};
+\draw[arrows={-\x}] (0,2.5) --(2.5,.5) node[midway, above] {$c$};
+\draw[arrows={-\x}] (0,2.5) --(5,.5) node[midway, above] {$d_1$};
+\draw[arrows={-\x}] (7.5,2.5) --(5,.5) node[midway, above] {$d_2$};
+
+\draw[arrows={-\x}] (7.5,2.5) --(7.5,.5) node[midway, right] {$e$};
+\draw[arrows={-\x}] (7.5,2.5) --(10,.5) node[midway, right] {$f$};
+\draw[arrows={-\x}] (7.5,2.5) --(12.5,.5) node[midway, above] {$g$};
+
+\draw[arrows={-\x}] (.75,3) --(6.75,3) node[midway, above] {$\beta$};
+
+\end{tikzpicture}
+\end{center}
+
+
+
+\begin{center}
+\begin{tikzpicture}[scale=1] 
+\def\x{latex}
+
+\draw (-1,5) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] (know) {Knowledge};
+\draw (-1,0) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] (skills) {Skills};
+\draw (-5,2.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] (surv) {Survival};
+
+\draw (3.5,6.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {potions};
+\draw (3.5,5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {history};
+\draw (3.5,3.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {herbology};
+
+\draw[arrows={-\x}] (.33,5) --(2.75,6.5) node[midway, above] {};
+\draw[arrows={-\x}] (.33,5) --(2.75,5) node[midway, above] {};
+\draw[arrows={-\x}] (.33,5) --(2.65,3.4) node[midway, above] {};
+
+\draw (3.5,1.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] (dark) {darkarts};
+\draw (3.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {spells};
+\draw (3.5,-1.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {flying};
+
+\draw (dark) edge[out=180,in=0,<-] (skills);
+\draw[arrows={-\x}] (-.25,0) --(2.75,0) node[midway, above] {};
+\draw[arrows={-\x}] (-.25,0) --(2.75,-1.5) node[midway, above] {};
+
+
+\draw (know) edge[out=180,in=0,->] (surv);
+\draw (skills) edge[out=180,in=0,->] (surv);
+
+\end{tikzpicture}
+\end{center}
+
+<!-- magic_knowledge =~ potions + history + herbology -->
+<!-- magic_skills =~ spells + darkarts + flying  -->
+<!-- magic_skills ~ magic_knowledge -->
+<!-- model = " -->
+<!-- force_score =~ fitness + saber + midichlorian + force_history -->
+<!-- jedi_score =~ exam_one + exam_two + exam_three -->
+<!-- " -->
 
 
 

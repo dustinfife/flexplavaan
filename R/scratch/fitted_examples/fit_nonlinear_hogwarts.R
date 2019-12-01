@@ -1,22 +1,27 @@
 require(lavaan)
+require(blavaan)
 require(flexplot)
-data(hogwarts_survival)
-head(hogwarts_survival)
 model = "
 magic_knowledge =~ potions + history + herbology
 magic_skills =~ spells + darkarts + flying 
 magic_skills ~ magic_knowledge
 "
-hogwarts_fit = cfa(model, hogwarts_survival)
-summary(hogwarts_fit, fit.measures=TRUE)
-visualize(hogwarts_fit, method="loess", sample = 500)
-visualize(hogwarts_fit, method="loess", subset = 4:6, sample = 300)
-visualize(hogwarts_fit, method="loess", subset = 1:3)
+hogwarts_fit = sem(model, data=hogwarts_survival)
+hogwarts_viz = visualize(hogwarts_fit, method="loess")
+ggsave(file="plots/hogwarts_linear.jpg", hogwarts_viz)
+
 
 
     #### fit again with nonlinear model
 ### export the jags syntax (to make it easier to edit)
 require(blavaan)
+hogwarts_survival$surv = rnorm(nrow(hogwarts_survival))
+model = "
+magic_knowledge =~ potions + history + herbology
+magic_skills =~ spells + darkarts + flying 
+magic_skills ~ magic_knowledge
+surv ~ magic_knowledge + magic_skills
+"
 fit.bayes.export = bcfa(model, data=hogwarts_survival, 
                         mcmcfile="hogwarts_survival",
                         target="jags",
@@ -29,11 +34,17 @@ fit.bayes.export = bcfa(model, data=hogwarts_survival,
 full.file = "hogwarts_survival/sem.jag"
 fl = readChar(full.file, file.info(full.file)$size)
 old = c("mu[i,5] <- nu[5,1,g[i]] + lambda[5,2,g[i]]*eta[i,2]",
-        "nu[6,1,1] <- parvec[19]",
-        "parvec[19] ~ dnorm(0,1e-3)")
+        "alpha[3,1,1] <- parvec[23]",
+        "parvec[23] ~ dnorm(0,1e-3)",
+        "surv[i] ~ dnorm(mu[i,7], 1/psi[3,3,g[i]])",
+        "mu[i,7] <- alpha[3,1,g[i]] + beta[3,1,g[i]]*eta[i,1] + beta[3,2,g[i]]*eta[i,2]",
+        "psi[3,3,1] <- pow(parvec[14],2)")
 new = c("mu[i,5] <- mx/(1 + exp(-1*lambda[5,2,g[i]]*(eta[i,2] - nu[5,1,g[i]])))",
-        "nu[6,1,1] <- parvec[19]\n mx <- parvec[20]",
-        "parvec[19] ~ dnorm(0,1e-3)\n parvec[20] ~ dunif(20, 100)")
+        "alpha[3,1,1] <- parvec[23]\n mx <- parvec[24]",
+        "parvec[23] ~ dnorm(0,1e-3)\n parvec[24] ~ dunif(20, 100)",
+        "survived[i] ~ dbern(mu[i,7])",
+        "logit(mu[i,7]) <- alpha[3,1,g[i]] + beta[3,1,g[i]]*eta[i,1] + beta[3,2,g[i]]*eta[i,2]",
+        "")
 
 fl_new = fl
 for (i in 1:length(old)){
@@ -46,9 +57,10 @@ close(fileConn)
 ### refit the model
 load("hogwarts_survival/semjags.rda")
 jagtrans$data$mx = NA
-names(jagtrans$data)
+jagtrans$data$survived = hogwarts_survival$survived
+jagtrans$data$surv = NULL
 #jagtrans$monitors = jagtrans$monitors[-c(1,4, 22,23)]
-jagtrans$monitors = c(jagtrans$monitors, "eta", "mx") ### monitor the latent variable
+jagtrans$monitors = c("mx", jagtrans$monitors, "eta") ### monitor the latent variable
 hogwarts_nonlinear <- run.jags("hogwarts_survival/sem_nonlinear.jag", 
                                  monitor = jagtrans$monitors,
                                  data = jagtrans$data, 

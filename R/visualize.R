@@ -20,6 +20,7 @@
 #'   fit.lavaan = cfa(model, data=correct_small)
 #'   visualize(fit.lavaan)
 visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "residuals", "model"), formula = NULL,...){
+  plot = match.arg(plot, c("all", "residuals", "model"))
   observed = lavNames(object)
   d = data.frame(lavInspect(object, "data"))
   names(d) = observed
@@ -29,12 +30,87 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
   } else {
     legend = NULL
   }
-  ggpairs(d[,observed], legend=legend,
-          lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
-          upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
-          diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...))
-  )
-}  
+  if (!is.null(object2)) {
+    legend=c(1,2)
+  } else {
+    legend = NULL
+  }
+  if (plot=="all"){
+    ggpairs(d[,observed], legend=legend,
+            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
+            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))
+  } else if (plot == "residuals"){
+    ggpairs(d[,observed], legend=legend,
+            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
+            upper = NULL,
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))    
+  }  else {
+    ggpairs(d[,observed], legend=legend,
+            lower = NULL,
+            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))     
+  }   
+} 
+
+#' Visualize a runjags model 
+#'
+#' This function generates diagnostic plots or model plots of a lavaan object.
+#' @param object a runjags object
+#' @param object2 a second object (optional). This is used to visually compare
+#' the fit of two different models. 
+#' @param plot what should be plotted? User can specify "diagnostics" or "model"
+#' @param ... Other arguments passed to flexplot
+#' @import GGally
+#' @import dplyr
+#' @export
+#' @example 
+#' 
+# object = readRDS(file="data/hogwarts_nonlinear.rds")
+# data(hogwarts_survival)
+# data = hogwarts_survival
+# latents = c(1,1,1,2,2,2)
+#   
+visualize.runjags = function(object, data, latents=1, object2=NULL, subset = NULL, plot=c("all", "residuals", "model"), formula = NULL,...){
+  sum.jags = summary(object)
+
+  
+  ### identify which observed variables associate with which factors
+  plot = match.arg(plot, c("all", "residuals", "model"))
+  ### extract latent variable(s)
+  lvs = startsWith(dimnames(sum.jags)[[1]], "eta")
+  lvs = data.frame(sum.jags[lvs,"Mean"] ) %>% setNames("factor_score") 
+  lvs$factor = dimnames(lvs)[[1]] %>% subsetString(",", 2) %>% gsub("]", "", .)
+  lvs$id = dimnames(lvs)[[1]] %>% subsetString(",", 1) %>% gsub("eta[", "", ., fixed=T) #%>% mutate(id=as.numeric(id))
+  lvs = lvs %>% spread(factor, factor_score) %>% setNames(c("id", paste0("factor", 1:(ncol(.)-1)))) %>% arrange(as.numeric(id))
+  
+  observed = names(data)
+  if (!is.null(subset)) observed = observed[subset]
+  
+  
+  if (!is.null(object2)) {
+    legend=c(1,2)
+  } else {
+    legend = NULL
+  }
+  if (plot=="all"){
+    ggpairs(d[,observed], legend=legend,
+            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
+            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))
+  } else if (plot == "residuals"){
+    ggpairs(d[,observed], legend=legend,
+            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
+            upper = NULL,
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))    
+  }  else {
+    ggpairs(d[,observed], legend=legend,
+            lower = NULL,
+            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))     
+  }         
+  
+} 
 
 #' Wizard/Witch Propensity Scores for 500 Students at Hogwarts 
 #'
