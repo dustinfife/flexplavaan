@@ -28,6 +28,9 @@ create_new_data = function(data, condition.vars=NULL){
   return(new_data)
 }
 
+sequence = function(x, length=20){
+  seq(from=min(x), to=max(x), length.out = length)
+}
 
 #create_sequence("wingardium", mugglevwizard, sequence=TRUE, round=TRUE)
 #create_sequence("wingardium", mugglevwizard, sequence=TRUE, round=FALSE)

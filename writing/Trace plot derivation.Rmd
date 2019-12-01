@@ -121,3 +121,25 @@ When you save the notebook, an HTML file containing the code and output will be 
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 
+## Custom fit for a bayesian model
+
+\begin{equation}
+X = \frac{M}{1 + exp^{-x_1(F-x_0)}}
+\label{eq:three}
+\end{equation}
+
+## Scratch
+
+\begin{center}
+\begin{tikzpicture}[scale=1] 
+\def\x{latex}
+\draw (0,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {Stats Jedi};
+\draw (-2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam 1};
+\draw (0,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam 2};
+\draw (2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam 3};
+\draw[arrows={-\x}] (0,2.5) --(-2.5,.5) node[midway, above] {$a$};
+\draw[arrows={-\x}] (0,2.5) --(0,.5) node[midway, left] {$b$};
+\draw[arrows={-\x}] (0,2.5) --(2.5,.5) node[midway, above] {$c$};
+\end{tikzpicture}
+\end{center}
+

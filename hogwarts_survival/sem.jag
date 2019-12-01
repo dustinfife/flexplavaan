@@ -6,6 +6,7 @@ model {
     spells[i] ~ dnorm(mu[i,4], 1/theta[4,4,g[i]])
     darkarts[i] ~ dnorm(mu[i,5], 1/theta[5,5,g[i]])
     flying[i] ~ dnorm(mu[i,6], 1/theta[6,6,g[i]])
+    surv[i] ~ dnorm(mu[i,7], 1/psi[3,3,g[i]])
 
     # lvs
     eta[i,1] ~ dnorm(mu_eta[i,1], 1/psi[1,1,g[i]])
@@ -20,6 +21,7 @@ model {
     mu[i,4] <- nu[4,1,g[i]] + lambda[4,2,g[i]]*eta[i,2]
     mu[i,5] <- nu[5,1,g[i]] + lambda[5,2,g[i]]*eta[i,2]
     mu[i,6] <- nu[6,1,g[i]] + lambda[6,2,g[i]]*eta[i,2]
+    mu[i,7] <- alpha[3,1,g[i]] + beta[3,1,g[i]]*eta[i,1] + beta[3,2,g[i]]*eta[i,2]
 
     mu_eta[i,1] <- alpha[1,1,g[i]]
     mu_eta[i,2] <- alpha[2,1,g[i]] + beta[2,1,g[i]]*eta[i,1]
@@ -33,20 +35,24 @@ model {
   lambda[5,2,1] <- parvec[3]
   lambda[6,2,1] <- parvec[4]
   beta[2,1,1] <- parvec[5]
-  theta[1,1,1] <- pow(parvec[6],2)
-  theta[2,2,1] <- pow(parvec[7],2)
-  theta[3,3,1] <- pow(parvec[8],2)
-  theta[4,4,1] <- pow(parvec[9],2)
-  theta[5,5,1] <- pow(parvec[10],2)
-  theta[6,6,1] <- pow(parvec[11],2)
-  psi[1,1,1] <- pow(parvec[12],2)
-  psi[2,2,1] <- pow(parvec[13],2)
-  nu[1,1,1] <- parvec[14]
-  nu[2,1,1] <- parvec[15]
-  nu[3,1,1] <- parvec[16]
-  nu[4,1,1] <- parvec[17]
-  nu[5,1,1] <- parvec[18]
-  nu[6,1,1] <- parvec[19]
+  beta[3,1,1] <- parvec[6]
+  beta[3,2,1] <- parvec[7]
+  theta[1,1,1] <- pow(parvec[8],2)
+  theta[2,2,1] <- pow(parvec[9],2)
+  theta[3,3,1] <- pow(parvec[10],2)
+  theta[4,4,1] <- pow(parvec[11],2)
+  theta[5,5,1] <- pow(parvec[12],2)
+  theta[6,6,1] <- pow(parvec[13],2)
+  psi[3,3,1] <- pow(parvec[14],2)
+  psi[1,1,1] <- pow(parvec[15],2)
+  psi[2,2,1] <- pow(parvec[16],2)
+  nu[1,1,1] <- parvec[17]
+  nu[2,1,1] <- parvec[18]
+  nu[3,1,1] <- parvec[19]
+  nu[4,1,1] <- parvec[20]
+  nu[5,1,1] <- parvec[21]
+  nu[6,1,1] <- parvec[22]
+  alpha[3,1,1] <- parvec[23]
   alpha[1,1,1] <- 0
   alpha[2,1,1] <- 0
   # Priors
@@ -55,18 +61,22 @@ model {
   parvec[3] ~ dnorm(0,1e-2)
   parvec[4] ~ dnorm(0,1e-2)
   parvec[5] ~ dnorm(0,1e-2)
-  parvec[6] ~ dgamma(1,.5)
-  parvec[7] ~ dgamma(1,.5)
+  parvec[6] ~ dnorm(0,1e-2)
+  parvec[7] ~ dnorm(0,1e-2)
   parvec[8] ~ dgamma(1,.5)
   parvec[9] ~ dgamma(1,.5)
   parvec[10] ~ dgamma(1,.5)
   parvec[11] ~ dgamma(1,.5)
   parvec[12] ~ dgamma(1,.5)
   parvec[13] ~ dgamma(1,.5)
-  parvec[14] ~ dnorm(0,1e-3)
-  parvec[15] ~ dnorm(0,1e-3)
-  parvec[16] ~ dnorm(0,1e-3)
+  parvec[14] ~ dgamma(1,.5)
+  parvec[15] ~ dgamma(1,.5)
+  parvec[16] ~ dgamma(1,.5)
   parvec[17] ~ dnorm(0,1e-3)
   parvec[18] ~ dnorm(0,1e-3)
   parvec[19] ~ dnorm(0,1e-3)
+  parvec[20] ~ dnorm(0,1e-3)
+  parvec[21] ~ dnorm(0,1e-3)
+  parvec[22] ~ dnorm(0,1e-3)
+  parvec[23] ~ dnorm(0,1e-3)
 }
