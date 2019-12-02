@@ -1,15 +1,19 @@
 
 nonlinear_prediction = function(x,y,latent){
-  #browser()
-  pred.x = cbind(latent,x) %>% data.frame %>% 
+  pred.x = cbind(latent[,1, drop=FALSE],x) %>% 
+    data.frame %>% 
+    setNames(c("latent", "x")) %>% 
     loess(formula = x~latent, data=., degree=2) 
   pred.x = pred.x$fitted
-  pred.y = cbind(latent,y) %>% data.frame %>% 
+  pred.y = cbind(latent[,2, drop=FALSE],y) %>% 
+    data.frame %>% 
+    setNames(c("latent", "y")) %>% 
     loess(formula = y~latent, data=., degree=2)
   pred.y = pred.y$fitted
-  rxx = empirical_reliability(latent, x, loess=TRUE)
-  ryy = empirical_reliability(latent, y, loess=TRUE)
-  
+  #browser()
+  rxx = empirical_reliability(latent[,1], x, loess=TRUE)
+  ryy = empirical_reliability(latent[,2], y, loess=TRUE)
+
   ## correct for reliability
   #pred.x = mean(pred.x) + sqrt(rxx*ryy)*(pred.x-mean(pred.x))
   pred.y = mean(pred.y) + sqrt(rxx*ryy)*(pred.y-mean(pred.y))
@@ -17,33 +21,33 @@ nonlinear_prediction = function(x,y,latent){
   list(x=pred.x, y=pred.y)
 }
 
-visualize_nonlinear = function(x,y,latent, plot=c("model", "disturbance", "all")){
-  x.names = deparse(substitute(x)) %>% flexplot::subsetString("$", 2)
-  y.names = deparse(substitute(y)) %>% flexplot::subsetString("$", 2)
+visualize_nonlinear = function(x,y,latent, plot=c("trace", "disturbance", "all")){
+
+  x.names = names(x)
+  y.names = names(y)
   data = data.frame(x,y)
   names(data) = c(x.names, y.names)
-  newpred = nonlinear_prediction(x, y, latent) %>% data.frame
+  newpred = nonlinear_prediction(x, y, latent) 
+  newpred = data.frame(newpred)
   form = flexplot::make.formula(y.names, x.names)
-  #browser()
-  if (plot=="model"){
+  if (plot=="trace"){
     flexplot(form, data=data) +
-      geom_line(data=newpred, aes(x, y), col="red")    
+      geom_line(data=newpred, aes(x, y), col="red", size=1.5)    
   } else if (plot == "disturbance"){
-    data$residuals = y - newpred$y
+    data$residuals = unlist(y - newpred$y)
     flexplot(flexplot::make.formula("residuals",x.names), data=data) +
-      geom_hline(yintercept = 0, col="red", size=2)
+      geom_hline(yintercept = 0, col="red", size=1.5)
   }
   
 }
 
 empirical_reliability = function(latent, observed, loess=FALSE){
   if (loess) {
-    
-    predicted = cbind(latent,observed) %>% data.frame %>% 
-      loess(formula = observed~latent, data=., degree=2)
-    predicted = predicted$fitted
-    ss_reg = sum((predicted - mean(observed))^2)
-    ss_tot = sum((observed-mean(observed))^2)
+    predicted = cbind(latent,observed) %>% 
+      data.frame %>% setNames(c("latent", "observed"))  
+    predicted = loess(formula = observed~latent, data=predicted, degree=2)$fitted
+    ss_reg = sum((predicted - mean(unlist(observed)))^2)
+    ss_tot = sum((observed-mean(unlist(observed)))^2)
     return(ss_reg/ss_tot)
   } else {
     return(cor(latent, observed)^2)
@@ -93,7 +97,7 @@ extract_xy_mapping = function(mapping, invert.map, data, observed, latent=NULL){
     y = variables[2]
     x = variables[1]
   }
-  
+  #browser()
   if (!all(variables %in% names(data))){
     problem.vars = which(!(variables %in% names(data)))
     var = ifelse(length(problem.vars>1), 

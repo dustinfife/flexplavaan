@@ -1,31 +1,19 @@
 # x = "flying"
 # y = "darkarts"
 # latents = c(2,2); fit.mcmc = fit.lavaan
-estimate_nonlinear_fit = function(fit.mcmc, x, y, data, latents){
+estimate_nonlinear_fit = function(latentscores, x, y, data, which.latent=c(1,1)){
   
-  latent.names = names(fit.mcmc)[1+latents]
-  newdata = cbind(data, fit.mcmc) %>% 
-    data.frame #%>% 
-    #mutate(!!latent.names[2] := fifer::rescale(!!as.name(latent.names[2]), mean(!!(as.name(y))), sd(!!(as.name(y))))) 
-  ### rescale latent variable to mean of y so we can compute residuals later
-    #mutate(!!latent.names[1] := fifer::rescale(!!as.name(latent.names[1]), mean(!!(as.name(x))), sd(!!(as.name(x))))) %>% 
+  #browser()
+  latent.names = unique(names(latentscores)[(which.latent+1)])
+  newdata = cbind(data, latentscores) %>% 
+    data.frame 
 
   ### use loess to fit (to estimate reliability)
-  fit_y = flexplot::make.formula(y,latent.names[2]) %>% loess(newdata, degree=2)
-  fit_x = flexplot::make.formula(x,latent.names[1]) %>% loess(newdata, degree=2)
+  fit_y = flexplot::make.formula(y,latent.names[which.latent[2]]) %>% loess(newdata, degree=2)
+  fit_x = flexplot::make.formula(x,latent.names[which.latent[1]]) %>% loess(newdata, degree=2)
   
   rel.y = var(fit_y$fitted-mean(newdata[,y]))/var(newdata[,y])
   rel.x = var(fit_x$fitted-mean(newdata[,x]))/var(newdata[,x])
-  
-  # plot(newdata[[latent.names[2]]], newdata[[y]])
-  # nd = data.frame(seq(min(newdata[[latent.names[2]]]), max(newdata[[latent.names[2]]]), length.out=20))
-  # names(nd) = latent.names[2]
-  # lines(nd[[latent.names[2]]],predict(fit_y, newdata=nd))
-  # 
-  # plot(newdata[[latent.names[1]]], newdata[[x]])
-  # nd = data.frame(seq(min(newdata[[latent.names[1]]]), max(newdata[[latent.names[1]]]), length.out=20))
-  # names(nd) = latent.names[1]
-  # lines(nd[[latent.names[1]]],predict(fit_x, newdata=nd))  
   
   ### generate line for prediction (x is always the latent variable, because that's how it was generated)
   y_new = quantile(newdata[,y], probs = seq(from=0, to=1, length.out=80)) %>% as.numeric
