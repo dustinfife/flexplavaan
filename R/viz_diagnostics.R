@@ -181,47 +181,6 @@ viz_diagnostics_mcmc <- function(data, mapping, lvs, latents,
     xy = extract_xy_mapping(mapping, invert.map=FALSE, data, observed, latent=latents)
     x = xy$x; y = xy$y; lat = xy$latent
     
-    estimated_fits = estimate_nonlinear_fit(fit.mcmc = lvs, x=x, y=y, data, lat)
-    new_data = data.frame(x=estimated_fits$x_new, y=estimated_fits$y_new)
-    names(new_data) = c(x, y)
-    data[,"residuals"] = estimated_fits$residuals
-    
-    #browser()
-    if (!is.null(fit.lavaan2)){
-      estimated_fits = estimate_linear_fit(fit.lavaan2, x, y, data)
-      new_data$y2 = estimated_fits$y_new
-      data[,"residuals2"] = estimated_fits$residuals      
-    }
-    
-    ### now add to ggplot object
-    if (plot=="trace"){
-      flexplot_form = flexplot::make.formula(y, x)
-      
-      if (!is.null(fit.lavaan2)){
-        
-        n = new_data %>% 
-          tidyr::gather(key="Model", value=y, c(!!y,"y2")) %>% 
-          dplyr::mutate(Model = factor(Model, levels=c(!!y, "y2"), labels=c(deparse(substitute(fit.lavaan)),deparse(substitute(fit.lavaan2)))))
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, ...) + 
-          geom_line(data=n, aes_string(x,"y", col="Model"))
-        
-      } else {
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, ...) + 
-          geom_line(data=new_data, aes_string(x,y), col=rgb(1,191,196, maxColorValue = 255))  
-      }
-      return(p)
-    } else if (plot=="disturbance") {
-      ### convert data to long format to make dots different
-      if (!is.null(fit.lavaan2)){
-        data2 = data[,c(x,"residuals", "residuals2")] %>% tidyr::gather("model", "residuals", c("residuals", "residuals2")) %>% setNames(c(x,"model","residuals"))
-        data2$model = factor(data2$model, levels=c("residuals","residuals2"), labels=c("Model 1", "Model 2"))
-        f = make.formula("residuals", c(x, "model"))
-        p = flexplot::flexplot(f, data=data2, alpha = .2,...) + geom_hline(yintercept = 0)
-      } else {
-        flexplot_form = flexplot::make.formula("residuals", x)
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, ...) + labs(y=paste0(y, " | latent")) + geom_hline(yintercept=0, col="red")
-      }
-      return(p)
-    } 
+    visualize_nonlinear(x,y,lat,plot = plot)
   }
 }
