@@ -162,14 +162,13 @@ viz_diagnostics <- function(data, mapping,
 
 # fit.mcmc = lvs
 # mapping = aes(potions, darkarts)
-viz_diagnostics_mcmc <- function(data, mapping, lvs, latents,
-                            fit.mcmc, fit.lavaan2 = NULL, 
-                            invert.map=FALSE, alpha=.5, plot=c("trace", "disturbance", "histogram"), ...) {
-  
-  plot = match.arg(plot, c("trace", "disturbance", "histogram"))
+viz_diagnostics_mcmc <- function(data, mapping, latents, which.latent,
+                            fit.mcmc, 
+                            invert.map=FALSE, alpha=.5, plot, ...) {
+  #browser()
   ### extract name of latent variables
   observed = names(data)
-  latent.names = names(lvs)
+  latent.names = names(latents)[which.latent+1]
   
   ### plot ggplot object so I can extract the elements
   if (dplyr::as_label(mapping$y) == "NULL" | plot=="histogram"){
@@ -177,10 +176,14 @@ viz_diagnostics_mcmc <- function(data, mapping, lvs, latents,
     flexplot::flexplot(flexplot_form, data=data)
   } else {
     #browser()
-   
-    xy = extract_xy_mapping(mapping, invert.map=FALSE, data, observed, latent=latents)
-    x = xy$x; y = xy$y; lat = xy$latent
-    
-    visualize_nonlinear(x,y,lat,plot = plot)
+
+    xy = extract_xy_mapping(mapping, invert.map=FALSE, data = data, observed=names(data), latent=NULL)
+    x = xy$x; y = xy$y; 
+
+    x.vals = data.frame(data[,x]); names(x.vals) = x
+    y.vals = data.frame(data[,y]); names(y.vals) = y
+    latents.to.show = which.latent[which(names(data)==x | names(data) == y)]
+    #latent.var = latents[,which(names(data)==x | names(data) == y)]
+    visualize_nonlinear(x = x.vals, y=y.vals, latent=latents[,latents.to.show], plot = plot, ...)
   }
 }

@@ -1,6 +1,6 @@
 #jagsmod = hogwarts_nonlinear
 export_jags_latents = function(jagsmod){
-  sum.jags = summary(jagsmod)
+  sum.jags = jagsmod
   lvs = startsWith(dimnames(sum.jags)[[1]], "eta")
   lvs = data.frame(sum.jags[lvs,"Mean"] ) %>% setNames("factor_score") 
   lvs$factor = dimnames(lvs)[[1]] %>% subsetString(",", 2) %>% gsub("]", "", .)

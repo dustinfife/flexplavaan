@@ -2,41 +2,49 @@
 require(tidyverse)
 require(flexplot)
 data("hogwarts_survival")
-hogwarts_nonlinear = readRDS(file="data/hogwarts_nonlinear.rds")
-latents = export_jags_latents(hogwarts_nonlinear)
-data = cbind(hogwarts_survival, latents)
-
-visualize_nonlinear(data$darkarts, data$flying, data$factor2, plot="model")
-visualize_nonlinear(data$darkarts, data$flying, data$factor2, plot="residual")
-
-visualize_nonlinear(data$flying, data$darkarts, data$factor2, plot="model")
-visualize_nonlinear(data$flying, data$darkarts, data$factor2, plot="residual")
-
-visualize_nonlinear(data$herbology, data$potions, data$factor1, plot="model")
-visualize_nonlinear(data$herbology, data$potions, data$factor1, plot="residual")
+data = hogwarts_survival
+hogwarts_nonlinear = readRDS(file="data/hogwarts_summary.rds")
+visualize.runjags(hogwarts_nonlinear, data[,4:6], which.latent=c(2,2,2))
 
 
-
-head(hogwarts_survival)
-newpred = nonlinear_prediction(data$herbology, data$history, data$factor1) %>% data.frame
-flexplot(history~herbology, data=data) +
-  geom_line(data=newpred, aes(x, y), col="red")+
-  geom_hline(yintercept = mean(data$herbology)) + 
-  geom_vline(xintercept = mean(data$history)) 
-
-newpred = nonlinear_prediction(data$spells, data$darkarts, data$factor2) %>% data.frame
-flexplot(darkarts~spells, data=data) +
-  geom_line(data=newpred, aes(x, y), col="red", size=2) + 
-  geom_hline(yintercept = mean(data$spells)) + 
-  geom_vline(xintercept = mean(data$darkarts)) 
-
-
-
-
-
-
-
-
+# visualize_nonlinear(data$darkarts, data$flying, data$factor2, which.latent = c(2,2),plot="model")
+# visualize_nonlinear(data$darkarts, data$flying, data$factor2, plot="residual")
+# 
+# 
+# latents = export_jags_latents(hogwarts_nonlinear)
+# data = cbind(hogwarts_survival, latents)
+# 
+# visualize_nonlinear(data$darkarts, data$flying, data$factor2, plot="model")
+# visualize_nonlinear(data$darkarts, data$flying, data$factor2, plot="residual")
+# 
+# visualize_nonlinear(data$flying, data$darkarts, data$factor2, plot="model")
+# visualize_nonlinear(data$flying, data$darkarts, data$factor2, plot="residual")
+# 
+# visualize_nonlinear(data$herbology, data$potions, data$factor1, plot="model")
+# visualize_nonlinear(data$herbology, data$potions, data$factor1, plot="residual")
+# 
+# 
+# 
+# head(hogwarts_survival)
+# newpred = nonlinear_prediction(data$herbology, data$history, data$factor1) %>% data.frame
+# flexplot(history~herbology, data=data) +
+#   geom_line(data=newpred, aes(x, y), col="red")+
+#   geom_hline(yintercept = mean(data$herbology)) + 
+#   geom_vline(xintercept = mean(data$history)) 
+# 
+# newpred = nonlinear_prediction(data$spells, data$darkarts, data$factor2) %>% data.frame
+# flexplot(darkarts~spells, data=data) +
+#   geom_line(data=newpred, aes(x, y), col="red", size=2) + 
+#   geom_hline(yintercept = mean(data$spells)) + 
+#   geom_vline(xintercept = mean(data$darkarts)) 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
 
 
 

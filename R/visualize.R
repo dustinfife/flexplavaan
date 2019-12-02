@@ -66,36 +66,55 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
 #' @export
 #' @example 
 #' 
-# object = readRDS(file="data/hogwarts_nonlinear.rds")
+# object = readRDS(file="data/hogwarts_summary.rds")
 # data(hogwarts_survival)
 # data = hogwarts_survival
-# latents = c(1,1,1,2,2,2)
-#   
-visualize.runjags = function(object, data, latents=1, object2=NULL, subset = NULL, plot=c("all", "residuals", "model"), formula = NULL,...){
-  
-  latents = export_jags_latents(object)
-  data = cbind(data, latents)
+# which.latent = c(1,1,1,2,2,2)
+# mapping = aes(potions, darkarts)
+# visualize.runjags(object, data, which.latent=c(1,1,1,2,2,2))
+#viz_diagnostics_mcmc(data, mapping, latents=factor.scores, plot="disturbance")
+visualize.runjags = function(object, data, which.latent=c(1,1), object2=NULL, subset = NULL, plot=c("all", "residuals", "model"), formula = NULL,...){
   
 
+  #### create factor scores
+  factor.scores = export_jags_latents(object)[,-1]
+  
+  #browser()
+  plot = match.arg(plot,c("all", "residuals", "model"))
+  
+  ### extract name of latent variables
+  observed = names(data)
+  latent.names = names(factor.scores)
+  if (!is.null(subset)) {
+    observed = names(data)[subset]
+  } else {
+    observed = names(data)
+  }
+  
+
+ 
+
   if (plot=="all"){
-    ggpairs(d[,observed], legend=legend,
-            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
-            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))
+    
+    #viz_diagnostics_mcmc(data[,observed], mapping, factor.scores, plot="trace")
+    ggpairs(data[,observed],
+            lower = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent, alpha = .2, plot="disturbance", ...)),
+            upper = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent,alpha = .2, plot="trace", ...)),
+            diag = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent,alpha = .2, plot="histogram", ...)))
   } else if (plot == "residuals"){
-    ggpairs(d[,observed], legend=legend,
-            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
+    ggpairs(data[,observed], legend=legend,
+            lower = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent,alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
             upper = NULL,
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))    
+            diag = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent,alpha = .2, plot="histogram", ...)))
   }  else {
-    ggpairs(d[,observed], legend=legend,
+    ggpairs(data[,observed], legend=legend,
             lower = NULL,
-            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", ...)),
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))     
+            upper = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, alpha = .2, plot="trace", ...)),
+            diag = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, alpha = .2, plot="histogram", ...)))
   }         
   
 } 
-
+  
 #' Wizard/Witch Propensity Scores for 500 Students at Hogwarts 
 #'
 #' This dataset contains scores on various measures of wizarding ability
