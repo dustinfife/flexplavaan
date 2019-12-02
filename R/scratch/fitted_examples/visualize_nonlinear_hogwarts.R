@@ -1,6 +1,151 @@
+  #### prep the data
+require(tidyverse)
+require(flexplot)
 data("hogwarts_survival")
 hogwarts_nonlinear = readRDS(file="data/hogwarts_nonlinear.rds")
 latents = export_jags_latents(hogwarts_nonlinear)
+data = cbind(hogwarts_survival, latents)
+
+visualize_nonlinear(data$darkarts, data$flying, data$factor2, plot="model")
+visualize_nonlinear(data$darkarts, data$flying, data$factor2, plot="residual")
+
+visualize_nonlinear(data$flying, data$darkarts, data$factor2, plot="model")
+visualize_nonlinear(data$flying, data$darkarts, data$factor2, plot="residual")
+
+visualize_nonlinear(data$herbology, data$potions, data$factor1, plot="model")
+visualize_nonlinear(data$herbology, data$potions, data$factor1, plot="residual")
+
+
+
+head(hogwarts_survival)
+newpred = nonlinear_prediction(data$herbology, data$history, data$factor1) %>% data.frame
+flexplot(history~herbology, data=data) +
+  geom_line(data=newpred, aes(x, y), col="red")+
+  geom_hline(yintercept = mean(data$herbology)) + 
+  geom_vline(xintercept = mean(data$history)) 
+
+newpred = nonlinear_prediction(data$spells, data$darkarts, data$factor2) %>% data.frame
+flexplot(darkarts~spells, data=data) +
+  geom_line(data=newpred, aes(x, y), col="red", size=2) + 
+  geom_hline(yintercept = mean(data$spells)) + 
+  geom_vline(xintercept = mean(data$darkarts)) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### this function computes the average of the latent variable within a specified
+### range of x/y values. These values are NOT crossed so as to approximate the
+### function of the latent variable
+nonlinear_prediction = function(x,y,latent, points=10, rescale=T){
+  xseq = sequence(x, length = points)
+  yseq = sequence(y, length = points)
+  xbin = cut(x, xseq)
+  ybin = cut(y, yseq)
+  latent_pred = rep(NA, times=length(xseq))
+  for (i in 1:length(xseq)){
+    rows = which(xbin==levels(xbin)[i] & ybin==levels(ybin)[i])
+    if (sum(rows)>0){
+      val = (median(latent[rows]))
+    } else {
+      val = NA
+    } 
+    latent_pred[i] = val
+  }
+  rxx = empirical_reliability(latent, x, loess=TRUE)
+  ryy = empirical_reliability(latent, y, loess=TRUE)
+  print(rxx)
+  print(ryy)
+  if (rescale){
+    latent_pred = mean(y) + (latent_pred - mean(latent))*(sd(y)/sd(latent))*sqrt(rxx*ryy)
+  }
+  
+  list(xbin=xseq, ybin=yseq, latent_pred=latent_pred)
+}
+
+newpred = data.frame(nonlinear_prediction(data$darkarts, data$spells, data$factor2))
+flexplot(spells~darkarts, data=data) +
+  geom_line(data=newpred, aes(xbin, latent_pred))
+
+newpred = data.frame(
+  nonlinear_prediction(data$spells, data$darkarts, data$factor2,points=10, rescale=F))
+newpred$latent_pred = newpred$latent_pred + 25
+flexplot(darkarts~spells, data=data) +
+  geom_line(data=newpred, aes(xbin, latent_pred), col="red") +
+  geom_vline(xintercept = c(28, 37, 46)) + 
+  geom_hline(yintercept = c(11, 22, 33))
+
+
+newpred = data.frame(nonlinear_prediction(data$potions, data$history, data$factor1))
+
+flexplot(history~potions, data=data) +
+  geom_line(data=newpred, aes(xbin, latent_pred))
+
+head(data)
+newpred = data.frame(nonlinear_prediction(data$herbology, data$potions, data$factor1))
+flexplot(potions~herbology, data=data) +
+  geom_line(data=newpred, aes(xbin, latent_pred))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 head(summary(hogwarts_nonlinear)[,"Mean", drop=FALSE], n=28)
   # lambda1 = slope of potions = 1
   # lambda2 = slope of history = 1.127
