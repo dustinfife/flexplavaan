@@ -4,8 +4,12 @@ require(flexplot)
 data("hogwarts_survival")
 data = hogwarts_survival
 hogwarts_nonlinear = readRDS(file="data/hogwarts_summary.rds")
-visualize.runjags(hogwarts_nonlinear, data[,4:6], which.latent=c(2,2,2))
-
+theme_set(theme_bw(base_family="Baskerville"))
+hogwarts_know = visualize.runjags(hogwarts_nonlinear, data[,1:3], which.latent=c(1,1,1))
+hogwarts_know
+ggsave(file="plots/hogwarts_linear_bayes_know.jpg", hogwarts_know)
+hogwarts_skill=visualize.runjags(hogwarts_nonlinear, data[,4:6], which.latent=c(2,2,2))
+ggsave(file="plots/hogwarts_linear_bayes_skill.jpg", hogwarts_skill)
 
 # visualize_nonlinear(data$darkarts, data$flying, data$factor2, which.latent = c(2,2),plot="model")
 # visualize_nonlinear(data$darkarts, data$flying, data$factor2, plot="residual")
