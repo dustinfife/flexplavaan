@@ -1,19 +1,21 @@
 require(lavaan)
 require(blavaan)
 require(flexplot)
+
+
+# fit/visualize using standard lavaan -------------------------------------
 model = "
 magic_knowledge =~ potions + history + herbology
 magic_skills =~ spells + darkarts + flying 
 magic_skills ~ magic_knowledge
 "
 hogwarts_fit = sem(model, data=hogwarts_survival)
+  summary(hogwarts_fit, fit.measures=TRUE)
 hogwarts_viz = visualize(hogwarts_fit, method="loess")
-ggsave(file="plots/hogwarts_linear.jpg", hogwarts_viz)
+  ggsave(file="plots/hogwarts_linear.jpg", hogwarts_viz)
 
 
-
-    #### fit again with nonlinear model
-### export the jags syntax (to make it easier to edit)
+# write the jags syntax ---------------------------------------------------
 require(blavaan)
 hogwarts_survival$surv = rnorm(nrow(hogwarts_survival))
 model = "
@@ -30,7 +32,8 @@ fit.bayes.export = bcfa(model, data=hogwarts_survival,
                         sample = 2, 
                         adapt=1)
 
-### regex the file exported
+
+# modify the jags model ---------------------------------------------------
 full.file = "hogwarts_survival/sem.jag"
 fl = readChar(full.file, file.info(full.file)$size)
 old = c("mu[i,5] <- nu[5,1,g[i]] + lambda[5,2,g[i]]*eta[i,2]",
@@ -45,7 +48,6 @@ new = c("mu[i,5] <- mx/(1 + exp(-1*lambda[5,2,g[i]]*(eta[i,2] - nu[5,1,g[i]])))"
         "survived[i] ~ dbern(mu[i,7])",
         "logit(mu[i,7]) <- alpha[3,1,g[i]] + beta[3,1,g[i]]*eta[i,1] + beta[3,2,g[i]]*eta[i,2]",
         "")
-
 fl_new = fl
 for (i in 1:length(old)){
   fl_new = gsub(old[i], new[i], fl_new, fixed=T)
@@ -54,12 +56,12 @@ fileConn<-file("hogwarts_survival/sem_nonlinear.jag")
 writeLines(fl_new, fileConn)
 close(fileConn)
 
-### refit the model
+
+# refit the jags model ----------------------------------------------------
 load("hogwarts_survival/semjags.rda")
 jagtrans$data$mx = NA
 jagtrans$data$survived = hogwarts_survival$survived
 jagtrans$data$surv = NULL
-#jagtrans$monitors = jagtrans$monitors[-c(1,4, 22,23)]
 jagtrans$monitors = c("mx", jagtrans$monitors, "eta") ### monitor the latent variable
 hogwarts_nonlinear <- run.jags("hogwarts_survival/sem_nonlinear.jag", 
                                  monitor = jagtrans$monitors,

@@ -2,7 +2,6 @@ set.seed(223)
 require(lavaan) 
 require(ggplot2)
 n = round(runif(1, 500, 1000))
-#n = 5000
 
   ### make functions
 logistic = function(x, max, slope, intercept){
@@ -13,8 +12,6 @@ ceiling_floor = function(x, max=100, min=0){
   x[x<min] = min
   x
 }
-
-ceiling_floor(-10)
 
   ## define latent variables (knowledge, skills, abilities)
 magic_knowledge = rnorm(n)
