@@ -3,28 +3,41 @@ require(flexplot)
 require(flexplavaan)
 require(kutils)
 data(stats_jedi)
-model = "stats_jedi =~ exam_one + exam_two + exam_three"
-stats_fit = cfa(model, stats_jedi)
-summary(stats_fit, fit.measures=TRUE, standardized=TRUE)
-semTable(stats_fit)
-head(stats_jedi)
 
+  ### specify models (fixed to one versus not)
+model1 = "stats_jedi =~ exam_one + exam_two + exam_three"
+model2 = "stats_jedi =~ NA*exam_one + exam_two + exam_three
+stats_jedi ~~ 1*stats_jedi"
+
+  ### fit models
+stats_fit1 = cfa(model1, stats_jedi)
+  summary(stats_fit1, fit.measures=TRUE, standardized=TRUE)
+stats_fit2 = cfa(model2, stats_jedi)
+  summary(stats_fit2, fit.measures=TRUE, standardized=TRUE)
+
+  ### visualize the two (fit is identical)
+visualize(stats_fit1, stats_fit2, suppress_smooth=F)
+
+
+
+
+
+
+
+
+# Graphics for presentation -----------------------------------------------
 
     #### corrected for unreliability
 ideal_statsjedi = viz_diagnostics(stats_jedi, 
                                   aes(exam_three, exam_two), 
                                   fit.lavaan = stats_fit)
-ggsave(filename = "plots/ideal_statsjedi.jpg", ideal_statsjedi)
-
-
+  ggsave(filename = "plots/ideal_statsjedi.jpg", ideal_statsjedi)
 
 stats_matrix = visualize(stats_fit, plot="model")
-ggsave(filename = "plots/model_matrix_statsjedi.jpg", stats_matrix)
+  ggsave(filename = "plots/model_matrix_statsjedi.jpg", stats_matrix)
 
 stats_matrix = visualize(stats_fit)
-ggsave(filename = "plots/all_matrix_statsjedi.jpg", stats_matrix)
-
-
+  ggsave(filename = "plots/all_matrix_statsjedi.jpg", stats_matrix)
 
     #### not corrected
 stats_jedi$latent = lavPredict(stats_fit)
@@ -44,7 +57,6 @@ ggplot(data=d, aes(x=x1,y=x2)) +
   labs(x="Exam One", y="Exam Two")
 
 a = visualize(stats_fit, method="lm", plot = "model")
-
-ggsave("plots/stats_jedi_model.pdf", a)
+  ggsave("plots/stats_jedi_model.pdf", a)
 a = visualize(stats_fit, method="lm")
-ggsave("plots/stats_jedi_both.pdf", a)
+  ggsave("plots/stats_jedi_both.pdf", a)

@@ -21,7 +21,7 @@ nonlinear_prediction = function(x,y,latent){
   list(x=pred.x, y=pred.y)
 }
 
-visualize_nonlinear = function(x,y,latent, plot=c("trace", "disturbance", "all")){
+visualize_nonlinear = function(x,y,latent, plot){
 
   x.names = names(x)
   y.names = names(y)
