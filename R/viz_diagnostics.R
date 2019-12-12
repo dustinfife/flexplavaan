@@ -138,7 +138,7 @@ viz_diagnostics <- function(data, mapping,
 
       } else {
         p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, ...) + 
-          geom_line(data=new_data, aes_string(x,y), col=rgb(1,191,196, maxColorValue = 255))  
+          geom_line(data=new_data, aes_string(x,y), col="red")  
       }
       return(p)
     } else if (plot=="disturbance") {

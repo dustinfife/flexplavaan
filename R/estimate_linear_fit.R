@@ -61,15 +61,13 @@ estimate_linear_fit = function(fit.lavaan, x, y, data){
     residuals = newdata[[y]] - newdata[["f"]]
   } else {
   
-    ### reliability is needed for the correction factor
-    rel.x = sum(inspect(fit.lavaan,what="std")$lambda[x,])^2  ### DO YOU SUM FACTOR LOADINGS TO GET RELIABILITY?
-    rel.y = sum(inspect(fit.lavaan,what="std")$lambda[y,])^2
-    
     ### compute model-implied slope between the two
-    predicted_data = lavPredict(fit.lavaan, type="ov")
-    estimated.slope = coef(lm(flexplot::make.formula(y, x), predicted_data))[2]
+    implied.cor = lavInspect(fit.lavaan, what="cor.ov")
+    implied.cov = lavInspect(fit.lavaan, what="cov.ov")
+    stdev_ov = sqrt(diag(implied.cov))
+    estimated.slope = implied.cor[x,y]*(stdev_ov[y]/stdev_ov[x])
     ### slope = sd(y)/sd(x) = maximum possible slope between the two, but multiply by f(reliability)
-    corrected.slope = estimated.slope*sqrt(rel.x*rel.y) 
+    corrected.slope = estimated.slope
     corrected.intercept = mean(data[,y]) - corrected.slope * mean(data[,x])
     ### maximum possible value * sqrt(reliability product)
     

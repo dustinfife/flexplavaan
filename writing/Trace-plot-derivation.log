@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  30 NOV 2019 23:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  12 DEC 2019 17:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -779,6 +779,42 @@ Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 \fb@frh=\dimen126
 \FrameRule=\dimen127
 \FrameSep=\dimen128
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
+\LTleft=\skip49
+\LTright=\skip50
+\LTpre=\skip51
+\LTpost=\skip52
+\LTchunksize=\count118
+\LTcapwidth=\dimen129
+\LT@head=\box29
+\LT@firsthead=\box30
+\LT@foot=\box31
+\LT@lastfoot=\box32
+\LT@cols=\count119
+\LT@rows=\count120
+\c@LT@tables=\count121
+\c@LT@chunks=\count122
+\LT@p@ftn=\toks25
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2016/04/27 v1.618033 publication quality tables
+\heavyrulewidth=\dimen130
+\lightrulewidth=\dimen131
+\cmidrulewidth=\dimen132
+\belowrulesep=\dimen133
+\belowbottomsep=\dimen134
+\aboverulesep=\dimen135
+\abovetopsep=\dimen136
+\cmidrulesep=\dimen137
+\cmidrulekern=\dimen138
+\defaultaddspace=\dimen139
+\@cmidla=\count123
+\@cmidlb=\count124
+\@aboverulesep=\dimen140
+\@belowrulesep=\dimen141
+\@thisruleclass=\count125
+\@lastruleclass=\count126
+\@thisrulewidth=\dimen142
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 (/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphics.sty
@@ -790,8 +826,8 @@ File: graphics.cfg 2016/01/02 v1.10 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 96.
 )
-\Gin@req@height=\dimen129
-\Gin@req@width=\dimen130
+\Gin@req@height=\dimen143
+\Gin@req@width=\dimen144
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/grffile.sty
 Package: grffile 2016/05/16 v1.17 Extended file name support for graphics (HO)
 Package grffile Info: Option `multidot' is set to `true'.
@@ -802,22 +838,22 @@ Package grffile Info: \Gin@ii of package `graphicx' fixed on input line 486.
 Package: parskip 2001/04/09 non-zero parskip adjustments
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/titling/titling.sty
 Package: titling 2009/09/04 v2.1d maketitle typesetting
-\thanksmarkwidth=\skip49
-\thanksmargin=\skip50
-\droptitle=\skip51
+\thanksmarkwidth=\skip53
+\thanksmargin=\skip54
+\droptitle=\skip55
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty (/us
 r/local/texlive/2016/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty (/usr/local/te
 xlive/2016/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.te
 x
-\pgfutil@everybye=\toks25
-\pgfutil@tempdima=\dimen131
-\pgfutil@tempdimb=\dimen132
+\pgfutil@everybye=\toks26
+\pgfutil@tempdima=\dimen145
+\pgfutil@tempdimb=\dimen146
 
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-li
 sts.tex))
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
-\pgfutil@abb=\box29
+\pgfutil@abb=\box33
 (/usr/local/texlive/2016/texmf-dist/tex/latex/ms/everyshi.sty
 Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
 )) (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.te
@@ -830,30 +866,30 @@ local/texlive/2016/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
 Package: pgfsys 2014/07/09 v3.0.1a (rcs-revision 1.48)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
-\pgfkeys@pathtoks=\toks26
-\pgfkeys@temptoks=\toks27
+\pgfkeys@pathtoks=\toks27
+\pgfkeys@temptoks=\toks28
 
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.c
 ode.tex
-\pgfkeys@tmptoks=\toks28
+\pgfkeys@tmptoks=\toks29
 ))
-\pgf@x=\dimen133
-\pgf@y=\dimen134
-\pgf@xa=\dimen135
-\pgf@ya=\dimen136
-\pgf@xb=\dimen137
-\pgf@yb=\dimen138
-\pgf@xc=\dimen139
-\pgf@yc=\dimen140
+\pgf@x=\dimen147
+\pgf@y=\dimen148
+\pgf@xa=\dimen149
+\pgf@ya=\dimen150
+\pgf@xb=\dimen151
+\pgf@yb=\dimen152
+\pgf@xc=\dimen153
+\pgf@yc=\dimen154
 \w@pgf@writea=\write4
 \r@pgf@reada=\read2
-\c@pgf@counta=\count118
-\c@pgf@countb=\count119
-\c@pgf@countc=\count120
-\c@pgf@countd=\count121
-\t@pgf@toka=\toks29
-\t@pgf@tokb=\toks30
-\t@pgf@tokc=\toks31
+\c@pgf@counta=\count127
+\c@pgf@countb=\count128
+\c@pgf@countc=\count129
+\c@pgf@countd=\count130
+\t@pgf@toka=\toks30
+\t@pgf@tokb=\toks31
+\t@pgf@tokc=\toks32
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
 File: pgf.cfg 2008/05/14  (rcs-revision 1.7)
 )
@@ -870,8 +906,8 @@ File: pgfsys-common-pdf.def 2013/10/10  (rcs-revision 1.13)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.
 code.tex
 File: pgfsyssoftpath.code.tex 2013/09/09  (rcs-revision 1.9)
-\pgfsyssoftpath@smallbuffer@items=\count122
-\pgfsyssoftpath@bigbuffer@items=\count123
+\pgfsyssoftpath@smallbuffer@items=\count131
+\pgfsyssoftpath@bigbuffer@items=\count132
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.
 code.tex
@@ -899,12 +935,12 @@ Package: pgfcore 2010/04/11 v3.0.1a (rcs-revision 1.7)
 /local/texlive/2016/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex (/usr/
 local/texlive/2016/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
-\pgfmath@dimen=\dimen141
-\pgfmath@count=\count124
-\pgfmath@box=\box30
-\pgfmath@toks=\toks32
-\pgfmath@stack@operand=\toks33
-\pgfmath@stack@operation=\toks34
+\pgfmath@dimen=\dimen155
+\pgfmath@count=\count133
+\pgfmath@box=\box34
+\pgfmath@toks=\toks33
+\pgfmath@stack@operand=\toks34
+\pgfmath@stack@operation=\toks35
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.
 tex
@@ -925,57 +961,57 @@ code.tex)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integ
 erarithmetics.code.tex))) (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/m
 ath/pgfmathfloat.code.tex
-\c@pgfmathroundto@lastzeros=\count125
+\c@pgfmathroundto@lastzeros=\count134
 ))
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.co
 de.tex
 File: pgfcorepoints.code.tex 2013/10/07  (rcs-revision 1.27)
-\pgf@picminx=\dimen142
-\pgf@picmaxx=\dimen143
-\pgf@picminy=\dimen144
-\pgf@picmaxy=\dimen145
-\pgf@pathminx=\dimen146
-\pgf@pathmaxx=\dimen147
-\pgf@pathminy=\dimen148
-\pgf@pathmaxy=\dimen149
-\pgf@xx=\dimen150
-\pgf@xy=\dimen151
-\pgf@yx=\dimen152
-\pgf@yy=\dimen153
-\pgf@zx=\dimen154
-\pgf@zy=\dimen155
+\pgf@picminx=\dimen156
+\pgf@picmaxx=\dimen157
+\pgf@picminy=\dimen158
+\pgf@picmaxy=\dimen159
+\pgf@pathminx=\dimen160
+\pgf@pathmaxx=\dimen161
+\pgf@pathminy=\dimen162
+\pgf@pathmaxy=\dimen163
+\pgf@xx=\dimen164
+\pgf@xy=\dimen165
+\pgf@yx=\dimen166
+\pgf@yy=\dimen167
+\pgf@zx=\dimen168
+\pgf@zy=\dimen169
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconst
 ruct.code.tex
 File: pgfcorepathconstruct.code.tex 2013/10/07  (rcs-revision 1.29)
-\pgf@path@lastx=\dimen156
-\pgf@path@lasty=\dimen157
+\pgf@path@lastx=\dimen170
+\pgf@path@lasty=\dimen171
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage
 .code.tex
 File: pgfcorepathusage.code.tex 2014/11/02  (rcs-revision 1.24)
-\pgf@shorten@end@additional=\dimen158
-\pgf@shorten@start@additional=\dimen159
+\pgf@shorten@end@additional=\dimen172
+\pgf@shorten@start@additional=\dimen173
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.co
 de.tex
 File: pgfcorescopes.code.tex 2015/05/08  (rcs-revision 1.46)
-\pgfpic=\box31
-\pgf@hbox=\box32
-\pgf@layerbox@main=\box33
-\pgf@picture@serial@count=\count126
+\pgfpic=\box35
+\pgf@hbox=\box36
+\pgf@layerbox@main=\box37
+\pgf@picture@serial@count=\count135
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicst
 ate.code.tex
 File: pgfcoregraphicstate.code.tex 2014/11/02  (rcs-revision 1.12)
-\pgflinewidth=\dimen160
+\pgflinewidth=\dimen174
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransform
 ations.code.tex
 File: pgfcoretransformations.code.tex 2015/08/07  (rcs-revision 1.20)
-\pgf@pt@x=\dimen161
-\pgf@pt@y=\dimen162
-\pgf@pt@temp=\dimen163
+\pgf@pt@x=\dimen175
+\pgf@pt@y=\dimen176
+\pgf@pt@temp=\dimen177
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.cod
 e.tex
@@ -992,13 +1028,13 @@ File: pgfcorepathprocessing.code.tex 2013/09/09  (rcs-revision 1.9)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.co
 de.tex
 File: pgfcorearrows.code.tex 2015/05/14  (rcs-revision 1.43)
-\pgfarrowsep=\dimen164
+\pgfarrowsep=\dimen178
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.cod
 e.tex
 File: pgfcoreshade.code.tex 2013/07/15  (rcs-revision 1.15)
-\pgf@max=\dimen165
-\pgf@sys@shading@range@num=\count127
+\pgf@max=\dimen179
+\pgf@sys@shading@range@num=\count136
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.cod
 e.tex
@@ -1007,7 +1043,7 @@ File: pgfcoreimage.code.tex 2013/07/15  (rcs-revision 1.18)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.
 code.tex
 File: pgfcoreexternal.code.tex 2014/07/09  (rcs-revision 1.21)
-\pgfexternal@startupbox=\box34
+\pgfexternal@startupbox=\box38
 ))
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.co
 de.tex
@@ -1024,7 +1060,7 @@ File: pgfcorepatterns.code.tex 2013/11/07  (rcs-revision 1.5)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.cod
 e.tex
 File: pgfmoduleshapes.code.tex 2014/03/21  (rcs-revision 1.35)
-\pgfnodeparttextbox=\box35
+\pgfnodeparttextbox=\box39
 )
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.
 tex
@@ -1033,8 +1069,8 @@ File: pgfmoduleplot.code.tex 2015/08/03  (rcs-revision 1.13)
 (/usr/local/texlive/2016/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
 -0-65.sty
 Package: pgfcomp-version-0-65 2007/07/03 v3.0.1a (rcs-revision 1.7)
-\pgf@nodesepstart=\dimen166
-\pgf@nodesepend=\dimen167
+\pgf@nodesepstart=\dimen180
+\pgf@nodesepend=\dimen181
 )
 (/usr/local/texlive/2016/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
 -1-18.sty
@@ -1047,10 +1083,10 @@ l/texlive/2016/texmf-dist/tex/latex/pgf/math/pgfmath.sty (/usr/local/texlive/20
 texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
 Package: pgffor 2013/12/13 v3.0.1a (rcs-revision 1.25)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)
-\pgffor@iter=\dimen168
-\pgffor@skip=\dimen169
-\pgffor@stack=\toks35
-\pgffor@toks=\toks36
+\pgffor@iter=\dimen182
+\pgffor@skip=\dimen183
+\pgffor@stack=\toks36
+\pgffor@toks=\toks37
 ))
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.cod
 e.tex
@@ -1059,32 +1095,32 @@ Package: tikz 2015/08/07 v3.0.1a (rcs-revision 1.151)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothan
 dlers.code.tex
 File: pgflibraryplothandlers.code.tex 2013/08/31 v3.0.1a (rcs-revision 1.20)
-\pgf@plot@mark@count=\count128
-\pgfplotmarksize=\dimen170
+\pgf@plot@mark@count=\count137
+\pgfplotmarksize=\dimen184
 )
-\tikz@lastx=\dimen171
-\tikz@lasty=\dimen172
-\tikz@lastxsaved=\dimen173
-\tikz@lastysaved=\dimen174
-\tikzleveldistance=\dimen175
-\tikzsiblingdistance=\dimen176
-\tikz@figbox=\box36
-\tikz@figbox@bg=\box37
-\tikz@tempbox=\box38
-\tikz@tempbox@bg=\box39
-\tikztreelevel=\count129
-\tikznumberofchildren=\count130
-\tikznumberofcurrentchild=\count131
-\tikz@fig@count=\count132
+\tikz@lastx=\dimen185
+\tikz@lasty=\dimen186
+\tikz@lastxsaved=\dimen187
+\tikz@lastysaved=\dimen188
+\tikzleveldistance=\dimen189
+\tikzsiblingdistance=\dimen190
+\tikz@figbox=\box40
+\tikz@figbox@bg=\box41
+\tikz@tempbox=\box42
+\tikz@tempbox@bg=\box43
+\tikztreelevel=\count138
+\tikznumberofchildren=\count139
+\tikznumberofcurrentchild=\count140
+\tikz@fig@count=\count141
 
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.cod
 e.tex
 File: pgfmodulematrix.code.tex 2013/09/17  (rcs-revision 1.8)
-\pgfmatrixcurrentrow=\count133
-\pgfmatrixcurrentcolumn=\count134
-\pgf@matrix@numberofcolumns=\count135
+\pgfmatrixcurrentrow=\count142
+\pgfmatrixcurrentcolumn=\count143
+\pgf@matrix@numberofcolumns=\count144
 )
-\tikz@expandcount=\count136
+\tikz@expandcount=\count145
 
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
 s/tikzlibrarytopaths.code.tex
@@ -1107,7 +1143,7 @@ File: tikzlibraryarrows.code.tex 2008/01/09 v3.0.1a (rcs-revision 1.1)
 (/usr/local/texlive/2016/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.
 code.tex
 File: pgflibraryarrows.code.tex 2013/09/23 v3.0.1a (rcs-revision 1.16)
-\arrowsize=\dimen177
+\arrowsize=\dimen191
 )) (./Trace-plot-derivation.aux
 
 LaTeX Warning: Label `eq:three' multiply defined.
@@ -1121,34 +1157,34 @@ LaTeX Warning: Label `eq:three' multiply defined.
 )
 \openout1 = `Trace-plot-derivation.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 128.
-LaTeX Font Info:    ... okay on input line 128.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 128.
-LaTeX Font Info:    ... okay on input line 128.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 128.
-LaTeX Font Info:    ... okay on input line 128.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 128.
-LaTeX Font Info:    ... okay on input line 128.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 128.
-LaTeX Font Info:    ... okay on input line 128.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 128.
-LaTeX Font Info:    ... okay on input line 128.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 128.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 128.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 129.
+LaTeX Font Info:    ... okay on input line 129.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 129.
+LaTeX Font Info:    ... okay on input line 129.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 129.
+LaTeX Font Info:    ... okay on input line 129.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 129.
+LaTeX Font Info:    ... okay on input line 129.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 129.
+LaTeX Font Info:    ... okay on input line 129.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 129.
+LaTeX Font Info:    ... okay on input line 129.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 129.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 129.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 128.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 128.
-LaTeX Font Info:    ... okay on input line 128.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 128.
-LaTeX Font Info:    ... okay on input line 128.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 128.
+LaTeX Font Info:    ... okay on input line 129.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 129.
+LaTeX Font Info:    ... okay on input line 129.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 129.
+LaTeX Font Info:    ... okay on input line 129.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 129.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Info: Redefining \microtypecontext on input line 128.
+LaTeX Info: Redefining \microtypecontext on input line 129.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
@@ -1196,35 +1232,35 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\AtBeginShipoutBox=\box40
-Package hyperref Info: Link coloring OFF on input line 128.
+\AtBeginShipoutBox=\box44
+Package hyperref Info: Link coloring OFF on input line 129.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count137
+\c@section@level=\count146
 )
-LaTeX Info: Redefining \ref on input line 128.
-LaTeX Info: Redefining \pageref on input line 128.
-LaTeX Info: Redefining \nameref on input line 128.
+LaTeX Info: Redefining \ref on input line 129.
+LaTeX Info: Redefining \pageref on input line 129.
+LaTeX Info: Redefining \nameref on input line 129.
 (./Trace-plot-derivation.out) (./Trace-plot-derivation.out)
 \@outlinefile=\write5
 \openout5 = `Trace-plot-derivation.out'.
 
 (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count138
-\scratchdimen=\dimen178
-\scratchbox=\box41
-\nofMPsegments=\count139
-\nofMParguments=\count140
-\everyMPshowfont=\toks37
-\MPscratchCnt=\count141
-\MPscratchDim=\dimen179
-\MPnumerator=\count142
-\makeMPintoPDFobject=\count143
-\everyMPtoPDFconversion=\toks38
+\scratchcounter=\count147
+\scratchdimen=\dimen192
+\scratchbox=\box45
+\nofMPsegments=\count148
+\nofMParguments=\count149
+\everyMPshowfont=\toks38
+\MPscratchCnt=\count150
+\MPscratchDim=\dimen193
+\MPnumerator=\count151
+\makeMPintoPDFobject=\count152
+\everyMPtoPDFconversion=\toks39
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/grfext.sty
@@ -1238,140 +1274,182 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 )) ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 167.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 168.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 167.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 168.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 167
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 168
 .
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 167
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 168
 .
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 167.
+(Font)              <10> on input line 168.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 167.
+(Font)              <7> on input line 168.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 167.
-LaTeX Font Info:    Try loading font information for U+msa on input line 167.
+(Font)              <5> on input line 168.
+LaTeX Font Info:    Try loading font information for U+msa on input line 168.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 167.
+LaTeX Font Info:    Try loading font information for U+msb on input line 168.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-) [1
+)
 
-{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Package xcolor Warning: Incompatible color definition on input line 183.
 
-Package xcolor Warning: Incompatible color definition on input line 227.
-
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 228.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 184.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 229.
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 243
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 185.
+LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 199
 .
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 
-Package xcolor Warning: Incompatible color definition on input line 258.
+Package xcolor Warning: Incompatible color definition on input line 205.
 
 
-Package xcolor Warning: Incompatible color definition on input line 258.
+Package xcolor Warning: Incompatible color definition on input line 205.
 
 
-Package xcolor Warning: Incompatible color definition on input line 258.
+Package xcolor Warning: Incompatible color definition on input line 205.
 
-[2]
+[1
 
-Package xcolor Warning: Incompatible color definition on input line 258.
+{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+
+Package xcolor Warning: Incompatible color definition on input line 205.
 
 
-Package xcolor Warning: Incompatible color definition on input line 258.
+Package xcolor Warning: Incompatible color definition on input line 205.
 
 
-<Trace-plot-derivation_files/figure-latex/unnamed-chunk-2-1.pdf, id=80, 463.732
-5pt x 316.18124pt>
-File: Trace-plot-derivation_files/figure-latex/unnamed-chunk-2-1.pdf Graphic fi
+Package xcolor Warning: Incompatible color definition on input line 237.
+
+
+Package xcolor Warning: Incompatible color definition on input line 252.
+
+
+Package xcolor Warning: Incompatible color definition on input line 252.
+
+
+<Trace-plot-derivation_files/figure-latex/unnamed-chunk-3-1.pdf, id=66, 463.732
+5pt x 317.185pt>
+File: Trace-plot-derivation_files/figure-latex/unnamed-chunk-3-1.pdf Graphic fi
 le (type pdf)
-<use Trace-plot-derivation_files/figure-latex/unnamed-chunk-2-1.pdf>
+<use Trace-plot-derivation_files/figure-latex/unnamed-chunk-3-1.pdf>
 Package pdftex.def Info: Trace-plot-derivation_files/figure-latex/unnamed-chunk
--2-1.pdf used on input line 262.
-(pdftex.def)             Requested size: 463.73842pt x 316.18529pt.
-[3 <./Trace-plot-derivation_files/figure-latex/unnamed-chunk-2-1.pdf>]
+-3-1.pdf used on input line 256.
+(pdftex.def)             Requested size: 463.73842pt x 317.18904pt.
 
-LaTeX Warning: Reference `fig:second' on page 4 undefined on input line 308.
+<Trace-plot-derivation_files/figure-latex/unnamed-chunk-4-1.pdf, id=68, 279.042
+5pt x 276.03125pt>
+File: Trace-plot-derivation_files/figure-latex/unnamed-chunk-4-1.pdf Graphic fi
+le (type pdf)
+<use Trace-plot-derivation_files/figure-latex/unnamed-chunk-4-1.pdf>
+Package pdftex.def Info: Trace-plot-derivation_files/figure-latex/unnamed-chunk
+-4-1.pdf used on input line 274.
+(pdftex.def)             Requested size: 279.05032pt x 276.03899pt.
+[2pdfTeX warning (ext4): destination with the same identifier (name{equation.0.
+1}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.293 T
+       o generate these disturbance terms, we need only to generate predicted] 
+[3 <./Trace-plot-derivation_files/figure-latex/unnamed-chunk-3-1.pdf>]
+
+LaTeX Warning: Reference `eq:4' on page 4 undefined on input line 294.
 
 
-Package xcolor Warning: Incompatible color definition on input line 310.
+<Trace-plot-derivation_files/figure-latex/unnamed-chunk-5-1.pdf, id=96, 278.038
+76pt x 203.76125pt>
+File: Trace-plot-derivation_files/figure-latex/unnamed-chunk-5-1.pdf Graphic fi
+le (type pdf)
+<use Trace-plot-derivation_files/figure-latex/unnamed-chunk-5-1.pdf>
+Package pdftex.def Info: Trace-plot-derivation_files/figure-latex/unnamed-chunk
+-5-1.pdf used on input line 309.
+(pdftex.def)             Requested size: 278.04231pt x 203.76384pt.
 
-
-Package xcolor Warning: Incompatible color definition on input line 320.
-
-
-Package xcolor Warning: Incompatible color definition on input line 320.
-
-
-LaTeX Warning: Reference `fig:third' on page 4 undefined on input line 324.
-
-
-LaTeX Warning: Reference `fig:five' on page 4 undefined on input line 353.
-
-[4] [5]
-Overfull \hbox (6.42813pt too wide) in paragraph at lines 451--452
+Overfull \hbox (6.42813pt too wide) in paragraph at lines 357--358
  [] 
  []
 
-[6] [7]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 494.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 494.
+[4 <./Trace-plot-derivation_files/figure-latex/unnamed-chunk-4-1.pdf>]
+
+LaTeX Warning: Reference `fig:cross' on page 5 undefined on input line 366.
+
+[5 <./Trace-plot-derivation_files/figure-latex/unnamed-chunk-5-1.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 398.
+
+
+Package xcolor Warning: Incompatible color definition on input line 402.
+
+
+Package xcolor Warning: Incompatible color definition on input line 402.
+
+
+<Trace-plot-derivation_files/figure-latex/unnamed-chunk-9-1.pdf, id=133, 452.69
+125pt x 312.16624pt>
+File: Trace-plot-derivation_files/figure-latex/unnamed-chunk-9-1.pdf Graphic fi
+le (type pdf)
+<use Trace-plot-derivation_files/figure-latex/unnamed-chunk-9-1.pdf>
+Package pdftex.def Info: Trace-plot-derivation_files/figure-latex/unnamed-chunk
+-9-1.pdf used on input line 404.
+(pdftex.def)             Requested size: 452.69014pt x 312.16548pt.
+[6 <./Trace-plot-derivation_files/figure-latex/unnamed-chunk-9-1.pdf>] [7] [8]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 521.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 521.
 (./Trace-plot-derivation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 494.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 494.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 521.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 521.
 Package rerunfilecheck Info: File `Trace-plot-derivation.out' has not changed.
-(rerunfilecheck)             Checksum: 6C8AE08FD53608A256C85943C0670A9A;1763.
+(rerunfilecheck)             Checksum: 981D48F65684B94EDE8D2138D288CA3C;1783.
 
 LaTeX Warning: There were undefined references.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 494.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 521.
  ) 
 Here is how much of TeX's memory you used:
- 23796 strings out of 493014
- 426947 string characters out of 6133351
- 512668 words of memory out of 5000000
- 26848 multiletter control sequences out of 15000+600000
- 45361 words of font info for 68 fonts, out of 8000000 for 9000
+ 23944 strings out of 493014
+ 429501 string characters out of 6133351
+ 511595 words of memory out of 5000000
+ 26991 multiletter control sequences out of 15000+600000
+ 45278 words of font info for 67 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,9n,56p,498b,742s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,12n,56p,498b,742s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/
 texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/20
 16/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/2016/texmf-dist/
 fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2016/texmf-dist/fonts/enc/
-dvips/lm/lm-ts1.enc}{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-m
-athex.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmbx10.pfb>
+dvips/lm/lm-mathex.enc}{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/lm/l
+m-ts1.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmbx10.pfb>
 </usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/loca
 l/texlive/2016/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/
 2016/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2016/texmf
@@ -1385,10 +1463,10 @@ mf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2016/texmf-dist/fon
 ts/type1/public/lm/lmtk10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/p
 ublic/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/l
 mtti10.pfb>
-Output written on Trace-plot-derivation.pdf (7 pages, 300591 bytes).
+Output written on Trace-plot-derivation.pdf (8 pages, 1305551 bytes).
 PDF statistics:
- 207 PDF objects out of 1000 (max. 8388607)
- 178 compressed objects within 2 object streams
- 41 named destinations out of 1000 (max. 500000)
- 8290 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 242 PDF objects out of 1000 (max. 8388607)
+ 202 compressed objects within 3 object streams
+ 40 named destinations out of 1000 (max. 500000)
+ 8305 words of extra memory for PDF output out of 10000 (max. 10000000)
 
