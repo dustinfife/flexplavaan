@@ -15,7 +15,7 @@ require(knitr)
 require(GGally)
 require(flexplot)
 opts_chunk$set(message=FALSE, echo = TRUE, warning = FALSE)
-source('../R/scratch/ggally_pairs_function.R')
+source('../R/scratch/archive/ggally_pairs_function.R')
 ```
 # Brief Introduction
 
@@ -42,42 +42,9 @@ Suppose we have the factor analysis model shown below.
 \end{tikzpicture}
 \end{center}
 
-Assume both indicators and the latent variable are standard normal variables. In this situation, we define the observed variables as follows:
+Assume both indicators and the latent variable are standard normal variables. 
 
-\begin{align}
-\nonumber x_1 &= a F + e_1\\ 
-\nonumber x_2 &= b F + e_2 \\
-\nonumber x_3 &= c F + e_3
-\end{align}
-
-These can be re-expressed in terms of $F$ as follows:
-
-\begin{align}
-\nonumber F = \frac{x_1 - e_1}{a} \\
-\nonumber F = \frac{x_2 - e_2}{b} \\
-\nonumber F = \frac{x_3 - e_3}{c} 
-\end{align}
-
-Suppose we wish to plot the fitted line between $x_1$ and $x_2$ implied by the latent variable model. To do so, we can re-express $x_2$ in terms of $x_1$:
-
-\begin{align}
-\nonumber x_2 &= b F + e_2 \\
-  &= b (\frac{x_1 - e_1}{a}) + e_2
-\end{align}
-
-Computing the expectation, we get
-
-\begin{align}
-\nonumber E[x_2|x_1] &= E\left[b(\frac{x_1 - e_1}{a}) + e_2\right] \\
-\nonumber                 &= \frac{b}{a}E[(x_1 - e_1)] + E[e_2] \\
-\nonumber                 &= \frac{b}{a}E[x_1] - E[e_1] + E[e_2] \\
-                &= \frac{b}{a}E[x_1] \label{eq:1}
-\end{align}
-
-Also, since these variables are standardized, Equation \ref{eq:1} is both the slope of the line predicting $x_2$ from $x_1$, as well as the correlation coefficient, $\rho$. 
-
-Recall that latent variable models explicitly model the unreliability in indicators. In other words, Equation \ref{eq:1} is the "corrected" estimate of the correlation between $x_1$ and $x_2$. As such, the regression line generated from Equation \ref{eq:1} will visually overestimate the strength of the relationship, as demonstrated in Figure \ref{fig:first}.For example, iff $b$ and $a$ are both 0.5, Equation \ref{eq:1} suggests the slope is one (indicating a perfect correlation between these standardized variances). This is clearly not the case. As such, the slope needs to be "uncorrected" for unreliability. 
-
+To make the exercise more illustrative, I have simulated these data:
 
 ```{r, message=FALSE, warning=FALSE, fig.cap="Scatterplot of the x1/x2 relationship. The red line shows the implied fit between the two variables under the assumption of perfect reliability. The blue line shows the actual fitted relationship. \\label{fig:first}"}
 require(lavaan)
@@ -100,132 +67,145 @@ model.linear = '
 '
 fitted = cfa(model.linear, data=d)
 
-  # create trace plot based on the assumption of perfect reliability
-m = data.frame(x1 = seq(from=min(d$x1), to=max(d$x1), length.out=20))
-m$latent = (slopes[2]/slopes[1])*m$x1  ### from Equation 1
-ggplot(data=d, aes(x=x1,y=x2)) +
-  geom_point() + 
-  geom_line(data=m, aes(x1, latent), col="red") +
-  geom_smooth(method="lm") + 
-  labs(x="Exam One", y="Exam Two")
 ```
 
+Using Wright's tracing rules, we can reproduce the model-implied correlation matrix:
 
-
-Recall the standard correction for unreliability:
-
-\begin{equation}
-\rho = \frac{r}{\sqrt{\rho_{xx}\rho_{yy}}}
-\label{eq:two}
-\end{equation}
-
-To "uncorrect" this estimate, we simply solve for $r$
-
-\begin{equation}
-r = \rho \sqrt{\rho_{xx}\rho_{yy}}
-\label{eq:three}
-\end{equation}
-
-Recall the relationship between $r$ and the slope ($\beta$)
+$$
+\begin{pmatrix} \begin{matrix}
+1 & ab & ac \\
+ab & 1 & bc \\
+ac & bc & 1
+\end{matrix} \end{pmatrix}
+$$
+Such matrices are standard output in any SEM software, including lavaan and blavaan. Recall the following relationship between the correlation and the slope,
 
 \begin{equation}
-\beta = r \frac{\sigma_{x}}{\sigma_{y}}
-\label{eq:three}
+\beta = r \frac{\sigma_Y}{\sigma_X}
+\nonumber
 \end{equation}
 
-Or, under perfect reliability,
-
-\begin{equation}
-\beta = \frac{\sigma_{x}}{\sigma_{y}}
-\label{eq:three}
-\end{equation}
-
-
-
-We can then multiply Equation \ref{eq:three} by Equation \ref{eq:1}:
+This allows us to calculate the model-implied slope for each bivariate relationship:
 
 \begin{align}
-\nonumber  E[x_2|x_1] &= \sqrt{\rho_{xx}\rho_{yy}}\frac{b}{a}E[x_1] \\
-\nonumber           &= \sqrt{a^2 b^2}\left(\frac{b}{a}\right)E[x_1] \\
-\nonumber           &= a*b\left(\frac{b}{a}\right)E[x_1]  \\
-          &= b^2 E[x_1] \label{eq:4} 
+E[Y|X] &= r_{ab}\frac{\sigma_Y}{\sigma_X}X  
+\label{eq:slopemodimp}
 \end{align}
 
-Using Equation \ref{eq:4}, we now get a line that closely approximates the actual relationship between the two variables (Figure \ref{fig:second}. 
+Overlaying Equation \ref{eq:slopemodimp} on the raw data, we get a line that closely approximates the actual relationship between the two variables (Figure \ref{fig:second}), indicating the model fits well. 
 
-```{r, fig.cap="Scatterplot of the x1/x2 relationship, but this time, the red line shows the implied fit between the two variables without perfect reliability. As before, the blue line shows the actual fitted relationship. \\label{fig:second}"}
+```{r, fig.cap="Scatterplot of the x1/x2 relationship, where the red line shows the implied fit between the two variables. The blue line shows the actual fitted relationship, while the red line shows the model-implied fit. \\label{fig:second}"}
 
-m$latent = (slopes[2]^2)*m$x1  ### from Equation 1
-# ggplot(data=d, aes(x=x1,y=x2)) +
-#   geom_point() + 
-#   geom_line(data=m, aes(x1, latent), col="red") +
-#   geom_smooth(method="lm") + 
-#   labs(x="Exam One", y="Exam Two") +
-#   theme_bw()
+  # compute the model-implied slope
+implied.cor = lavInspect(fitted, what="cor.ov")
+implied.cov = lavInspect(fitted, what="cov.ov")
+stdev_ov = sqrt(diag(implied.cov))
+estimated.slope = implied.cor["x1","x2"]*(stdev_ov["x2"]/stdev_ov["x1"])
+
+ggplot(data=d, aes(x=x1,y=x2)) +
+  geom_point() +
+  geom_abline(slope = estimated.slope, intercept=0, col="red") +
+  geom_smooth(method="lm") +
+  labs(x="Exam One", y="Exam Two") +
+  theme_bw()
 ```
 
-We could then apply this command continuously to all observed variables in a scatterplot matrix (using, say, the upper diagonal), as in Figure \ref{fig:third}. As before, the red line indicates the model-implied fit. This time, however, the blue line is the fit of a loess line (which will allow for the detection of nonlinear patterns). 
+We could also apply this command continuously to all observed variables in a scatterplot matrix (using, say, the upper diagonal), as in Figure \ref{fig:third}. Here, I am utilizing the `visualize` function in the `flexplavaan` package.  As before, the red line indicates the model-implied fit. This time, however, the blue line is the fit of a loess line (which will allow for the detection of nonlinear patterns). Notice the two lines are quite similar (as they should be because these are simulated data).  
 
 ```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:third}", fig.width=4, fig.height=4}
-# ggpairs(d[,c("x1", "x2", "x3")],
-#         lower = NULL,
-#         upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
-#         ) + theme_bw()
+require(flexplavaan)
+visualize(fitted, plot = "model")
 ```
 
 ## Disturbance Dependence Plots: Removing the Effect of the Latent Variable
 
-It may also be interesting to utilize "disturbance dependence plots," or to plot the relationship between the variables on interest, once the effect of the latent variable has been removed. This is similar to a residual dependence plot in regression models, but we use different terminology to avoid confusion (since residuals in SEM often refer to the residual correlation matrix). 
+It may also be interesting to utilize "disturbance dependence plots," or to plot the relationship between the observed variables on interest, once the effect of the latent variable(s) have been removed. This is similar to a residual dependence plot in regression models, but we use different terminology to avoid confusion (since residuals in SEM often refer to the residual correlation matrix). 
 
-To generate these disturbance terms, we need only to generate predicted $x_2$ scores from Equation \ref{eq:4}, then subtract those from the observed $x_2$ scores:
-
-\begin{align}
-\nonumber  E[x_2|F, x_1] &= x_2 - b^2 E[x_1]  \\
-\end{align}
-
-
-We can then plot the relationship between $x_1$ and $x_2$ after removing the effect of the latent variable. If the data are locally independent, we should observe no relationship. The expected relationship (i.e., a line centered on zero with no slope) is colored as red. We could then add this plot to the scatterplot matrix in, say, the lower diagonals, as in Figure \ref{fig:five}. 
+To generate these disturbance terms, we need only to generate predicted $Y$ scores from Equation \ref{eq:4} for each individual, then subtract those from the observed $Y$ scores. We can then plot the relationship between $Y$ and $X$ after removing the effect of the latent variable. If the data are locally independent, we should observe no relationship. The expected relationship (i.e., a line centered on zero with no slope) is colored as red. We could then add this plot to the scatterplot matrix as in Figure \ref{fig:five}. The default for the visualize function displays the model-implied plots in the upper triangle and the disturbance dependence plots in the lower triangle. As expected (because the data were simulated), the loess lines in the lower triangle are very similar to the model-implied line (i.e., the line where $y$=0). 
 
 ```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables. The upper triangle show the model-implied fit between the indicators, while the lower triangle shows the disturbance dependence plots. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:five}", fig.width=4, fig.height=3}
-# ggpairs(d[,c("x1", "x2", "x3")],
-#         lower = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=TRUE)),
-#         upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
-#         ) + theme_bw()
+visualize(fitted)
 ```
 
 
+## Detecting Cross-Loadings
 
-## Detecting Deviations
+These diagnostic plots are designed to detect deviations from the model's implied relationship. In the example below, I'm going to utilize a simulated dataset of Jedi training, where two latent variables are posited (Force and Jedi), each with 3 indicators (fitness, saber, midichlorian for Force and exam one, exam two, and exam three for Jedi). In addition, one variable (history) has cross loadings on both factors. However, I will first fit a model where history is only modeled on the Force latent variable, then subsequently fit a model where the variable loads on both latent variables. 
 
-These diagnostic plots are designed to detect deviations from the model's assumptions. In the example below, I'm going to simulate a situation where a) $x_1$ and $x_2$ are locally dependent, and b) $x_3$ has a nonlinear relationship with the latent variable. Notice from the plot below that the upper diagonals indicate our model's fit (red line) is failing to capture important nonlinear relationships with $x_3$ and it overestimates the relationship between $x_1$ and $x_2$. 
+\begin{center}
+\begin{tikzpicture}[scale=1] 
+\def\x{latex}
+
+\draw (0,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {Force};
+\draw (7.5,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {Jedi};
+\draw (-2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {fitness};
+\draw (0,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {saber};
+\draw (2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {midichlorian};
+\draw (5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {history};
+\draw (7.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam one};
+\draw (10,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam two};
+\draw (12.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam three};
+
+\draw[arrows={-\x}] (0,2.5) --(-2.5,.5) node[midway, above] {$a$};
+\draw[arrows={-\x}] (0,2.5) --(0,.5) node[midway, left] {$b$};
+\draw[arrows={-\x}] (0,2.5) --(2.5,.5) node[midway, above] {$c$};
+\draw[arrows={-\x}] (0,2.5) --(5,.5) node[midway, above] {$d_1$};
+\draw[arrows={-\x}] (7.5,2.5) --(5,.5) node[midway, above] {$d_2$};
+
+\draw[arrows={-\x}] (7.5,2.5) --(7.5,.5) node[midway, right] {$e$};
+\draw[arrows={-\x}] (7.5,2.5) --(10,.5) node[midway, right] {$f$};
+\draw[arrows={-\x}] (7.5,2.5) --(12.5,.5) node[midway, above] {$g$};
+
+\draw[arrows={-\x}] (.75,3) --(6.75,3) node[midway, above] {$\beta$};
+
+\end{tikzpicture}
+\end{center}
 
 ```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables, but this time with local dependence between x1/x2 and a nonlinear relationship between the latent variable and x3. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:sixth}", fig.width=4, fig.height=3}
 require(lavaan)
+require(flexplot)
 require(tidyverse)
-set.seed(1212)
-n = 500
-slopes = c(.75, .75, .75)
-residual.correlation = .5
-quadratic = .5
-latent = rnorm(n)
+data(jedi_jedi)
 
-# create three indicators
-x1 = slopes[1]*latent + rnorm(n,0, sqrt(1-slopes[1]^2))
-x2 = slopes[2]*latent + rnorm(n,0, sqrt(1-slopes[2]^2)) + residual.correlation*x1
-x3 = slopes[3]*latent + quadratic*latent^2 + rnorm(n,0, sqrt(1-slopes[3]^2))
-d = data.frame(x1=x1, x2=x2, x3=x3)
 
-# model in lavaan
-model.linear = '
-  A =~ x1 + x2 + x3
-  A ~~ A
-'
-fitted = cfa(model.linear, data=d)
+# specify the models ------------------------------------------------------
+model = "
+force_score =~ fitness + saber + midichlorian + force_history
+jedi_score =~ exam_one + exam_two + exam_three
+jedi_score ~ force_score
+"
+## specify model
+model_cross = "
+force_score =~ fitness + saber + midichlorian + force_history
+jedi_score =~ exam_one + exam_two + exam_three + force_history
+jedi_score ~ force_score
+"
+# Fit the models ----------------------------------------------------------
+force_fit = cfa(model, jedi_jedi)
+force_cross = cfa(model_cross, jedi_jedi)
+```
 
-# ggpairs(d[,c("x1", "x2", "x3")],
-#         lower = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=TRUE)),
-#         upper = list(continuous = wrap(my_bin,fit.lavaan = fitted, alpha = .2, residuals=FALSE)),
-#         ) + theme_bw()
+The table below shows the result of both models and various measures of fit. If one were not to fit the second model, it would be unclear where the misfit occurs. One could, of course, study modification indices, but they have a multitude of problems. One could also study the residual matrix, but even these do not suggest how the model could be fixed. Rather, the data could be plotted, as they are in Figure \ref{fig:cross}. This makes it very apparent where the misfit comes from. 
+
+```{r, echo=FALSE, message=FALSE, results='hide'}
+
+sink("/dev/null");
+fits_one = invisible(summary(force_fit, fit.measures=TRUE, header=FALSE, estimates=FALSE)[[1]])
+fits_cross = summary(force_cross, fit.measures=TRUE, header=FALSE, estimates=FALSE)[[1]]
+results = data.frame(cbind(fits_one, fits_cross)) %>% 
+  mutate_all(round, digits=2) %>% 
+  setNames(c("No Crossloadings", "Crossloadings Included"))
+row.names(results) = names(fits_one)
+sink()
+```
+
+```{r, echo=FALSE, message=FALSE, results="asis"}
+knitr::kable(results)
+```
+
+
+```{r}
+visualize(force_fit, force_cross, subset=4:7)
 ```
 
 # Model Plots
@@ -289,34 +269,7 @@ Now suppose we wish to estimate the value of $Y$ for a given $X$. To do so, we c
 \end{center}
 
 
-\begin{center}
-\begin{tikzpicture}[scale=1] 
-\def\x{latex}
 
-\draw (0,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {Force};
-\draw (7.5,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {Jedi};
-\draw (-2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {fitness};
-\draw (0,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {saber};
-\draw (2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {midichlorian};
-\draw (5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {history};
-\draw (7.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam one};
-\draw (10,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam two};
-\draw (12.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam three};
-
-\draw[arrows={-\x}] (0,2.5) --(-2.5,.5) node[midway, above] {$a$};
-\draw[arrows={-\x}] (0,2.5) --(0,.5) node[midway, left] {$b$};
-\draw[arrows={-\x}] (0,2.5) --(2.5,.5) node[midway, above] {$c$};
-\draw[arrows={-\x}] (0,2.5) --(5,.5) node[midway, above] {$d_1$};
-\draw[arrows={-\x}] (7.5,2.5) --(5,.5) node[midway, above] {$d_2$};
-
-\draw[arrows={-\x}] (7.5,2.5) --(7.5,.5) node[midway, right] {$e$};
-\draw[arrows={-\x}] (7.5,2.5) --(10,.5) node[midway, right] {$f$};
-\draw[arrows={-\x}] (7.5,2.5) --(12.5,.5) node[midway, above] {$g$};
-
-\draw[arrows={-\x}] (.75,3) --(6.75,3) node[midway, above] {$\beta$};
-
-\end{tikzpicture}
-\end{center}
 
 
 
