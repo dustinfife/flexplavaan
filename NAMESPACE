@@ -2,6 +2,7 @@
 
 S3method(visualize,lavaan)
 S3method(visualize,runjags)
+export(export_jags_latents)
 export(viz_diagnostics)
 import(GGally)
 import(dplyr)

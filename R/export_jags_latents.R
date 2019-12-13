@@ -1,4 +1,9 @@
-#jagsmod = hogwarts_nonlinear
+#' Extract latent variables from a JAGs model
+#'
+#' @param jagsmod a runjags JAGs model
+#'
+#' @return the factor scores for the latent variables
+#' @export
 export_jags_latents = function(jagsmod){
   sum.jags = jagsmod
   lvs = startsWith(dimnames(sum.jags)[[1]], "eta")
