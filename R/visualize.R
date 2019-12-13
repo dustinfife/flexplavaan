@@ -64,8 +64,6 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
 #' @import GGally
 #' @import dplyr
 #' @export
-#' @example 
-#' 
 # object = readRDS(file="data/hogwarts_summary.rds")
 # data(hogwarts_survival)
 # data = hogwarts_survival

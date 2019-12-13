@@ -14,6 +14,7 @@ bibliography: ../references.bib
 require(knitr)
 require(GGally)
 require(flexplot)
+require(flexplavaan)
 opts_chunk$set(message=FALSE, echo = TRUE, warning = FALSE)
 source('../R/scratch/archive/ggally_pairs_function.R')
 ```
@@ -130,7 +131,7 @@ visualize(fitted)
 
 ## Detecting Cross-Loadings
 
-These diagnostic plots are designed to detect deviations from the model's implied relationship. In the example below, I'm going to utilize a simulated dataset of Jedi training, where two latent variables are posited (Force and Jedi), each with 3 indicators (fitness, saber, midichlorian for Force and exam one, exam two, and exam three for Jedi). In addition, one variable (history) has cross loadings on both factors. However, I will first fit a model where history is only modeled on the Force latent variable, then subsequently fit a model where the variable loads on both latent variables. 
+These diagnostic plots are designed to detect deviations from the model's implied relationship. In the example below, I'm going to utilize a simulated dataset of Jedi training, where two latent variables are posited (Force and Jedi), each with 3 indicators (fitness, saber, midichlorian for Force and exam one, exam two, and exam three for Jedi). In addition, one variable (history) has cross loadings on both factors. However, I will fit a model where history is only modeled on the Force latent variable, then subsequently fit a model where the variable loads on both latent variables. 
 
 \begin{center}
 \begin{tikzpicture}[scale=1] 
@@ -185,95 +186,74 @@ force_fit = cfa(model, jedi_jedi)
 force_cross = cfa(model_cross, jedi_jedi)
 ```
 
-The table below shows the result of both models and various measures of fit. If one were not to fit the second model, it would be unclear where the misfit occurs. One could, of course, study modification indices, but they have a multitude of problems. One could also study the residual matrix, but even these do not suggest how the model could be fixed. Rather, the data could be plotted, as they are in Figure \ref{fig:cross}. This makes it very apparent where the misfit comes from. 
+The table below shows the result of both models and various measures of fit. If one were not to fit the second model, it would be unclear where the misfit occurs. One could, of course, study modification indices, but they have a multitude of problems. One could also study the residual matrix, but even these have their limitations. They only signal which correlations (or covariances) are poorly fit, but do not give much more information about how to improve the model. 
 
 ```{r, echo=FALSE, message=FALSE, results='hide'}
 
 sink("/dev/null");
-fits_one = invisible(summary(force_fit, fit.measures=TRUE, header=FALSE, estimates=FALSE)[[1]])
-fits_cross = summary(force_cross, fit.measures=TRUE, header=FALSE, estimates=FALSE)[[1]]
+keep = c("chisq", "df", "pvalue", "cfi", "tli", "bic", "rmsea", "srmr")
+fits_one = invisible(summary(force_fit, fit.measures=TRUE, header=FALSE, estimates=FALSE)[[1]])[keep]
+fits_cross = summary(force_cross, fit.measures=TRUE, header=FALSE, estimates=FALSE)[[1]][keep]
 results = data.frame(cbind(fits_one, fits_cross)) %>% 
-  mutate_all(round, digits=2) %>% 
   setNames(c("No Crossloadings", "Crossloadings Included"))
-row.names(results) = names(fits_one)
 sink()
 ```
 
 ```{r, echo=FALSE, message=FALSE, results="asis"}
-knitr::kable(results)
+results[2,] = round(results[2,])
+row.names(results) = c("$\\chi^2$", "df", "p", "CFI", "TLI", "BIC", "RMSEA", "SRMR")
+#keep = c("chisq", "df", "pvalue", "cfi", "tli", "bic", "rmsea", "srmr")
+knitr::kable(t(results), 
+             row.names=T,
+             digits = c(1,0,4,2,2,1,2,2),
+             caption = "\\label{tab:fits} Fit Indices for Two Models, One Where the Crossloadings Are Included and One Where They Are Not."
+    )
 ```
 
+Instead of looking at global fit indices as in Table \ref{tab:fits}, the data could be plotted, as they are in Figure \ref{fig:cross}. Here I am only plotting the variables associated with the second latent factor (Jedi). Also, supplying two model to the `visualize` function will show different lines for each model. This graphic makes it very apparent where the misfit comes from. Notice that the entire first row of model plots (upper triangle) show consistent underestimation for the model titled `fit.lavaan` (which is the model without crossloadings). On the other hand, the correctly specified model (`fit.lavaan2`) shows excellent fit. 
 
 ```{r}
 visualize(force_fit, force_cross, subset=4:7)
 ```
 
-# Model Plots
+# Visualizing Measurement Models
 
+Once the diagnostic plots indicate the model fits, one can be more confident the factor scores are accurately estimated. At that point, the user may choose to visualize the measurement model. Unfortunately, even four indicators (as we have here) are tricky to visualize; if one were to plot each variable as a separate dimension, five dimensions would be required to produce the graphic (one for each observed variable and one for the latent variable). An alternative is to do the following:
 
-Once one has iterated through the diagnostic plots, they can be more confident the factor scores are accurately estimated. At that point, the user may choose to plot the relationship between each indicator and the latent variable(s), or they may choose to plot the relationship between multiple latent variables. However, representing these as a scatterplot can be misleading because these are estimated scores, not observed scores. As such, I recommend adding some visual representation of uncertainty (e.g., each point is an ellipse whose size is an indicator of our uncertainty). This could, of course, become very busy very quickly. However, one could sample datapoints to represent latent scores or reduce opacity. These options are available and easy to use in my R package, `flexplot`. 
+1. Convert each observed variable to the same scale
+2. Convert from wide to long format
+3. Place observed (scaled) scores on the X axis, the latent variable on the Y axis, and the observed indicators as separate panels. 
 
-\pagebreak 
+For these data, we might use the following code, which utilizes `flexplot` to produce the graphic. As illustrated in the plot, the relationship between each variable and the outcome is about equally strong (though midichlorian has the strongest). 
 
-# References
+```{r, fig.cap="Visual representation of the measurement model for the jedi dataset. Blue lines are the regression lines between the observed variable (X axis) and the factor scores (Y axis). The red lines are ghost lines, which repeated the pattern from one panel (the midichlorian panel) to the others for easier comparison. \\label{fig:measurement}", fig.width=6, fig.height=4}
+# extract factor score estimates
+jedi_jedi[,c("force", "jedi")] = lavPredict(force_cross)
+# convert to long format
+force_model = jedi_jedi %>% 
+  mutate_at(vars(fitness:midichlorian), scale) %>% # convert to standardized variables
+  gather(key="Measure", value="Observed", fitness:midichlorian) # conver to long format
+# plot it
+flexplot(jedi~Observed | Measure, 
+         data=force_model, 
+         method="lm", 
+         ghost.line = "red")
+```
 
-## Stats Jedi Dataset
+Of course, one could also produce a scatterplot of the latent variables, which is trivially easy to do using flexplot:
 
-## Harry Potter Dataset
+```{r, fig.cap="Visual representation of the structural model for the jedi dataset. Blue lines are the regression lines between the two latent variables. \\label{fig:structure}", fig.width=4, fig.height=4}
+flexplot(jedi~force, data=jedi_jedi, method="lm")
+```
 
-Suppose we have the following nonlinear relationship between observed variable $X$ and latent $F$: 
+# Nonlinear Relationships
 
-\begin{equation}
-X = \frac{M}{1 + exp^{-x_1(F-x_0)}}
-\label{eq:three}
-\end{equation}
+In the previous sections, I demonstrated how various visuals can be used to diagnose latent variable models. Recall that SEMs assume all relationship are linear. If the relationships are not linear, the diagnostic plots will quickly highlight nonlinearities. 
 
-Solving for $F$, we get
-
-\begin{equation}
-F = \frac{-1}{x_1}log\left(\frac{M}{X}\right) -x_1
-\label{eq:three}
-\end{equation}
-
-Let's assume the variable $Y$ is a linear function of $F$:
-
-\begin{equation}
-Y = y_0 + y_1 F
-\label{eq:three}
-\end{equation}
-
-Solving for $F$, we get
-
-\begin{equation}
-F = \frac{Y-y_0}{y_1}
-\label{eq:three}
-\end{equation}
-
-Now suppose we wish to estimate the value of $Y$ for a given $X$. To do so, we can use substitution:
-
-
-
-## Scratch
+To illustrate `flexplavaan`'s ability to detect nonlinearities, I will use the dataset shown in Figure \ref{fig:nonlinear}. This model attempts to predict which students at Hogwarts survive the final battle against the Death Eaters using students' scores in the O.W.L.'s (standardized magic tests). This model posits there are two latent variables: Skills and Knowledge, each measured with three observed variables. The model then utilizes these latent variables to predict who survives. Notice the nonlinear paths (e.g., from darkarts to Skills and from Skills/Knowledge to Survival). In each case, the relationship was simulated to be logistic.   
 
 \begin{center}
-\begin{tikzpicture}[scale=1] 
-\def\x{latex}
-\draw (0,3) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] {Stats Jedi};
-\draw (-2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam 1};
-\draw (0,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam 2};
-\draw (2.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {exam 3};
-\draw[arrows={-\x}] (0,2.5) --(-2.5,.5) node[midway, above] {$a$};
-\draw[arrows={-\x}] (0,2.5) --(0,.5) node[midway, left] {$b$};
-\draw[arrows={-\x}] (0,2.5) --(2.5,.5) node[midway, above] {$c$};
-\end{tikzpicture}
-\end{center}
-
-
-
-
-
-
-\begin{center}
+\begin{figure}
 \begin{tikzpicture}[scale=1] 
 \def\x{latex}
 
@@ -281,17 +261,17 @@ Now suppose we wish to estimate the value of $Y$ for a given $X$. To do so, we c
 \draw (-1,0) node[ellipse, minimum height=1cm,minimum width=1.5cm,draw] (skills) {Skills};
 \draw (-5,2.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] (surv) {Survival};
 
-\draw (3.5,6.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {potions};
-\draw (3.5,5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {history};
-\draw (3.5,3.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {herbology};
+\draw (3.5,6.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {Potions};
+\draw (3.5,5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {History};
+\draw (3.5,3.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {Herbology};
 
 \draw[arrows={-\x}] (.33,5) --(2.75,6.5) node[midway, above] {};
 \draw[arrows={-\x}] (.33,5) --(2.75,5) node[midway, above] {};
 \draw[arrows={-\x}] (.33,5) --(2.65,3.4) node[midway, above] {};
 
-\draw (3.5,1.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] (dark) {darkarts};
-\draw (3.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {spells};
-\draw (3.5,-1.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {flying};
+\draw (3.5,1.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] (dark) {Darkarts};
+\draw (3.5,0) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {Spells};
+\draw (3.5,-1.5) node[rectangle, minimum height=1cm,minimum width=1.5cm,draw] {Flying};
 
 \draw (dark) edge[out=180,in=0,<-] (skills);
 \draw[arrows={-\x}] (-.25,0) --(2.75,0) node[midway, above] {};
@@ -302,15 +282,240 @@ Now suppose we wish to estimate the value of $Y$ for a given $X$. To do so, we c
 \draw (skills) edge[out=180,in=0,->] (surv);
 
 \end{tikzpicture}
+\label{fig:nonlinear}
+\end{figure}
 \end{center}
 
-<!-- magic_knowledge =~ potions + history + herbology -->
-<!-- magic_skills =~ spells + darkarts + flying  -->
-<!-- magic_skills ~ magic_knowledge -->
-<!-- model = " -->
-<!-- force_score =~ fitness + saber + midichlorian + force_history -->
-<!-- jedi_score =~ exam_one + exam_two + exam_three -->
-<!-- " -->
+If we were to fit these data with standard SEM machinery, `flexplavaan` clearly demonstrates the nonlinearities present in the data. While the first three indicators (potions, history, and herbology) appear to fit well, the indicators of the latent skill variable demonstrate strong nonlinear patterns. Most strikingly, the darkarts/flying relationship is quite nonlinear. (This is expected since flying was chosen to have a large factor loading and darkarts has the nonlinear relationship with the latent variable). 
+
+```{r, fig.cap="Diagnostic plots of the Hogwarts dataset. Notice how `flexplavaan` is able to detect nonlinearities from latent to observed variables using only the observed variables. \\label{fig:hogwarts}", fig.width=8, fig.height=8}
+# fit/visualize using standard lavaan -------------------------------------
+data("hogwarts_survival")
+model = "
+magic_knowledge =~ potions + history + herbology
+magic_skills =~ spells + darkarts + flying 
+magic_skills ~ magic_knowledge
+"
+hogwarts_fit = lavaan::sem(model, data=hogwarts_survival)
+visualize(hogwarts_fit, method="loess")
+```
+
+## Bayesian Estimation of Nonlinear Relationships
+
+Figure \ref{fig:hogwarts} demonstrates we need to modify the model. Unfortunately, for complex nonlinearities such as that in the Hogwarts dataset, modeling and visualizing these nonlinear relationships is quite complicated. To fit the model, standard SEM cannot be used because it assumes linear relationships. Granted, one may utilize WLS with threshold models, but there are not actually modeling the nonlinearity. Rather, they are "tricking" SEM into handling the nonlinearity. 
+
+A better approach is to utilize Bayesian SEMs (BSEMs). BSEMs are not limited to normally distributed variables or linear relationships. However, the learning curve associated with BSEMs is quite steep. Users must have familiarity with JAGs, STAN, or something similar. However, the `blavaan` package makes BSEMs far more accessible because it allows users to write standard `lavaan` syntax, then exports JAGs (or STAN) code to make it easier for the user to modify the model. The user can then run the JAGs (or STAN) code directly to estimate the model. 
+
+For example, for the Hogwarts dataset, we can run the following code, which will export the JAGs syntax:
+
+```{r, eval=FALSE}
+require(blavaan)
+  # export the model in JAGs syntax
+fit.bayes.export = bsem(model, data=hogwarts_survival, 
+                        mcmcfile="hogwarts_survival", 
+                              # name of folder where JAGs syntax is stored
+                        target="jags",
+                              # the following lines shorted the MCMC because
+                              # I only need the syntax
+                        n.chains = 1,
+                        burnin = 1,
+                        sample = 2, 
+                        adapt=1)
+```
+
+Once I have the JAGs code, I can modify the model with the new relationships. 
+
+```{r, eval=FALSE}
+model {
+  for(i in 1:N) {
+    ...
+    #surv[i] ~ dnorm(mu[i,7], 1/psi[3,3,g[i]])   #old code
+    survived[i] ~ dbern(mu[i,7])                 #new code
+    ...
+  }  
+  # mu definitions
+  for(i in 1:N) {
+    ...
+    #mu[i,5] <- nu[5,1,g[i]] + lambda[5,2,g[i]]*eta[i,2]  # old code
+    mu[i,5] <- mx/(1 + exp(-1*lambda[5,2,g[i]]*
+                             (eta[i,2] - nu[5,1,g[i]])))  # new code
+    ...
+    #mu[i,7] <- alpha[3,1,g[i]] + 
+    #    beta[3,1,g[i]]*eta[i,1] + beta[3,2,g[i]]*eta[i,2]  # old code
+    logit(mu[i,7]) <- alpha[3,1,g[i]] + 
+      beta[3,1,g[i]]*eta[i,1] + beta[3,2,g[i]]*eta[i,2]     # new code
+    ...
+  }
+
+  # Assignments from parameter vector & equality constraints
+    ...
+  mx <- parvec[24]           # new code
+    ...
+  # Priors
+    ...
+  parvec[24] ~ dunif(20, 100)    # new code
+}
+```
+
+With this file, I can then run the model using JAGs directly, with some modification to the JAGS dataset. Also, it is critical that I tell JAGS to monitor the latent variable(s) (`eta` in this case). The estimates of `eta` will be critical for developing the model-implied fit. 
+
+```{r eval=FALSE}
+load("hogwarts_survival/semjags.rda")
+# add variables to the jags dataset based on the modified model
+jagtrans$data$mx = NA
+jagtrans$data$survived = hogwarts_survival$survived
+jagtrans$data$surv = NULL
+# have JAGS monitor the latent variables
+jagtrans$monitors = c("mx", jagtrans$monitors, "eta") ### monitor the latent variable
+# fit the model
+hogwarts_nonlinear <- run.jags("hogwarts_survival/sem_nonlinear.jag", 
+                                 monitor = jagtrans$monitors,
+                                 data = jagtrans$data, 
+                                 method = "parallel")
+```
+
+Unfortunately, when users build custom JAGs models, they no longer are `lavaan` objects as they are when using "out of the box" estimation from `blavaan`. Fortunately, visualizing these models is only marginally more difficult for the *user*. However, the mathematics of developing these visuals is far more complex than with linear models. In the following section, I will discuss how I developed an approximation to the model-implied fit between indicator variables. 
+
+## Model-Implied Fit Using Factor Scores
+
+Recall that we developed the model-implied fit by converting the model-implied correlations to slopes and scaling by the observed variables. Unfortunately, with nonlinear relationships, correlations cannot be trusted. Instead, a different approach is required to estimate the model-implied fit. While one could, presumably, obtain an exact answer to the model-implied fit by using the mathematical relationships themselves, this approach would be quite cumbersome for all but the most simple of equations. In addition, this approach would require extensive mathematical expertise on the part of the consumer. 
+
+Alternatively, because the factors scores (`eta`) are already estimated as part of the modeling process, these factor scores can be used to develop a model-implied fitted line. To illustrate this procedure, we first start with a linear example. The first step is to model the fit between the latent variable(s) and the two observed variables of interest. For example,
+
+\begin{align}
+\nonumber \hat Y &= b_{0y} + b_{1y} F \\
+\nonumber \hat X &= b_{0x} + b_{1x} F 
+\end{align}
+
+These equations yield model-implied estimates for both $Y$ and $X$. One could then plot $\hat X$ against $\hat Y$ to obtain a model-implied fitted estimate. However, this fitted estimate actually shows the fit between $\hat X$ and $\hat Y$, not between $X$ and $Y$. The fit between $\hat X$ and $\hat Y$ will actually inflate the strength of the relationship between $X$ and $Y$ because any unreliability in $X$ and $Y$ will be removed. As such, the relationship between $\hat X$ and $\hat Y$ needs to be weakened proportional to the reliability of each indicator:
+
+\begin{align}
+\nonumber \hat Y &= b_0 + b_1\times B \\
+\nonumber        &= b_0 + b_1\times \sqrt{\rho_{YY}\rho_{XX}} \times \hat B
+\end{align}
+
+Figure \ref{fig:modelimplied} demonstrates the utility of this correction for a linear function. The red line shows the model-implied fit and the blue line is the best fitting loess line. 
+
+```{r, fig.cap="A second way of estimating the slope between observed variables. The red line shows the model-implied fit that was computed via the estimated factors scores, corrected for reliability. \\label{fig:modelimplied}", fig.width=4, fig.height=4}
+# create "pure" measures of X/Y, predicted from factor scores
+d$factor.scores = as.numeric(lavPredict(fitted))
+d$model.implied.x = predict(lm(x1~factor.scores, data=d))
+model.implied.y = predict(lm(x2~factor.scores, data=d))
+
+# estimate reliability
+rxx = 1-coef(fitted)["x1~~x1"]
+ryy = 1-coef(fitted)["x2~~x2"]
+
+# correct X/Y relationship
+d$model.implied.y.corrected = sqrt(rxx*ryy)*model.implied.y
+
+# plot relationship
+flexplot(x2~x1, data=d) +
+  geom_line(aes(model.implied.x, model.implied.y.corrected), col="red")
+
+```
+
+## Estimating Reliability and Fit For Nonlinear Relationships
+
+The previous example demonstrated that using reliability information and linear models, one could derive the model-implied fit from the factor scores. This becomes more tricky with nonlinear relationships for a few reasons. First, one cannot use linear models to estimate the fitted line. Second, is is unclear how to estimate reliability for nonlinear models. Third, even if one could estimate reliability, it is not clear how one can provide a general solution to weaknening this relationship proportional to the reliability. 
+
+To address the first concern (that one cannot use linear models to estimate the map from latent to observed), we can utilize one of many nonparametric smoothing functions, such as loess lines, splines, median smoothing, etc. For this example, we will utilize smoothing splines with built in cross-validation. Within the Hogwarts dataset, we can fit the nonlinear relationship between darkarts and the latent score, where the latent score has been estimated from the JAGs model. This fit is shown in Figure \ref{fig:splined}. 
+
+```{r, fig.cap="A scatterplot showing the relationship between the latent variable and the observed darkarts variable. The red line shows the smoothed spline fit, an approximation of the model-implied fit. \\label{fig:splined}", fig.width=4, fig.height=4}
+# read in the JAGs output
+hogwarts_JAGs = readRDS(file="../data/hogwarts_summary.rds")
+
+# extract latent scores from JAGs model (using flexplavaan)
+factor.scores = flexplavaan::export_jags_latents(hogwarts_JAGs)[,-1]
+hogwarts_survival[,c("knowledge", "skill")] = factor.scores
+
+# estimate fit between the indicators and factors
+dark_fit = smooth.spline(x = hogwarts_survival$skill, y = hogwarts_survival$dark, cv = TRUE)
+survival_fit = smooth.spline(x = hogwarts_survival$skill, y = hogwarts_survival$flying, cv = TRUE)
+newy = data.frame(x=dark_fit$x, y = dark_fit$y)
+newx = data.frame(x=survival_fit$x, y = survival_fit$y)
+
+
+# plot results of spline
+a = flexplot(darkarts~skill, data=hogwarts_survival, suppress_smooth = T) +
+  geom_line(data=newy, aes(x,y), col="red")
+b = flexplot(flying~skill, data=hogwarts_survival, suppress_smooth = T) +
+  geom_line(data=newx, aes(x,y), col="red")
+cowplot::plot_grid(a,b)
+```
+
+We can also use a similar procedure to estimate the reliability. Recall that reliability is defined as 
+
+$$
+\frac{\sigma^2_T}{\sigma^2_X}
+$$
+
+Or true score variance divided by observed variance. If we treat the fitted line as the true score, we can then define the reliability as
+
+$$
+\frac{\sigma^2_{\hat X}}{\sigma^2_X}
+$$
+
+The R code below shows how to compute this in R. 
+
+```{r}
+rho_xx = var(newx$y)/var(hogwarts_survival$flying)
+rho_yy = var(newy$y)/var(hogwarts_survival$darkarts)
+```
+
+Now that we have a way to approximate the functional relationship between the latent variable(s) and the indicators and have an estimate of the reliability, the final problem to tackle is how to attenuate the strength of the relationship between the observed indicators. Again, we seek a general solution that does not require one to know which nonlinear parameters control the "slope" of the relationship.
+
+One potential approximation would be to regress the predictions of the model closer to the mean of the $Y$ variable, proportional to the product of the reliability. In other words:
+
+$$
+\hat Y' = \bar Y + \sqrt{r_{YY}r_{XX}}\times (\hat Y - \bar Y)
+$$
+
+where $\hat Y'$ indicates the attenuated (corrected) estimate for $Y$. Once these are corrected, we can finally plot the model-implied fit between the observed variables, as well as the disturbance-dependence plot. 
+
+```{r}
+# attenuate the relationship
+newxy = data.frame(darkarts=newy$y, flying=newx$y)
+newxy$darkarts_prime = mean(hogwarts_survival$darkarts) + sqrt(rho_xx*rho_yy)*(newxy$darkarts - mean(hogwarts_survival$darkarts))
+
+# attenuate residuals
+fitted_y = mean(hogwarts_survival$darkarts) + sqrt(rho_xx*rho_yy)*(fitted(dark_fit) - mean(hogwarts_survival$darkarts))
+hogwarts_survival$darkarts_residuals = hogwarts_survival$darkarts - fitted_y
+
+# plot results
+fitted = flexplot(darkarts~flying, data=hogwarts_survival) +
+  geom_line(data=newxy, aes(flying, darkarts_prime), col="red")
+residuals = flexplot(darkarts_residuals~flying, data=hogwarts_survival) +
+  geom_hline(yintercept = 0)
+cowplot::plot_grid(fitted, residuals)
+```
+
+Much of the above programming is simply to demonstrate how flexplavaan is estimating the model-implied fits. Most of the programming is handled in the background, much as it was with linear models. To display the scatterplot matrices as before, we can use the same function (`visualize`), though we need to also specify the dataset and (at present) identify the latent variable(s) with which each observed variables is associated.
+
+```{r, eval=FALSE}
+data("hogwarts_survival")
+require(flexplavaan)
+hogwarts_nonlinear = readRDS(file="../data/hogwarts_summary.rds")
+visualize.runjags(hogwarts_nonlinear, data[,4:6], which.latent=c(2,2,2))
+```
+
+![Nonlinear visualization of the Hogwarts skill variables](../plots/hogwarts_linear_bayes.jpg)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+\pagebreak 
+
+# References
