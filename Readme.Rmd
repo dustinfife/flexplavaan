@@ -3,6 +3,7 @@ title: 'Seeing the Impossible: Visualizing Latent Variable Models'
 output: 
   bookdown::html_document2:
     keep_md: TRUE
+    pandoc_args: --webtex
 header-includes:
 - \usepackage{amsmath}
 bibliography: references.bib
