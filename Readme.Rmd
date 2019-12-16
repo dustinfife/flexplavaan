@@ -1,6 +1,8 @@
 ---
 title: 'Seeing the Impossible: Visualizing Latent Variable Models'
-output: bookdown::html_document2
+output: 
+  bookdown::html_document2:
+    keepmds: TRUE
 header-includes:
 - \usepackage{amsmath}
 bibliography: references.bib
@@ -25,7 +27,7 @@ To overcome both of these limitation, we develop visualization tools designed fo
 
 ## Trail Plots: Estimating the Model-Implied Slope
 
-Suppose we have the factor analysis model shown in Figure \@ref(mod1).  
+Suppose we have the factor analysis model shown below.  
 ```{r, include=FALSE}
 #options(tinytex.verbose = TRUE)
 #tinytex::tlmgr_install("positioning")
