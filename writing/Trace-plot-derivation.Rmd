@@ -1,11 +1,12 @@
 ---
-title: "Seeing the Impossible: Visualizing Latent Variable Models"
+title: 'Seeing the Impossible: Visualizing Latent Variable Models'
 header-includes:
-   - \usepackage{tikz}
-   - \usetikzlibrary{shapes.geometric,arrows}
-   - \usepackage{amsmath}
+- \usepackage{tikz}
+- \usetikzlibrary{shapes.geometric,arrows}
+- \usepackage{amsmath}
 output:
-  pdf_document
+  html_document:
+    df_print: paged
 bibliography: ../references.bib
 ---
 
@@ -115,7 +116,7 @@ We could also apply this command continuously to all observed variables in a sca
 
 ```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:third}", fig.width=4, fig.height=4}
 require(flexplavaan)
-visualize(fitted, plot = "model")
+visualize(fitted, plot = "model", sample=300)
 ```
 
 ## Disturbance Dependence Plots: Removing the Effect of the Latent Variable
@@ -125,7 +126,7 @@ It may also be interesting to utilize "disturbance dependence plots," or to plot
 To generate these disturbance terms, we need only to generate predicted $Y$ scores from Equation \ref{eq:4} for each individual, then subtract those from the observed $Y$ scores. We can then plot the relationship between $Y$ and $X$ after removing the effect of the latent variable. If the data are locally independent, we should observe no relationship. The expected relationship (i.e., a line centered on zero with no slope) is colored as red. We could then add this plot to the scatterplot matrix as in Figure \ref{fig:five}. The default for the visualize function displays the model-implied plots in the upper triangle and the disturbance dependence plots in the lower triangle. As expected (because the data were simulated), the loess lines in the lower triangle are very similar to the model-implied line (i.e., the line where $y$=0). 
 
 ```{r, echo=FALSE, fig.cap="Scatterplot matrix of the indicator variables. The upper triangle show the model-implied fit between the indicators, while the lower triangle shows the disturbance dependence plots. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). \\label{fig:five}", fig.width=4, fig.height=3}
-visualize(fitted)
+visualize(fitted, sample=300)
 ```
 
 
@@ -213,7 +214,7 @@ knitr::kable(t(results),
 Instead of looking at global fit indices as in Table \ref{tab:fits}, the data could be plotted, as they are in Figure \ref{fig:cross}. Here I am only plotting the variables associated with the second latent factor (Jedi). Also, supplying two model to the `visualize` function will show different lines for each model. This graphic makes it very apparent where the misfit comes from. Notice that the entire first row of model plots (upper triangle) show consistent underestimation for the model titled `fit.lavaan` (which is the model without crossloadings). On the other hand, the correctly specified model (`fit.lavaan2`) shows excellent fit. 
 
 ```{r}
-visualize(force_fit, force_cross, subset=4:7)
+visualize(force_fit, force_cross, subset=4:7, sample=300)
 ```
 
 # Visualizing Measurement Models
@@ -297,7 +298,7 @@ magic_skills =~ spells + darkarts + flying
 magic_skills ~ magic_knowledge
 "
 hogwarts_fit = lavaan::sem(model, data=hogwarts_survival)
-visualize(hogwarts_fit, method="loess")
+visualize(hogwarts_fit, method="loess", sample=300)
 ```
 
 ## Bayesian Estimation of Nonlinear Relationships

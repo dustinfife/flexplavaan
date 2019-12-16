@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  13 DEC 2019 16:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  13 DEC 2019 16:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1374,14 +1374,14 @@ l.293 T
 LaTeX Warning: Reference `eq:4' on page 4 undefined on input line 294.
 
 
-<Trace-plot-derivation_files/figure-latex/unnamed-chunk-5-1.pdf, id=100, 278.03
-876pt x 203.76125pt>
+<Trace-plot-derivation_files/figure-latex/unnamed-chunk-5-1.pdf, id=100, 279.04
+25pt x 203.76125pt>
 File: Trace-plot-derivation_files/figure-latex/unnamed-chunk-5-1.pdf Graphic fi
 le (type pdf)
 <use Trace-plot-derivation_files/figure-latex/unnamed-chunk-5-1.pdf>
 Package pdftex.def Info: Trace-plot-derivation_files/figure-latex/unnamed-chunk
 -5-1.pdf used on input line 309.
-(pdftex.def)             Requested size: 278.04231pt x 203.76384pt.
+(pdftex.def)             Requested size: 279.05032pt x 203.76695pt.
 
 Overfull \hbox (6.42813pt too wide) in paragraph at lines 357--358
  [] 
@@ -1401,16 +1401,16 @@ Package xcolor Warning: Incompatible color definition on input line 401.
 Package xcolor Warning: Incompatible color definition on input line 401.
 
 
-<Trace-plot-derivation_files/figure-latex/unnamed-chunk-9-1.pdf, id=120, 452.69
-125pt x 312.16624pt>
+<Trace-plot-derivation_files/figure-latex/unnamed-chunk-9-1.pdf, id=120, 453.69
+5pt x 312.16624pt>
 File: Trace-plot-derivation_files/figure-latex/unnamed-chunk-9-1.pdf Graphic fi
 le (type pdf)
 <use Trace-plot-derivation_files/figure-latex/unnamed-chunk-9-1.pdf>
 Package pdftex.def Info: Trace-plot-derivation_files/figure-latex/unnamed-chunk
 -9-1.pdf used on input line 403.
-(pdftex.def)             Requested size: 452.69014pt x 312.16548pt.
+(pdftex.def)             Requested size: 453.6939pt x 312.16548pt.
 
-Overfull \vbox (24.41545pt too high) has occurred while \output is active []
+Overfull \vbox (24.9708pt too high) has occurred while \output is active []
 
 [5 <./Trace-plot-derivation_files/figure-latex/unnamed-chunk-5-1.pdf>]
 
@@ -1474,14 +1474,14 @@ Package xcolor Warning: Incompatible color definition on input line 551.
 Package xcolor Warning: Incompatible color definition on input line 551.
 
 
-<Trace-plot-derivation_files/figure-latex/unnamed-chunk-12-1.pdf, id=197, 567.1
-1874pt x 565.11125pt>
+<Trace-plot-derivation_files/figure-latex/unnamed-chunk-12-1.pdf, id=197, 568.1
+225pt x 565.11125pt>
 File: Trace-plot-derivation_files/figure-latex/unnamed-chunk-12-1.pdf Graphic f
 ile (type pdf)
 <use Trace-plot-derivation_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: Trace-plot-derivation_files/figure-latex/unnamed-chunk
 -12-1.pdf used on input line 555.
-(pdftex.def)             Requested size: 469.77385pt x 468.11095pt.
+(pdftex.def)             Requested size: 469.7731pt x 467.28314pt.
 
 Package xcolor Warning: Incompatible color definition on input line 587.
 
@@ -1636,7 +1636,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 904.
 Here is how much of TeX's memory you used:
  24026 strings out of 493014
  432103 string characters out of 6133351
- 512013 words of memory out of 5000000
+ 512010 words of memory out of 5000000
  27028 multiletter control sequences out of 15000+600000
  46570 words of font info for 82 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1659,7 +1659,7 @@ ive/2016/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2016/te
 xmf-dist/fonts/type1/public/lm/lmtk10.pfb></usr/local/texlive/2016/texmf-dist/f
 onts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1
 /public/lm/lmtti10.pfb>
-Output written on Trace-plot-derivation.pdf (16 pages, 4884520 bytes).
+Output written on Trace-plot-derivation.pdf (16 pages, 3206143 bytes).
 PDF statistics:
  366 PDF objects out of 1000 (max. 8388607)
  300 compressed objects within 3 object streams
