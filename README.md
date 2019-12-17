@@ -113,6 +113,12 @@ ggplot(data=d, aes(x=x1,y=x2)) +
 We could also visualize all observed variables in a scatterplot matrix (using, say, the upper diagonal), as in Figure \@ref(fig:third). Here, I am utilizing the `visualize` function in the `flexplavaan` package.  As before, the red line indicates the model-implied fit. This time, however, the blue line is the fit of a loess line (which will allow for the detection of nonlinear patterns). Notice the two lines in each plot are quite similar (as they should be because these are simulated data).  
 
 
+
+```r
+require(flexplavaan)
+visualize(fitted, plot = "model", sample=300)
+```
+
 <div class="figure">
 <img src="README_files/figure-html/third-1.png" alt="Scatterplot matrix of the indicator variables. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). "  />
 <p class="caption">(\#fig:third)Scatterplot matrix of the indicator variables. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). </p>
@@ -126,6 +132,11 @@ It may also be interesting to utilize "disturbance dependence plots," or to plot
 To generate these disturbance terms, we need only to generate predicted $Y$ scores from Equation \@ref(eq:slopemodimp) for each individual, then subtract those from the observed $Y$ scores. We can then plot the relationship between $Y$ and $X$ after removing the effect of the latent variable. If the data are locally independent, we should observe no relationship. The expected relationship (i.e., a line centered on zero with no slope) is colored as red. We could then add this plot to the scatterplot matrix as in Figure \@ref(fig:five). The default for the visualize function displays the model-implied (trail) plots in the upper triangle and the disturbance dependence plots in the lower triangle. As expected (because the data were simulated), the loess lines in the lower triangle are very similar to the model-implied line (i.e., the line where $Y$=0). 
 
 
+
+```r
+visualize(fitted, sample=300)
+```
+
 <div class="figure">
 <img src="README_files/figure-html/five-1.png" alt="Scatterplot matrix of the indicator variables. The upper triangle show the model-implied fit between the indicators, while the lower triangle shows the disturbance dependence plots. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). "  />
 <p class="caption">(\#fig:five)Scatterplot matrix of the indicator variables. The upper triangle show the model-implied fit between the indicators, while the lower triangle shows the disturbance dependence plots. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). </p>
@@ -137,13 +148,37 @@ To generate these disturbance terms, we need only to generate predicted $Y$ scor
 These diagnostic plots are designed to detect deviations from the model's implied relationship. In the next example, I'm going to utilize a simulated dataset of jedi training, where two latent variables are posited (force and jedi), each with 3 indicators (fitness, saber, midichlorian for force and exam one, exam two, and exam three for jedi). In addition, one variable (history) has cross loadings on both factors. However, I will fit a model where history is only modeled on the force latent variable, then subsequently fit a model where the variable loads on both latent variables. 
 
 <br>
+<center>
 <div class="figure">
 <img src="README_files/figure-html/force-1.png" alt="Simulated dataset with crossloadings on the 'history' indicator." width="80%" />
 <p class="caption">(\#fig:force)Simulated dataset with crossloadings on the 'history' indicator.</p>
 </div>
+</center>
 <br>
 
 
+```r
+require(lavaan)
+require(flexplot)
+require(tidyverse)
+data(jedi_jedi)
+
+# specify the models ------------------------------------------------------
+model = "
+force_score =~ fitness + saber + midichlorian + force_history
+jedi_score =~ exam_one + exam_two + exam_three
+jedi_score ~ force_score
+"
+## specify model
+model_cross = "
+force_score =~ fitness + saber + midichlorian + force_history
+jedi_score =~ exam_one + exam_two + exam_three + force_history
+jedi_score ~ force_score
+"
+# Fit the models ----------------------------------------------------------
+force_fit = cfa(model, jedi_jedi)
+force_cross = cfa(model_cross, jedi_jedi)
+```
 
 The table below shows the result of both models and various measures of fit. If one were not to fit the second model, it would be unclear where the misfit occurs. One could, of course, study modification indices, but they have a multitude of problems. One could also study the residual matrix, but even these have their limitations. They only signal which correlations (or covariances) are poorly fit, but do not give much more information about how to improve the model. 
 
@@ -480,7 +515,7 @@ visualize.runjags(hogwarts_nonlinear, data[,4:6], which.latent=c(2,2,2))
 
 ![Nonlinear visualization of the Hogwarts skill variables](plots/hogwarts_linear_bayes.jpg)
 
-Figure \@ref(fig:finalmod) shows that the approximation works fairly well. Though there is *some* misfit evident in the disturbance-dependence plots, for the most part, the approximation captures the essential features of the nonlinear relationships. 
+The figure above shows that the approximation works fairly well. Though there is *some* misfit evident in the disturbance-dependence plots, for the most part, the approximation captures the essential features of the nonlinear relationships. 
 
 # Questions and Future Directions
 First, a question: how difficult would it be to modify `blavaan` such that it allows user-specified functional relationships? For example:
