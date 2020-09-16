@@ -4,9 +4,16 @@
 \alias{visualize.runjags}
 \title{Visualize a runjags model}
 \usage{
-\method{visualize}{runjags}(object, data, which.latent = c(1, 1),
-  object2 = NULL, subset = NULL, plot = c("all", "residuals",
-  "model"), formula = NULL, ...)
+\method{visualize}{runjags}(
+  object,
+  data,
+  which.latent = c(1, 1),
+  object2 = NULL,
+  subset = NULL,
+  plot = c("all", "residuals", "model"),
+  formula = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{a runjags object}

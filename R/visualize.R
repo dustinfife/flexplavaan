@@ -1,3 +1,41 @@
+#' Visualize a fitted model 
+#'
+#' Visualize a fitted model
+#' @param object a fitted object
+#' @param plot what should be plotted? Residuals? Bivariate plot? All of them?
+#' @param formula A flexplot-style formula
+#' @param ... Other arguments passed to flexplot
+#' @import ggplot2
+#' @export
+visualize = function(object, plot=c("all", "residuals", "model"),formula=NULL,...){
+  UseMethod("visualize")
+}
+
+#' Visualize a fitted model 
+#'
+#' Visualize a fitted model
+#' @param object a model object
+#' @param plot what should be plotted? Residuals? model plot? All of them?
+#' @param formula A flexplot-style formula
+#' @param ... Other arguments passed to flexplot
+#' @export
+visualize.default = function(object, plot=c("all", "residuals", "model"),formula=NULL,...){
+  
+  ## get dataset name
+  data = eval(getCall(object)$data)
+  
+  ## get formula
+  variables = all.vars(formula(object))
+  predictors = variables[-1]
+  response = variables[1]
+  new_form = make_flexplot_formula(predictors, response, data)
+  
+  ## call compare.fits
+  compare.fits(new_form, data=data, model1=object)
+  
+}
+
+
 #' Visualize a linear lavaan model 
 #'
 #' This function generates diagnostic plots or model plots of a lavaan object.
