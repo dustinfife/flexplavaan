@@ -4,7 +4,8 @@
 \name{mugglevwizard}
 \alias{mugglevwizard}
 \title{Wizard/Witch Propensity Scores for 500 Students at Hogwarts}
-\format{A data frame with 500 rows and 7 variables:
+\format{
+A data frame with 500 rows and 7 variables:
 \describe{
   \item{strange}{Strange occurance scores on a 40 item survey, completed by an independent observer}
   \item{telekenesis}{Number of occurances reported by potential witch/wizard, self-reported}
@@ -14,7 +15,8 @@
   \item{history}{Score at the final year of Hogwarts in "History of Magic"}
   \item{mugglevwizard}{Indicator variable that identifies each student as muggle or witch/wizard}
   
-}}
+}
+}
 \source{
 These data are proprietary and obtained through the school of Hogwarts.
 }

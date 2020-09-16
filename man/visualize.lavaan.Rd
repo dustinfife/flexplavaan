@@ -4,8 +4,14 @@
 \alias{visualize.lavaan}
 \title{Visualize a linear lavaan model}
 \usage{
-\method{visualize}{lavaan}(object, object2 = NULL, subset = NULL,
-  plot = c("all", "residuals", "model"), formula = NULL, ...)
+\method{visualize}{lavaan}(
+  object,
+  object2 = NULL,
+  subset = NULL,
+  plot = c("all", "residuals", "model"),
+  formula = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{a lavaan object}

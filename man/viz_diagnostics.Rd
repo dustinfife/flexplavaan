@@ -4,9 +4,16 @@
 \alias{viz_diagnostics}
 \title{Visualize Diagnostics for a lavaan object}
 \usage{
-viz_diagnostics(data, mapping, fit.lavaan, fit.lavaan2 = NULL,
-  invert.map = FALSE, alpha = 0.5, plot = c("trace", "disturbance",
-  "histogram"), ...)
+viz_diagnostics(
+  data,
+  mapping,
+  fit.lavaan,
+  fit.lavaan2 = NULL,
+  invert.map = FALSE,
+  alpha = 0.5,
+  plot = c("trace", "disturbance", "histogram"),
+  ...
+)
 }
 \arguments{
 \item{data}{The dataset containing the raw (item) observations}
