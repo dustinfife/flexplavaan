@@ -1,3 +1,15 @@
+#varnames = letters[1:5]
+random_var_name = function(size=5) {
+  letters[1:26] %>% sample(size=size, replace=T) %>% paste0(collapse="")
+}
+
+random_var_name_check = function(varnames) {
+  newname = random_var_name(5)
+  while ((newname %in% varnames)){
+    newname = random_var_name(5)
+  }
+  newname
+}
 
 nonlinear_prediction = function(x,y,latent){
   pred.x = cbind(latent[,1, drop=FALSE],x) %>% 
