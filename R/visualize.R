@@ -45,6 +45,7 @@ visualize.default = function(object, plot=c("all", "residuals", "model"),formula
 #' @param plot what should be plotted? User can specify "diagnostics" or "model"
 #' @param ... Other arguments passed to flexplot
 #' @import GGally
+#' @importFrom flexplot visualize
 #' @export
 #' @example 
 #' require(lavaan)
@@ -62,7 +63,7 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
   observed = lavNames(object)
   d = data.frame(lavInspect(object, "data"))
   names(d) = observed
-  if (!is.null(subset)) observed = observed[subset]
+  observed = get_subset(subset, observed)
   if (!is.null(object2)) {
     legend=c(1,2)
   } else {
@@ -90,6 +91,7 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
             diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", ...)))     
   }   
 } 
+
 
 #' Visualize a runjags model 
 #'
