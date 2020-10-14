@@ -68,6 +68,7 @@
 #' mod = cfa(model_witch, data=mugglevwizard)
 #' viz_diagnostics(data = mugglevwizard, mapping = aes(wingardium, darkarts), fit.lavaan = mod, plot="trace")
 #' viz_diagnostics(data = mugglevwizard, mapping = aes(potions, darkarts), fit.lavaan = mod, plot="disturbance")
+#' viz_diagnostics(data = mugglevwizard, mapping = aes(potions, darkarts), fit.lavaan = mod, plot="disturbance")
 viz_diagnostics <- function(data, mapping, 
                             fit.lavaan, fit.lavaan2 = NULL, 
                             invert.map=FALSE, alpha=.5, plot=c("trace", "disturbance", "histogram"), ...) {
@@ -120,8 +121,11 @@ viz_diagnostics <- function(data, mapping,
       #browser()
     if (!is.null(fit.lavaan2)){
       estimated_fits = estimate_linear_fit(fit.lavaan2, x, y, data)
-      new_data$y2 = estimated_fits$y_new
-      data[,"residuals2"] = estimated_fits$residuals      
+      # come up with fake name for second variable
+      y2_name = random_var_name_check(names(new_data))
+      resid_name = random_var_name_check(names(new_data))
+      new_data[[y2_name]] = estimated_fits$y_new
+      data[[resid_name]] = estimated_fits$residuals      
     }
     
     ### now add to ggplot object
@@ -129,11 +133,11 @@ viz_diagnostics <- function(data, mapping,
       flexplot_form = flexplot::make.formula(y, x)
       
       if (!is.null(fit.lavaan2)){
-        
         n = new_data %>% 
-          tidyr::gather(key="Model", value=y, c(!!y,"y2")) %>% 
-          dplyr::mutate(Model = factor(Model, levels=c(!!y, "y2"), labels=c("Model 1", "Model 2")))
-       p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, ...) + 
+          tidyr::gather(key="Model", value=y, c(!!y,y2_name)) %>% 
+          dplyr::mutate(Model = factor(Model, levels=c(!!y, y2_name), labels=c("Model 1", "Model 2")))
+
+        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, suppress_smooth = T, ...) + 
           geom_line(data=n, aes_string(x,"y", col="Model"))
 
       } else {
@@ -144,8 +148,8 @@ viz_diagnostics <- function(data, mapping,
     } else if (plot=="disturbance") {
       ### convert data to long format to make dots different
       if (!is.null(fit.lavaan2)){
-        data2 = data[,c(x,"residuals", "residuals2")] %>% tidyr::gather("model", "residuals", c("residuals", "residuals2")) %>% setNames(c(x,"model","residuals"))
-        data2$model = factor(data2$model, levels=c("residuals","residuals2"), labels=c("Model 1", "Model 2"))
+        data2 = data[,c(x,"residuals", resid_name)] %>% tidyr::gather("model", "residuals", c("residuals", resid_name)) %>% setNames(c(x,"model","residuals"))
+        data2$model = factor(data2$model, levels=c("residuals",resid_name), labels=c("Model 1", "Model 2"))
         f = make.formula("residuals", c(x, "model"))
         p = flexplot::flexplot(f, data=data2, alpha = .2,...) + geom_hline(yintercept = 0) + geom_smooth(se=F)
       } else {
