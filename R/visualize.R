@@ -1,41 +1,3 @@
-#' Visualize a fitted model 
-#'
-#' Visualize a fitted model
-#' @param object a fitted object
-#' @param plot what should be plotted? Residuals? Bivariate plot? All of them?
-#' @param formula A flexplot-style formula
-#' @param ... Other arguments passed to flexplot
-#' @import ggplot2
-#' @export
-visualize = function(object, plot=c("all", "residuals", "model"),formula=NULL,...){
-  UseMethod("visualize")
-}
-
-#' Visualize a fitted model 
-#'
-#' Visualize a fitted model
-#' @param object a model object
-#' @param plot what should be plotted? Residuals? model plot? All of them?
-#' @param formula A flexplot-style formula
-#' @param ... Other arguments passed to flexplot
-#' @export
-visualize.default = function(object, plot=c("all", "residuals", "model"),formula=NULL,...){
-  
-  ## get dataset name
-  data = eval(getCall(object)$data)
-  
-  ## get formula
-  variables = all.vars(formula(object))
-  predictors = variables[-1]
-  response = variables[1]
-  new_form = make_flexplot_formula(predictors, response, data)
-  
-  ## call compare.fits
-  compare.fits(new_form, data=data, model1=object)
-  
-}
-
-
 #' Visualize a linear lavaan model 
 #'
 #' This function generates diagnostic plots or model plots of a lavaan object.
@@ -113,7 +75,7 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
 #viz_diagnostics_mcmc(data, mapping, latents=factor.scores, plot="disturbance")
 visualize.runjags = function(object, data, which.latent=c(1,1), object2=NULL, subset = NULL, plot=c("all", "residuals", "model"), formula = NULL,...){
   
-
+  
   #### create factor scores
   factor.scores = export_jags_latents(object)[,-1]
   
@@ -129,9 +91,9 @@ visualize.runjags = function(object, data, which.latent=c(1,1), object2=NULL, su
     observed = names(data)
   }
   
-
- 
-
+  
+  
+  
   if (plot=="all"){
     
     #viz_diagnostics_mcmc(data[,observed], mapping, factor.scores, plot="trace")
@@ -152,7 +114,7 @@ visualize.runjags = function(object, data, which.latent=c(1,1), object2=NULL, su
   }         
   
 } 
-  
+
 #' Wizard/Witch Propensity Scores for 500 Students at Hogwarts 
 #'
 #' This dataset contains scores on various measures of wizarding ability

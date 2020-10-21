@@ -77,7 +77,7 @@ viz_diagnostics <- function(data, mapping,
   ### extract name of latent variables
   observed = lavNames(fit.lavaan)
   latent.names = lavNames(fit.lavaan, type="lv")
-
+  
   ### plot ggplot object so I can extract the elements
   if (dplyr::as_label(mapping$y) == "NULL" | plot=="histogram"){
     flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
@@ -98,8 +98,8 @@ viz_diagnostics <- function(data, mapping,
     if (!all(variables %in% names(data))){
       problem.vars = which(!(variables %in% names(data)))
       var = ifelse(length(problem.vars>1), 
-                    paste0("variables ", variables[problem.vars], " are"), 
-                    paste0("variable ", variables[problem.vars], " is")) 
+                   paste0("variables ", variables[problem.vars], " are"), 
+                   paste0("variable ", variables[problem.vars], " is")) 
       msg = paste0("The ", var, " not in your actual dataset.")
       stop(msg)
     }
@@ -107,18 +107,18 @@ viz_diagnostics <- function(data, mapping,
     if (!all(variables %in% observed)){
       problem.vars = which(!(variables %in% observed))
       var = ifelse(length(problem.vars>1), 
-                  paste0("variables ", variables[problem.vars], " are"), 
-                  paste0("variable ", variables[problem.vars], " is"))
+                   paste0("variables ", variables[problem.vars], " are"), 
+                   paste0("variable ", variables[problem.vars], " is"))
       msg = paste0("The ", var, " not in your actual dataset.")
       stop(msg)
     }  
     
-  
+    
     estimated_fits = estimate_linear_fit(fit.lavaan, x=x, y=y, data)
-      new_data = data.frame(x=estimated_fits$x_new, y=estimated_fits$y_new)
-      names(new_data) = c(x, y)
-      data[,"residuals"] = estimated_fits$residuals
-      #browser()
+    new_data = data.frame(x=estimated_fits$x_new, y=estimated_fits$y_new)
+    names(new_data) = c(x, y)
+    data[,"residuals"] = estimated_fits$residuals
+    #browser()
     if (!is.null(fit.lavaan2)){
       estimated_fits = estimate_linear_fit(fit.lavaan2, x, y, data)
       # come up with fake name for second variable
@@ -136,10 +136,10 @@ viz_diagnostics <- function(data, mapping,
         n = new_data %>% 
           tidyr::gather(key="Model", value=y, c(!!y,y2_name)) %>% 
           dplyr::mutate(Model = factor(Model, levels=c(!!y, y2_name), labels=c("Model 1", "Model 2")))
-
+        
         p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, suppress_smooth = T, ...) + 
           geom_line(data=n, aes_string(x,"y", col="Model"))
-
+        
       } else {
         p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, ...) + 
           geom_line(data=new_data, aes_string(x,y), col="red")  
@@ -167,8 +167,8 @@ viz_diagnostics <- function(data, mapping,
 # fit.mcmc = lvs
 # mapping = aes(potions, darkarts)
 viz_diagnostics_mcmc <- function(data, mapping, latents, which.latent,
-                            fit.mcmc, 
-                            invert.map=FALSE, alpha=.5, plot, ...) {
+                                 fit.mcmc, 
+                                 invert.map=FALSE, alpha=.5, plot, ...) {
   #browser()
   ### extract name of latent variables
   observed = names(data)
@@ -180,10 +180,10 @@ viz_diagnostics_mcmc <- function(data, mapping, latents, which.latent,
     flexplot::flexplot(flexplot_form, data=data)
   } else {
     #browser()
-
+    
     xy = extract_xy_mapping(mapping, invert.map=FALSE, data = data, observed=names(data), latent=NULL)
     x = xy$x; y = xy$y; 
-
+    
     x.vals = data.frame(data[,x]); names(x.vals) = x
     y.vals = data.frame(data[,y]); names(y.vals) = y
     latents.to.show = which.latent[which(names(data)==x | names(data) == y)]
