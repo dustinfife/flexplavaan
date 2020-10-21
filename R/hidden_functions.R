@@ -3,6 +3,15 @@ random_var_name = function(size=5) {
   letters[1:26] %>% sample(size=size, replace=T) %>% paste0(collapse="")
 }
 
+
+get_subset = function(subset, varnames) {
+  if (is.null(subset)) return(varnames)
+  if (is.numeric(subset) & any(subset>max(length(varnames)))) stop("You're trying to index a varname using a number larger than the length of varname")
+  if (!all(subset %in% varnames) & !is.numeric(subset)) stop("One or more of the variables you supplied in subset is not in varnames.")
+  if (is.numeric(subset)) return(varnames[subset])
+  return(varnames[varnames %in% subset])
+}
+
 random_var_name_check = function(varnames) {
   newname = random_var_name(5)
   while ((newname %in% varnames)){
@@ -25,7 +34,7 @@ nonlinear_prediction = function(x,y,latent){
   #browser()
   rxx = empirical_reliability(latent[,1], x, loess=TRUE)
   ryy = empirical_reliability(latent[,2], y, loess=TRUE)
-
+  
   ## correct for reliability
   #pred.x = mean(pred.x) + sqrt(rxx*ryy)*(pred.x-mean(pred.x))
   pred.y = mean(pred.y) + sqrt(rxx*ryy)*(pred.y-mean(pred.y))
@@ -34,7 +43,7 @@ nonlinear_prediction = function(x,y,latent){
 }
 
 visualize_nonlinear = function(x,y,latent, plot){
-
+  
   x.names = names(x)
   y.names = names(y)
   data = data.frame(x,y)
@@ -82,6 +91,7 @@ joint_bin = function(i,xbin,ybin,latent){
 ss = function(x){
   sum((x-mean(x))^2)
 }
+
 logistic = function(x, mx, x0, x1, y0, y1, rxx, ryy){
   x[x>mx] = mx-.1 
   slope = -1*(y1/x1)*sqrt(rxx*ryy)
@@ -142,7 +152,7 @@ extract_xy_mapping = function(mapping, invert.map, data, observed, latent=NULL){
 residualize.lowess = function(x,y, data, return.fitted){
   f = flexplot::make.formula(y, x)
   lfit = loess(f, newdata, degree=2)
-
+  
   # create a functional version of the lowess fit
   lfun = approxfun(lfit)
   fitted = lfun(x)
