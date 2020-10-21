@@ -26,3 +26,15 @@ the fit of two different models.}
 \description{
 This function generates diagnostic plots or model plots of a lavaan object.
 }
+\examples{
+require(lavaan)
+data("correct_small")
+
+model = "
+f1 =~ x1 + x2 + x3
+f2 =~ y1 + y2 + y3
+f1 ~ f2
+"
+  fit.lavaan = cfa(model, data=correct_small)
+  visualize(fit.lavaan)
+}

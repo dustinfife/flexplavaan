@@ -71,7 +71,7 @@
 #' viz_diagnostics(data = mugglevwizard, mapping = aes(potions, darkarts), fit.lavaan = mod, plot="disturbance")
 viz_diagnostics <- function(data, mapping, 
                             fit.lavaan, fit.lavaan2 = NULL, 
-                            invert.map=FALSE, alpha=.5, plot=c("trace", "disturbance", "histogram"), ...) {
+                            invert.map=FALSE, alpha=.5, plot=c("trace", "disturbance", "histogram"), label_names, ...) {
   #browser()
   plot = match.arg(plot, c("trace", "disturbance", "histogram"))
   ### extract name of latent variables
@@ -133,9 +133,13 @@ viz_diagnostics <- function(data, mapping,
       flexplot_form = flexplot::make.formula(y, x)
       
       if (!is.null(fit.lavaan2)){
+        #browser()
+
+        
+        
         n = new_data %>% 
           tidyr::gather(key="Model", value=y, c(!!y,y2_name)) %>% 
-          dplyr::mutate(Model = factor(Model, levels=c(!!y, y2_name), labels=c("Model 1", "Model 2")))
+          dplyr::mutate(Model = factor(Model, levels=c(!!y, y2_name), labels=label_names))
         
         p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, suppress_smooth = T, ...) + 
           geom_line(data=n, aes_string(x,"y", col="Model"))
@@ -149,7 +153,7 @@ viz_diagnostics <- function(data, mapping,
       ### convert data to long format to make dots different
       if (!is.null(fit.lavaan2)){
         data2 = data[,c(x,"residuals", resid_name)] %>% tidyr::gather("model", "residuals", c("residuals", resid_name)) %>% setNames(c(x,"model","residuals"))
-        data2$model = factor(data2$model, levels=c("residuals",resid_name), labels=c("Model 1", "Model 2"))
+        data2$model = factor(data2$model, levels=c("residuals",resid_name), labels=label_names)
         f = make.formula("residuals", c(x, "model"))
         p = flexplot::flexplot(f, data=data2, alpha = .2,...) + geom_hline(yintercept = 0) + geom_smooth(se=F)
       } else {
