@@ -20,8 +20,8 @@
 #' "
 #'   fit.lavaan = cfa(model, data=correct_small)
 #'   visualize(fit.lavaan)
-visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "residuals", "model"), formula = NULL,...){
-  plot = match.arg(plot, c("all", "residuals", "model"))
+visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "residuals", "model", "measurement"), formula = NULL,...){
+  plot = match.arg(plot, c("all", "residuals", "model", "measurement"))
   observed = lavNames(object)
   d = data.frame(lavInspect(object, "data"))
   names(d) = observed
@@ -36,21 +36,37 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
   nms = c(deparse(substitute(object)), deparse(substitute(object2)))
 
   if (plot=="all"){
-    ggpairs(d[,observed], legend=legend,
+    p = ggpairs(d[,observed], legend=legend,
             lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms,...)),
             upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", label_names=nms, ...)),
             diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", label_names=nms, ...)))
-  } else if (plot == "residuals"){
-    ggpairs(d[,observed], legend=legend,
+    return(p)
+  } 
+  
+  if (plot == "residuals"){
+    p = ggpairs(d[,observed], legend=legend,
             lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms, ...)),
             upper = NULL,
             diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", label_names=nms, ...)))    
-  }  else {
-    ggpairs(d[,observed], legend=legend,
+    return(p)
+  }  
+  
+  if (plot == "measurement"){
+    p = measurement_plot(object, subset)  
+    return(p)
+  }  
+
+  if (plot == "model") {
+    p = ggpairs(d[,observed], legend=legend,
             lower = NULL,
             upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", label_names=nms, ...)),
             diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", label_names=nms, ...)))     
-  }   
+    return(p)
+    
+  }
+  
+  
+  
 } 
 
 

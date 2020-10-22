@@ -30,11 +30,13 @@ create_latent_dataset = function(i, fitted) {
   obs_data = data.frame(fitted@Data@X)
 
   # get latent scores
-  obs_data$latent = data.frame(lavaan::lavPredict(fitted)[,i])
+  #browser()
+  latent_raw = data.frame(lavaan::lavPredict(fitted)[,i])
+  obs_data = data.frame(cbind(obs_data, latent_raw))
   names(obs_data) = c(obs_names, latent_names[i])
 
   ## remove columns not associated with this latent variable
-  #browser()
+  #
   lambda_factor_i = fitted@Model@GLIST$lambda[,i] %>% data.frame 
   indicators_for_factor_i = which(lambda_factor_i!=0)
   obs_data = obs_data[,c(obs_names[indicators_for_factor_i], latent_names[i])]
@@ -50,6 +52,7 @@ create_latent_dataset = function(i, fitted) {
   return(long_measurement)
 
 }
+
 
 
 #' @importFrom semTools plausibleValues
@@ -129,6 +132,7 @@ find_nth = function(n){
 }
 
 
+
 return_latent_index = function(fitted, latent_var = NULL) {
   all_latents = lavaan::lavNames(fitted, type="lv")
   
@@ -151,26 +155,3 @@ return_latent_index = function(fitted, latent_var = NULL) {
   return(which(all_latents %in% latent_var))
 
 }
-
-
-# str(fitted, max.level=2)
-# str(fitted@Model)
-# 
-# 
-# # extract factor score estimates
-# require(tidyverse)
-# # convert to long format
-# measurement_data = d %>% 
-#   mutate_at(vars(x1:x3), scale) %>% # convert to standardized variables
-#   gather(key="Measure", value="Observed", x1:x3) # convert to long format
-# # plot it
-# head(measurement_data)
-# 
-
-# 
-# flexplot(latent~Observed | Measure, 
-#          data=measurement_data, 
-#          method="lm", 
-#          ghost.line = "red", alpha=.4) + 
-#   geom_errorbar(aes(ymin=latent-se, ymax=latent+se), alpha = .2)
-# }

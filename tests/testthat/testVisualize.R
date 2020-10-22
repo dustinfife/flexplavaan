@@ -24,3 +24,7 @@ test_that("regular lavaan works", {
   vdiffr::expect_doppelganger("lavaan graph model only",visualize(fit.lavaan_1, subset=1:3, plot="model"))
   vdiffr::expect_doppelganger("two lavaan models",visualize(fit.lavaan_1, fit.lavaan_2, subset=1:3))
 })
+
+test_that("measurement works in visualize", {
+  vdiffr::expect_doppelganger("measurement plot in visualize",visualize(fit_twofactor, subset=1, plot="measurement"))
+})
