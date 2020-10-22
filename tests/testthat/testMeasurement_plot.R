@@ -8,6 +8,8 @@ data("correct_small")
 test_that("create_latent_dataset works", {
   d1 = suppressWarnings(create_latent_dataset(1, fit_twofactor))
   d2 = suppressWarnings(create_latent_dataset(2, fit_twofactor))
+  # this will fail...need to fix it
+  #d3 = create_latent_dataset(1:2, fit_twofactor)
   expect_true(d1[1,1] == "x1")
   expect_true(d2[1,1] == "y1")
   expect_true(names(d1)[3] == "f1")

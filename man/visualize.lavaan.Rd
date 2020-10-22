@@ -8,7 +8,7 @@
   object,
   object2 = NULL,
   subset = NULL,
-  plot = c("all", "residuals", "model"),
+  plot = c("all", "residuals", "model", "measurement"),
   formula = NULL,
   ...
 )
