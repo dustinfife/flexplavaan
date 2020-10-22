@@ -28,3 +28,7 @@ test_that("regular lavaan works", {
 test_that("measurement works in visualize", {
   vdiffr::expect_doppelganger("measurement plot in visualize",visualize(fit_twofactor, subset=1, plot="measurement"))
 })
+
+test_that("latent variables work in visualize", {
+  vdiffr::expect_doppelganger("latent in visualize",visualize(fit_twofactor, plot="latent"))
+})

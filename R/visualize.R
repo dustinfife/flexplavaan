@@ -20,8 +20,8 @@
 #' "
 #'   fit.lavaan = cfa(model, data=correct_small)
 #'   visualize(fit.lavaan)
-visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "residuals", "model", "measurement"), formula = NULL,...){
-  plot = match.arg(plot, c("all", "residuals", "model", "measurement"))
+visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "residuals", "model", "measurement", "latent"), formula = NULL,...){
+  plot = match.arg(plot, c("all", "residuals", "model", "measurement", "latent"))
   observed = lavNames(object)
   d = data.frame(lavInspect(object, "data"))
   names(d) = observed
@@ -53,6 +53,11 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
   
   if (plot == "measurement"){
     p = measurement_plot(object, subset)  
+    return(p)
+  }
+  
+  if (plot == "latent"){
+    p = latent_plot(object, formula)  
     return(p)
   }  
 
