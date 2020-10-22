@@ -12,6 +12,7 @@ viz_diagnostics(
   invert.map = FALSE,
   alpha = 0.5,
   plot = c("trace", "disturbance", "histogram"),
+  label_names,
   ...
 )
 }
