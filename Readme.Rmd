@@ -9,6 +9,9 @@ header-includes:
 bibliography: references.bib
 ---
 
+ <!-- badges: start -->
+  [![Codecov test coverage](https://codecov.io/gh/dustinfife/flexplavaan/branch/master/graph/badge.svg)](https://codecov.io/gh/dustinfife/flexplavaan?branch=master)
+  <!-- badges: end -->
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 require(knitr)
@@ -238,7 +241,7 @@ Instead of looking at global fit indices as in Table \@ref(tab:fits), the data c
 ```{r, cross, fig.cap="Model-implied trail plots (upper triangle) and disturbance-dependence plots (lower triangle) for the jedi dataset. "}
 visualize(force_fit, force_cross,     ## two models to compare
     subset=4:7,                       ## which columns of the matrix to viz
-    sample=300, suppress_smooth=T)    ## options passed to flexplot
+    sample=300)                       ## options passed to flexplot
 ```
 
 
@@ -323,13 +326,14 @@ If we were to fit these data with standard SEM machinery, `flexplavaan` clearly 
 ```{r, hogwarts, fig.cap="Diagnostic plots of the Hogwarts dataset. Notice how `flexplavaan` is able to detect nonlinearities from latent to observed variables using only the observed variables. ", fig.width=8, fig.height=8}
 # fit/visualize using standard lavaan -------------------------------------
 data("hogwarts_survival")
+hogwarts_survival = hogwarts_survival %>% select(-magic_knowledge, -magic_skills)
 model = "
 magic_knowledge =~ potions + history + herbology
 magic_skills =~ spells + darkarts + flying 
 magic_skills ~ magic_knowledge
 "
 hogwarts_fit = lavaan::sem(model, data=hogwarts_survival)
-visualize(hogwarts_fit, method="loess", sample=300)
+visualize(hogwarts_fit,sample=300)
 ```
 
 
