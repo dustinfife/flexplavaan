@@ -4,7 +4,14 @@
 #' @param object a lavaan object
 #' @param object2 a second lavaan object (optional). This is used to visually compare
 #' the fit of two different models. 
-#' @param plot what should be plotted? User can specify "diagnostics" or "model"
+#' @param subset Either a vector of numbers or variable names indicating which variables
+#' should be plotted. Defaults to NULL
+#' @param plot what should be plotted? User can specify "all" (default), "disturbance", 
+#' "model", "measurement", "latent", or "residual"
+#' @param formula For latent plots, the user can specify a \link[flexplot]{flexplot} formula. 
+#' Option is ignored for the other plots
+#' @param sort_plots Should the axes be sorted according to the size of the residuals? Setting to 
+#' TRUE (default) will plot the variables with the largest residuals first
 #' @param ... Other arguments passed to flexplot
 #' @import GGally
 #' @importFrom flexplot visualize
@@ -20,11 +27,25 @@
 #' "
 #'   fit.lavaan = cfa(model, data=correct_small)
 #'   visualize(fit.lavaan)
-visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "residuals", "model", "measurement", "latent"), formula = NULL,...){
-  plot = match.arg(plot, c("all", "residuals", "model", "measurement", "latent"))
+visualize.lavaan = function(object, object2=NULL, 
+                            subset = NULL, 
+                            plot=c("all", "disturbance", "model", "measurement", "latent"), 
+                            formula = NULL,
+                            sort_plots = TRUE,...){
+  
+  plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent"))
   observed = lavNames(object)
   d = data.frame(lavInspect(object, "data"))
   names(d) = observed
+  
+  
+  ## sort the axes
+  condition = sort_plots & plot %in% c("all", "disturbance", "model")
+  variable_order = ifelse(rep(condition, times=length(observed)), block_model_residuals(object), 1:length(observed))
+  d = d[,variable_order]
+  observed = observed[variable_order]
+  
+  # specify subsets
   observed = get_subset(subset, observed)
   if (!is.null(object2)) {
     legend=c(1,2)
@@ -43,7 +64,7 @@ visualize.lavaan = function(object, object2=NULL, subset = NULL, plot=c("all", "
     return(p)
   } 
   
-  if (plot == "residuals"){
+  if (plot == "disturbance"){
     p = ggpairs(d[,observed], legend=legend,
             lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms, ...)),
             upper = NULL,

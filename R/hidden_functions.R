@@ -1,3 +1,52 @@
+block_model_residuals = function(fitted) {
+  
+  obs_names = lavNames(fitted)
+  residual_correlations = residuals(fitted, type="cor")$cov 
+  
+  #Cluster based on structural equivalence
+  eq<-sna::equiv.clust(residual_correlations, equiv.fun = sna::sedist)
+  block = sna::blockmodel(residual_correlations, eq, k = length(obs_names), 
+                      plabels = obs_names, 
+                     mode="graph")
+  column_order = reverse_rank(block$order.vector)
+  return(column_order)
+}
+
+
+reverse_rank = function(x) {
+ rank(x*-1 )
+}
+
+# taken from OpenMx
+vechs = function(x) {
+  return(x[lower.tri(x, diag=FALSE)])
+}
+
+# taken from OpenMx
+vech2full = function (x) 
+{
+  if (is.matrix(x)) {
+    if (nrow(x) > 1 && ncol(x) > 1) {
+      stop("Input to the full vech2full must be a (1 x n) or (n x 1) matrix.")
+    }
+    dimension <- max(dim(x))
+  }
+  else if (is.vector(x)) {
+    dimension <- length(x)
+  }
+  else {
+    stop("Input to the function vech2full must be either a matrix or a vector.")
+  }
+  k <- sqrt(2 * dimension + 0.25) - 0.5
+  ret <- matrix(0, nrow = k, ncol = k)
+  if (nrow(ret) != k) {
+    stop("Incorrect number of elements in vector to construct a matrix from a half-vectorization.")
+  }
+  ret[lower.tri(ret, diag = TRUE)] <- as.vector(x)
+  ret[upper.tri(ret)] <- t(ret)[upper.tri(ret)]
+  return(ret)
+}
+
 #varnames = letters[1:5]
 random_var_name = function(size=5) {
   letters[1:26] %>% sample(size=size, replace=T) %>% paste0(collapse="")
