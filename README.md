@@ -10,7 +10,7 @@ bibliography: references.bib
 ---
 
  <!-- badges: start -->
-  ![Codecov test coverage](https://codecov.io/gh/dustinfife/flexplavaan/branch/master/graph/badge.svg)](https://codecov.io/gh/dustinfife/flexplavaan?branch=master)
+  [![Codecov test coverage](https://codecov.io/gh/dustinfife/flexplavaan/branch/master/graph/badge.svg)](https://codecov.io/gh/dustinfife/flexplavaan?branch=master)
   <!-- badges: end -->
 
 # Brief Introduction
