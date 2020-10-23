@@ -3,3 +3,4 @@
 writing/
 ^.*\.csv$
 R/scratch/
+^codecov\.yml$
