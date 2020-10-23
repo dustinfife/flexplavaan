@@ -28,7 +28,7 @@ Suppose we have the factor analysis model shown below.
 
 
 <center>
-<img src="Readme_files/figure-html/mod1-1.png" width="50%" />
+<img src="README_files/figure-html/mod1-1.png" width="50%" />
 </center>
 
 <br>
@@ -108,7 +108,7 @@ ggplot(data=d, aes(x=x1,y=x2)) +
 ```
 
 <div class="figure">
-<img src="Readme_files/figure-html/second-1.png" alt="Scatterplot of the x1/x2 relationship. The blue line shows the actual fitted relationship, while the red line shows the model-implied (trail) fit. "  />
+<img src="README_files/figure-html/second-1.png" alt="Scatterplot of the x1/x2 relationship. The blue line shows the actual fitted relationship, while the red line shows the model-implied (trail) fit. "  />
 <p class="caption">(\#fig:second)Scatterplot of the x1/x2 relationship. The blue line shows the actual fitted relationship, while the red line shows the model-implied (trail) fit. </p>
 </div>
 
@@ -123,7 +123,7 @@ visualize(fitted, plot = "model", sample=300)
 ```
 
 <div class="figure">
-<img src="Readme_files/figure-html/third-1.png" alt="Scatterplot matrix of the indicator variables. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). "  />
+<img src="README_files/figure-html/third-1.png" alt="Scatterplot matrix of the indicator variables. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). "  />
 <p class="caption">(\#fig:third)Scatterplot matrix of the indicator variables. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). </p>
 </div>
 
@@ -141,7 +141,7 @@ visualize(fitted, sample=300)
 ```
 
 <div class="figure">
-<img src="Readme_files/figure-html/five-1.png" alt="Scatterplot matrix of the indicator variables. The upper triangle show the model-implied fit between the indicators, while the lower triangle shows the disturbance dependence plots. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). "  />
+<img src="README_files/figure-html/five-1.png" alt="Scatterplot matrix of the indicator variables. The upper triangle show the model-implied fit between the indicators, while the lower triangle shows the disturbance dependence plots. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). "  />
 <p class="caption">(\#fig:five)Scatterplot matrix of the indicator variables. The upper triangle show the model-implied fit between the indicators, while the lower triangle shows the disturbance dependence plots. As before, the red line shows the implied fit between the two variables and the blue line shows the actual fitted relationship (measured via loess lines). </p>
 </div>
 
@@ -153,7 +153,7 @@ These diagnostic plots are designed to detect deviations from the model's implie
 <br>
 <center>
 <div class="figure">
-<img src="Readme_files/figure-html/force-1.png" alt="Simulated dataset with crossloadings on the 'history' indicator." width="80%" />
+<img src="README_files/figure-html/force-1.png" alt="Simulated dataset with crossloadings on the 'history' indicator." width="80%" />
 <p class="caption">(\#fig:force)Simulated dataset with crossloadings on the 'history' indicator.</p>
 </div>
 </center>
@@ -206,7 +206,7 @@ visualize(force_fit, force_cross,     ## two models to compare
 ```
 
 <div class="figure">
-<img src="Readme_files/figure-html/cross-1.png" alt="Model-implied trail plots (upper triangle) and disturbance-dependence plots (lower triangle) for the jedi dataset. "  />
+<img src="README_files/figure-html/cross-1.png" alt="Model-implied trail plots (upper triangle) and disturbance-dependence plots (lower triangle) for the jedi dataset. "  />
 <p class="caption">(\#fig:cross)Model-implied trail plots (upper triangle) and disturbance-dependence plots (lower triangle) for the jedi dataset. </p>
 </div>
 
@@ -237,7 +237,7 @@ flexplot(jedi~Observed | Measure,
 ```
 
 <div class="figure">
-<img src="Readme_files/figure-html/measurement-1.png" alt="Visual representation of the measurement model for the jedi dataset. Blue lines are the regression lines between the observed variable (X axis) and the factor scores (Y axis). The red lines are ghost lines, which repeated the pattern from one panel (the midichlorian panel) to the others for easier comparison."  />
+<img src="README_files/figure-html/measurement-1.png" alt="Visual representation of the measurement model for the jedi dataset. Blue lines are the regression lines between the observed variable (X axis) and the factor scores (Y axis). The red lines are ghost lines, which repeated the pattern from one panel (the midichlorian panel) to the others for easier comparison."  />
 <p class="caption">(\#fig:measurement)Visual representation of the measurement model for the jedi dataset. Blue lines are the regression lines between the observed variable (X axis) and the factor scores (Y axis). The red lines are ghost lines, which repeated the pattern from one panel (the midichlorian panel) to the others for easier comparison.</p>
 </div>
 
@@ -250,7 +250,7 @@ flexplot(jedi~force, data=jedi_jedi, method="lm")
 ```
 
 <div class="figure">
-<img src="Readme_files/figure-html/structure-1.png" alt="Visual representation of the structural model for the jedi dataset. The blue line is the regression line between the two latent variables. "  />
+<img src="README_files/figure-html/structure-1.png" alt="Visual representation of the structural model for the jedi dataset. The blue line is the regression line between the two latent variables. "  />
 <p class="caption">(\#fig:structure)Visual representation of the structural model for the jedi dataset. The blue line is the regression line between the two latent variables. </p>
 </div>
 
@@ -263,7 +263,7 @@ To illustrate the ability of `flexplavaan` to detect nonlinearities, I will use 
 
 <center>
 <div class="figure">
-<img src="Readme_files/figure-html/nonlinear-1.png" alt="Simulated dataset with nonlinear relationship. \label{fig:nonlinear}" width="80%" />
+<img src="README_files/figure-html/nonlinear-1.png" alt="Simulated dataset with nonlinear relationship. \label{fig:nonlinear}" width="80%" />
 <p class="caption">(\#fig:nonlinear)Simulated dataset with nonlinear relationship. \label{fig:nonlinear}</p>
 </div>
 </center>
@@ -287,7 +287,7 @@ visualize(hogwarts_fit,sample=300)
 ```
 
 <div class="figure">
-<img src="Readme_files/figure-html/hogwarts-1.png" alt="Diagnostic plots of the Hogwarts dataset. Notice how `flexplavaan` is able to detect nonlinearities from latent to observed variables using only the observed variables. "  />
+<img src="README_files/figure-html/hogwarts-1.png" alt="Diagnostic plots of the Hogwarts dataset. Notice how `flexplavaan` is able to detect nonlinearities from latent to observed variables using only the observed variables. "  />
 <p class="caption">(\#fig:hogwarts)Diagnostic plots of the Hogwarts dataset. Notice how `flexplavaan` is able to detect nonlinearities from latent to observed variables using only the observed variables. </p>
 </div>
 
@@ -411,7 +411,7 @@ flexplot(x2~x1, data=d) +
 ```
 
 <div class="figure">
-<img src="Readme_files/figure-html/modelimplied-1.png" alt="A second way of estimating the slope between observed variables. The red line shows the model-implied fit that was computed via the estimated factors scores, corrected for reliability. "  />
+<img src="README_files/figure-html/modelimplied-1.png" alt="A second way of estimating the slope between observed variables. The red line shows the model-implied fit that was computed via the estimated factors scores, corrected for reliability. "  />
 <p class="caption">(\#fig:modelimplied)A second way of estimating the slope between observed variables. The red line shows the model-implied fit that was computed via the estimated factors scores, corrected for reliability. </p>
 </div>
 
@@ -448,7 +448,7 @@ cowplot::plot_grid(a,b)
 ```
 
 <div class="figure">
-<img src="Readme_files/figure-html/splined-1.png" alt="A scatterplot showing the relationship between the latent variable and the observed darkarts and flying variables. The red lines show the smoothed spline fit, an approximation of the model-implied fit. "  />
+<img src="README_files/figure-html/splined-1.png" alt="A scatterplot showing the relationship between the latent variable and the observed darkarts and flying variables. The red lines show the smoothed spline fit, an approximation of the model-implied fit. "  />
 <p class="caption">(\#fig:splined)A scatterplot showing the relationship between the latent variable and the observed darkarts and flying variables. The red lines show the smoothed spline fit, an approximation of the model-implied fit. </p>
 </div>
 
@@ -503,7 +503,7 @@ residuals = flexplot(darkarts_residuals~flying, data=hogwarts_survival) +
 cowplot::plot_grid(fitted, residuals)
 ```
 
-![](Readme_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 
 Much of the above programming is simply to demonstrate how `flexplavaan` is estimating the model-implied fits. Most of the programming is handled in the background, much as it was with linear models. To display the scatterplot matrices as before, we can use the same function (`visualize`), though we need to also specify the dataset and (at present) identify the latent variable(s) with which each observed variables is associated.
