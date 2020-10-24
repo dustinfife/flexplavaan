@@ -1,0 +1,88 @@
+
+return_residual_dataset = function(fitted, max_val = 0.01) {
+  obs_names = lavNames(fitted)
+  residual_correlations = residuals(fitted, type="cor")$cov 
+  
+  # string out correlations
+  vechs_cors = vechs(residual_correlations)
+  pairwise_names = name_vechs(obs_names)
+  
+  # subset data
+  condition = which(abs(vechs_cors)>max_val)
+  
+  # create dataset
+  res_d = data.frame(Residual=(vechs_cors[condition]), Correlation = pairwise_names[condition])
+  res_d = res_d[order(abs(res_d$Residual), decreasing = T),]
+  
+  # convert correlations into ordered factor (so axes are consistent)
+  res_d$Correlation = factor(res_d$Correlation, levels=res_d$Correlation, ordered=T)
+  
+  return(res_d)
+}
+
+combine_residual_datasets = function(fitted, fitted2=NULL, max_val=.01) {
+  #browser()
+  if (is.null(fitted2)) return(return_residual_dataset(fitted, max_val))
+  
+  # get the first dataset, but set maxval to zero
+  d_1 = return_residual_dataset(fitted, max_val=0)
+  d_2 = return_residual_dataset(fitted2, max_val=0)
+  
+  # merge the datasets, sort, and gather
+  d = merge(d_1, d_2, by="Correlation") %>% 
+    filter(abs(Residual.x) > max_val | abs(Residual.y) > max_val ) %>% 
+    arrange(-Residual.x) %>% 
+    gather(key="Model", value="Residual", Residual.x, Residual.y)
+
+  return(d)
+}
+
+
+#residual_plots(fitted, fitted2)
+residual_plots = function(fitted, fitted2=NULL, max_val = 0.01) {
+  res_d = combine_residual_datasets(fitted, fitted2, max_val)
+  
+  if (is.null(fitted2)) {
+    res_d$top = abs(res_d$Residual)
+    res_d$bottom = -1*abs(res_d$Residual)
+    p = ggplot2::ggplot(res_d, aes(x=Correlation, y=Residual)) +
+      geom_line(aes(y=bottom, group=1), col="gray") +
+      geom_line(aes(y=top, group=1), col="gray") + 
+      geom_point(aes(x=Correlation, y=Residual), size=2) +
+      #geom_line(aes(x=Correlation, y=Residual, group=1)) + 
+      geom_abline(slope=0, intercept=0) + 
+      theme_bw() 
+    return(p)
+  }
+  
+  # rename the levels
+  res_d$Model = factor(res_d$Model, levels=c("Residual.x", "Residual.y"), 
+                       labels=c(
+                         deparse(substitute(fitted)),
+                         deparse(substitute(fitted2))))
+  
+  # set the bands for the limits
+  limits = res_d %>% 
+    group_by(Model) %>% 
+    mutate(top = abs(Residual),
+           bottom = -1*abs(Residual))
+  #limits = res_d %>% filter(Model == deparse(substitute(fitted)))
+  #limits$top = abs(limits$Residual)
+  #limits$bottom = -1*abs(limits$Residual)
+  p = ggplot2::ggplot(limits, aes(x=Correlation, y=Residual, group=Model)) +
+    geom_line(aes(y=bottom, group=Model, linetype=Model, col=Model), alpha=.4) +
+    geom_line(aes(y=top, group=Model, linetype=Model, col=Model), alpha=.4) + 
+    geom_point(data=res_d, aes(x=Correlation, y=Residual, group=Model, col=Model), size=2) +
+    geom_abline(slope=0, intercept=0) + 
+    theme_bw()
+  return(p)
+  
+}
+
+
+
+name_vechs = function(variable_names, collapse=":"){
+  combn(variable_names, 
+        m=2, 
+        FUN = function(x) paste0(x[1], collapse, x[2]))
+}
