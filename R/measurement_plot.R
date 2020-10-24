@@ -106,8 +106,8 @@ apply_measurement_plot = function(i, fitted, ...) {
 #' @importFrom purrr map
 #'
 #' @examples
-#' measurement_plot(fitted, 1)
-#' measurement_plot(fitted, 1:2)
+#' measurement_plot(fit_bollen, 1)
+#' measurement_plot(fit_bollen, 1:2)
 measurement_plot = function(fitted, latent_vars=NULL) {
   
   ## return the latent variable index (if necessary)

@@ -20,11 +20,17 @@ Imports:
     flexplot,
     GGally,
     purrr,
-    dplyr
+    dplyr,
+    semTools, 
+    tidyr,
+    sna, 
+    tibble, 
+    ggforce
 Suggests: 
     MASS,
     testthat,
-    covr
+    covr, 
+    vdiffr
 RoxygenNote: 7.1.1
 Depends: 
     R (>= 2.10)
