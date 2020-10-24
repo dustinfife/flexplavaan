@@ -8,8 +8,9 @@
   object,
   object2 = NULL,
   subset = NULL,
-  plot = c("all", "residuals", "model", "measurement"),
+  plot = c("all", "disturbance", "model", "measurement", "latent"),
   formula = NULL,
+  sort_plots = TRUE,
   ...
 )
 }
@@ -19,7 +20,17 @@
 \item{object2}{a second lavaan object (optional). This is used to visually compare
 the fit of two different models.}
 
-\item{plot}{what should be plotted? User can specify "diagnostics" or "model"}
+\item{subset}{Either a vector of numbers or variable names indicating which variables
+should be plotted. Defaults to NULL}
+
+\item{plot}{what should be plotted? User can specify "all" (default), "disturbance", 
+"model", "measurement", "latent", or "residual"}
+
+\item{formula}{For latent plots, the user can specify a \link[flexplot]{flexplot} formula. 
+Option is ignored for the other plots}
+
+\item{sort_plots}{Should the axes be sorted according to the size of the residuals? Setting to 
+TRUE (default) will plot the variables with the largest residuals first}
 
 \item{...}{Other arguments passed to flexplot}
 }
