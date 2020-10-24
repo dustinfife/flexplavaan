@@ -1,6 +1,6 @@
 Package: flexplavaan
 Title: Visualizing Latent Variable Models Using Flexplot
-Version: 0.0.0.93
+Version: 0.1.3
 Authors@R: 
     person(given = "Dustin",
            family = "Fife",

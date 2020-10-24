@@ -13,7 +13,9 @@ f1 ~ f2
 "
 
 fit_twofactor = cfa(model_1, data=correct_small)
-usethis::use_data(fit_twofactor)  
+fit_twofactor_2 = cfa(model_2, data=correct_small)
+usethis::use_data(fit_twofactor)
+usethis::use_data(fit_twofactor_2)
 
 
 
