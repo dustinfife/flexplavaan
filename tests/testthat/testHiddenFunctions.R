@@ -10,7 +10,7 @@ test_that("get_subset works", {
 })
 
 test_that("block_model_residuals works", {
-  expect_true(block_model_residuals(fit_bollen)[1]==4)
+  expect_true(block_model_residuals(fit_bollen)[1]==8)
 })
 
 test_that("vechs works", {

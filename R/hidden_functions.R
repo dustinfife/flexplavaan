@@ -6,9 +6,8 @@ block_model_residuals = function(fitted) {
   #Cluster based on structural equivalence
   eq<-sna::equiv.clust(residual_correlations, equiv.fun = sna::sedist)
   block = sna::blockmodel(residual_correlations, eq, k = length(obs_names), 
-                      plabels = obs_names, 
                      mode="graph")
-  column_order = reverse_rank(block$order.vector)
+  column_order = as.numeric(sapply(block$plabels, function(x) which(obs_names==x)))
   return(column_order)
 }
 

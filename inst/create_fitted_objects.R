@@ -37,3 +37,14 @@ y6 ~~ y8
 
 fit_bollen <- sem( democ1, data = PoliticalDemocracy)
 usethis::use_data(fit_bollen)
+
+
+d = read.csv("data/health_depression.csv")
+model = "
+internet =~ Salience + ExcessiveUse + NeglectWork + Anticipation + LackofControl + NeglectSocialLife
+health =~ Nutrition + Healthresponsibility + Selfactualization + Interpersonalsupport + Exercise + Stressmanagement
+CESD~internet + health
+internet ~~ health
+"
+health = sem(model, d)
+usethis::use_data(health)
