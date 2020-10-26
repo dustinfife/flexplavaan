@@ -17,6 +17,8 @@ test_that("regular lavaan works", {
   vdiffr::expect_doppelganger("lavaan graph ddp",visualize(fit_twofactor, subset=1:3, plot="disturbance"))
   vdiffr::expect_doppelganger("lavaan graph model only",visualize(fit_twofactor, subset=1:3, plot="model"))
   vdiffr::expect_doppelganger("two lavaan models",visualize(fit_twofactor, fit.lavaan_2, subset=1:3))
+  vdiffr::expect_doppelganger("er:observed with no latents",visualize(health,subset=1:4))
+  
 })
 
 test_that("measurement works in visualize", {
