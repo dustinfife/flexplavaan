@@ -1,3 +1,33 @@
+# get the factors associated with this i variable
+find_latents_for_observed = function(i, fitted) {
+  row = fitted@Model@GLIST$lambda[i,]
+  latent = lavNames(fitted, type="lv")[round(row, digits=4)!=0]
+  return(latent)
+}
+
+#return a vector of residuals from predicting observed from latent
+residual_from_latents = function(i, fitted) {
+
+  # get names
+  observed = lavNames(fitted)[i]
+  variable_name = find_latents_for_observed(i, fitted)
+  
+  # create dataset
+  variable_scores = lavPredict(fitted, type = "lv")[,variable_name]
+  dataset = data.frame(cbind(variable_scores, fitted@Data@X[[1]][,i]))
+  names(dataset) = c(variable_name, observed)
+  
+  # formula/residuals
+  formula_residual = flexplot::make.formula(observed, variable_name)
+  residuals = residuals(lm(formula_residual, dataset))  
+  return(residuals)
+}
+
+
+extract_residuals = function(fitted) {
+  latent = lavPredict(fitted)
+}
+
 block_model_residuals = function(fitted) {
   
   obs_names = lavNames(fitted)
