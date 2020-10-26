@@ -80,8 +80,14 @@ viz_diagnostics <- function(data, mapping,
   
   ### plot ggplot object so I can extract the elements
   if (dplyr::as_label(mapping$y) == "NULL" | plot=="histogram"){
+    #browser()
+    # output residuals
+    i = which(observed == as_label(mapping$x))
+    d = data.frame(residual_from_latents(i, fit.lavaan))
+    names(d) = as_label(mapping$x)
+    
     flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
-    flexplot::flexplot(flexplot_form, data=data)
+    flexplot::flexplot(flexplot_form, data=d)
   } else {
     #browser()
     variables = c(dplyr::as_label(mapping$x), dplyr::as_label(mapping$y))
