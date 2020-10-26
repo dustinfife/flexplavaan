@@ -12,6 +12,8 @@ residual_from_latents = function(i, fitted) {
   observed = lavNames(fitted)[i]
   variable_name = find_latents_for_observed(i, fitted)
   
+  # if there are no latens associated with this variable, just return the variable
+  if (is.na(variable_name)) return(fitted@Data@X[[1]][,i])
   # create dataset
   variable_scores = lavPredict(fitted, type = "lv")[,variable_name]
   dataset = data.frame(cbind(variable_scores, fitted@Data@X[[1]][,i]))
@@ -24,9 +26,6 @@ residual_from_latents = function(i, fitted) {
 }
 
 
-extract_residuals = function(fitted) {
-  latent = lavPredict(fitted)
-}
 
 block_model_residuals = function(fitted) {
   
