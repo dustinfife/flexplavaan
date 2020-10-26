@@ -38,7 +38,6 @@ visualize.lavaan = function(object, object2=NULL,
   d = data.frame(lavInspect(object, "data"))
   names(d) = observed
   
-  
   ## sort the axes
   condition = sort_plots & plot %in% c("all", "disturbance", "model")
   variable_order = ifelse(rep(condition, times=length(observed)), block_model_residuals(object), 1:length(observed))
