@@ -115,7 +115,6 @@ measurement_plot = function(fitted, latent_vars=NULL) {
   return(plot_list)
 }
 
-?suppressWarnings
 
 find_nth = function(n){
   if (n==1) return("st")
