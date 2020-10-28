@@ -14,3 +14,17 @@ test_that("beta_to_flexplot works", {
   beta = fit_bollen@Model@GLIST$beta
   expect_true(get_dv_iv(2, beta)[2] == 3)
 })
+
+test_that("get_dv_iv works", {
+  expect_true(get_dv_iv(1, fit_bollen@Model@GLIST$beta)==3)
+  # for negative loadings
+  expect_true(length(get_dv_iv(3, health@Model@GLIST$beta))==2)
+})
+
+test_that("check_data_has_observed works", {
+  d = data.frame(lavPredict(health))
+  se_data = estimate_standard_errors(1, health)$sd_imp
+  d_new = cbind(d, se_data)
+  expect_true(ncol(check_data_has_observed(d_new, "internet", "health", health))==3)
+  expect_true(ncol(check_data_has_observed(d_new, "internet", "CESD", health))==17)
+})

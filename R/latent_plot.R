@@ -12,14 +12,15 @@ latent_plot = function(fitted, formula = NULL) {
     data.frame
   names(se_data) = paste0("se_", latent_names)
   
+  
   ### get flexplot formulae
   if (is.null(formula)) { 
     formula = beta_to_flexplot(fitted, latent_predicted)
-    plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data))
+    plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data, fitted))
     return(plot_list)
   }
   
-  plot = latent_plot_only(formula, latent_predicted, se_data)
+  plot = latent_plot_only(formula, latent_predicted, se_data, fitted)
   return(plot)
 
 }
@@ -28,33 +29,57 @@ latent_plot = function(fitted, formula = NULL) {
 # i=1
 # formula = forms
 # data=latent_predicted
-latent_plot_only = function(f, data, se_data) {
-  #cat(f)
-  #browser()
+latent_plot_only = function(f, data, se_data, fitted) {
+
   xvar = all.vars(f)[-1]
   yvar = all.vars(f)[1]
-  data = cbind(data, se_data)
+  data = check_data_has_observed(cbind(data, se_data), xvar, yvar, fitted)
   p = flexplot(f, data, se=F, ghost.line="red", alpha=0) + 
-    ggforce::geom_ellipse(aes_string(x0 = xvar[1], y0 = yvar, a = paste0("se_", xvar[1]), b = paste0("se_", yvar), angle=0), color=rgb(0,0,0,.1))
+    ggforce::geom_ellipse(aes_string(x0 = xvar[1], y0 = yvar, a = paste0("se_", xvar[1]), b = paste0("se_", yvar), angle=0), color=rgb(0,0,0,.2))
   return(p)
 }
 
+
+# if an observed variable is endogenous, we need to return the full dataset
+check_data_has_observed = function(data, xvar, yvar, fitted) {
+
+  all_names = c(xvar, yvar)
+  which_not_in_data = which(!(all_names %in% names(data)))
+  varname_which = all_names[which_not_in_data]
+  if (length(which_not_in_data)==0) return(data)
+
+  
+  full_data = cbind(data, data.frame(fitted@Data@X[[1]]))
+  names(full_data) = c(names(data), fitted@Data@ov$name)
+  se_name = paste0("se_", varname_which)
+  full_data[[se_name]] = 0
+  ## create column with standard deviation for the variable not in there
+  
+  return(full_data)
+  
+}
 #fitted = fit_bollen
 #beta_to_flexplot(fit_bollen, data.frame(lavPredict(fit_bollen)))
 beta_to_flexplot = function(fitted, data, return_dvs=FALSE) {
   
-  latent_names = lavaan::lavNames(fitted, type="lv")
+  # beta matrix isn't just latent variables
+  # if observed are endogenous, they will be there too
+  # so I can't just use lavNames to get that
+  end_names = fitted@Model@dimNames[[4]][[1]]
   
   # get the beta matrix (which is the path coefficients between latent variables)
   beta_matrix = fitted@Model@GLIST$beta
+
+  # dvs will identify which endogenous variables have predictors
   dvs = which(rowSums(beta_matrix)>0)
+  #end_names[get_dv_iv(dvs, beta_matrix)]
+  beta_matrix
   
   if(return_dvs) return(dvs)
-  
   model_formulas = dvs %>% purrr::map(~
                        flexplot:::make_flexplot_formula(
-                         predictors = latent_names[get_dv_iv(.x, beta_matrix)],
-                         outcome = latent_names[.x], 
+                         predictors = end_names[get_dv_iv(.x, beta_matrix)],
+                         outcome = end_names[.x], 
                          data=data
                        )
                     )
@@ -65,5 +90,5 @@ beta_to_flexplot = function(fitted, data, return_dvs=FALSE) {
 
 #get_dv_iv(2, beta_matrix)
 get_dv_iv = function(i, beta_matrix){
-  which(beta_matrix[i,]>0)
+  which(abs(beta_matrix[i,])>0)
 }
