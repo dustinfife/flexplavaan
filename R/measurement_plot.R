@@ -1,14 +1,3 @@
-# fitted = fit.lavaan
-# 
-# measurement_plot = function(fitted) {
-#   
-#   ## extract latent and observed data
-#   latents = lavPredict(fitted)
-#   observed = fitted@Data@X
-#   
-#   
-# }
-
 new_scale = function(x){
   x = scale(x)
   attr(x, "scaled:center") = NULL
@@ -84,13 +73,14 @@ apply_measurement_plot = function(i, fitted, ...) {
   data$upper = data[,latent] + data$se
   # plot it
   formula_p = as.formula(paste0(latent, "~Observed|Measure"))
-
   p = flexplot(formula_p,
            data=data,
            method="lm",
            ghost.line = "red", alpha=.4, ...) +
     geom_errorbar(aes(ymin=lower, ymax=upper), alpha = .2)
-  
+  # editing the geom_smooth because it keeps giving message saying "using formula y~x"
+  # now I'm making that explicit (and it wouldn't work using suppress_smooth=T)
+  p$layers[[2]] = geom_smooth(method="lm", formula = y~x)
   return(p)
 }
 
@@ -109,7 +99,8 @@ apply_measurement_plot = function(i, fitted, ...) {
 #' measurement_plot(fit_bollen, 1)
 #' measurement_plot(fit_bollen, 1:2)
 measurement_plot = function(fitted, latent_vars=NULL) {
-  
+
+  #browser()
   ## return the latent variable index (if necessary)
   latent_index = return_latent_index(fitted, latent_vars)
   
@@ -117,12 +108,14 @@ measurement_plot = function(fitted, latent_vars=NULL) {
     return(apply_measurement_plot(latent_index, fitted))
   }
   
-
-  plot_list = latent_vars %>% purrr::map(~apply_measurement_plot(.x, fitted))
+  plot_list = latent_index %>% purrr::map(~suppressMessages(apply_measurement_plot(.x, fitted)))
+  names(plot_list) = lavNames(fitted, type="lv")[latent_index]
+  msg = paste0("There are ", length(latent_index), " measurement plots. I'm going to list the names of them below so you know how to access them. \n")
+  cat(msg)
   return(plot_list)
 }
 
-
+?suppressWarnings
 
 find_nth = function(n){
   if (n==1) return("st")
