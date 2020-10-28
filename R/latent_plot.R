@@ -34,9 +34,42 @@ latent_plot_only = function(f, data, se_data, fitted) {
   xvar = all.vars(f)[-1]
   yvar = all.vars(f)[1]
   data = check_data_has_observed(cbind(data, se_data), xvar, yvar, fitted)
+  browser()
+  slope = compute_slope_angle(f, data)
+
   p = flexplot(f, data, se=F, ghost.line="red", alpha=0) + 
-    ggforce::geom_ellipse(aes_string(x0 = xvar[1], y0 = yvar, a = paste0("se_", xvar[1]), b = paste0("se_", yvar), angle=0), color=rgb(0,0,0,.2))
+    ggforce::geom_ellipse(aes_string(x0 = xvar[1], y0 = yvar, a = paste0("se_", xvar[1]), b = paste0("se_", yvar), angle=slope), color=rgb(0,0,0,.2))
   return(p)
+}
+# 
+# 
+# # get list of 
+# y_hat = lavPredict(fit_bollen)
+# pooled_sd = estimate_standard_errors(1, fit_bollen)  # averaged stdev
+# ?plausibleValues
+# u = 
+#   
+#   
+#   se_posterior = semTools::plausibleValues(fit_bollen)
+# f
+# fitted = fit_bollen
+# aggregate_se = function(fitted) {
+#   latent_name = lavaan::lavNames(fitted, type="lv") 
+#   se_posterior = semTools::plausibleValues(fitted)
+#   se_posterior = se_posterior %>% tibble::tibble() %>% unnest(cols=c(.)) %>%
+#     group_by(case.idx) %>%
+#     dplyr::summarize(within_sd = sd(!!sym(latent_name))) %>% 
+#     data.frame()
+#   se_posterior
+# }
+
+
+compute_slope_angle = function(f, data) {
+  lm_model = lm(f, data)
+  slope = lm(f, data) %>% standardized.beta*57.2958
+  y_se = lm_model %>% predict %>% sd
+  x_se = summary(lm_model)$sigma
+  return(mod_slope[2])
 }
 
 
