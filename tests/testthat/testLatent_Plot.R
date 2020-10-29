@@ -8,6 +8,13 @@ test_that("latent_plot works", {
   vdiffr::expect_doppelganger("multiple latent_plots",latent_plot(fit_bollen)[[2]])
 })  
 
+test_that("return_alpha works", {
+  vdiffr::expect_doppelganger("alpha adjustment latent_plot",
+                              latent_plot(fit_bollen, formula = Eta2 ~ Eta1, alpha = .6))
+  vdiffr::expect_doppelganger("color adjustment latent_plot",
+                              latent_plot(fit_bollen, formula = Eta2 ~ Eta1, color = "blue"))  
+})  
+
 test_that("beta_to_flexplot works", {
   expect_true(paste(beta_to_flexplot(fit_bollen, data.frame(lavPredict(fit_bollen)))[[2]])[2] == "Eta2")
   expect_true(beta_to_flexplot(fit_bollen, data.frame(lavPredict(fit_bollen)), return_dvs = T)[1] == 1)

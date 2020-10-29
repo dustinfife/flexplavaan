@@ -1,7 +1,7 @@
 #fitted = fit_twofactor
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
-latent_plot = function(fitted, formula = NULL) {
+latent_plot = function(fitted, formula = NULL, ...) {
   
   latent_names = lavaan::lavNames(fitted, type="lv")
   latent_predicted = data.frame(lavPredict(fitted))
@@ -16,11 +16,11 @@ latent_plot = function(fitted, formula = NULL) {
   ### get flexplot formulae
   if (is.null(formula)) { 
     formula = beta_to_flexplot(fitted, latent_predicted)
-    plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data, fitted))
+    plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data, fitted, ...))
     return(plot_list)
   }
   
-  plot = latent_plot_only(formula, latent_predicted, se_data, fitted)
+  plot = latent_plot_only(formula, latent_predicted, se_data, fitted, ...)
   return(plot)
 
 }
@@ -29,39 +29,76 @@ latent_plot = function(fitted, formula = NULL) {
 # i=1
 # formula = forms
 # data=latent_predicted
-latent_plot_only = function(f, data, se_data, fitted) {
+latent_plot_only = function(f, data, se_data, fitted, ...) {
 
   xvar = all.vars(f)[-1]
   yvar = all.vars(f)[1]
   data = check_data_has_observed(cbind(data, se_data), xvar, yvar, fitted)
-  browser()
-  slope = compute_slope_angle(f, data)
 
+  ### create limits of CI
+  data[["lower_pi_xvar"]] = data[[xvar[1]]] - data[[paste0("se_", xvar[1])]]
+  data[["lower_pi_yvar"]] = data[[yvar[1]]] - data[[paste0("se_", yvar[1])]]
+  data[["upper_pi_xvar"]] = data[[xvar[1]]] + data[[paste0("se_", xvar[1])]]
+  data[["upper_pi_yvar"]] = data[[yvar[1]]] + data[[paste0("se_", yvar[1])]]
+  
+  ## see if alpha is set
+  alpha_default = return_alpha(...)
+
+  #browser()
   p = flexplot(f, data, se=F, ghost.line="red", alpha=0) + 
-    ggforce::geom_ellipse(aes_string(x0 = xvar[1], y0 = yvar, a = paste0("se_", xvar[1]), b = paste0("se_", yvar), angle=slope), color=rgb(0,0,0,.2))
+    geom_point() +
+    alpha_default[1] +
+    alpha_default[2]
+  p = switch_layer_orders(p)
   return(p)
 }
-# 
-# 
-# # get list of 
-# y_hat = lavPredict(fit_bollen)
-# pooled_sd = estimate_standard_errors(1, fit_bollen)  # averaged stdev
-# ?plausibleValues
-# u = 
-#   
-#   
-#   se_posterior = semTools::plausibleValues(fit_bollen)
-# f
-# fitted = fit_bollen
-# aggregate_se = function(fitted) {
-#   latent_name = lavaan::lavNames(fitted, type="lv") 
-#   se_posterior = semTools::plausibleValues(fitted)
-#   se_posterior = se_posterior %>% tibble::tibble() %>% unnest(cols=c(.)) %>%
-#     group_by(case.idx) %>%
-#     dplyr::summarize(within_sd = sd(!!sym(latent_name))) %>% 
-#     data.frame()
-#   se_posterior
-# }
+
+
+return_alpha = function(...) {
+
+  if (is.null(names(list(...)))) {
+    return(
+      c(geom_errorbar(aes(ymin=lower_pi_yvar, ymax=upper_pi_yvar),alpha = .3),
+       geom_errorbarh(aes(xmin=lower_pi_xvar, xmax=upper_pi_xvar),alpha = .3) ))
+  } 
+  if ("alpha" %in% names(list(...))) {
+    return(
+    c(geom_errorbar(aes(ymin=lower_pi_yvar, ymax=upper_pi_yvar),...),
+      geom_errorbarh(aes(xmin=lower_pi_xvar, xmax=upper_pi_xvar), ...) )
+    )
+  } 
+  
+  
+  return(c(geom_errorbar(aes(ymin=lower_pi_yvar, ymax=upper_pi_yvar),alpha = .3, ...),
+      geom_errorbarh(aes(xmin=lower_pi_xvar, xmax=upper_pi_xvar),alpha = .3, ...) ))
+
+
+}
+
+switch_layer_orders = function(p){
+  ## find the geom_smooth
+  layers = sapply(p$layers, function(x) class(x$geom)[1])
+  smooth_index = which(layers == "GeomSmooth")
+
+  ## remove it, then put it back in the last position
+  smooth_line = p$layers[[smooth_index]]
+  p$layers[[smooth_index]] = NULL
+  p$layers[[length(layers)]] = smooth_line
+  return(p)
+}
+
+aggregate_se = function(fitted, ...) {
+  latent_name = lavaan::lavNames(fitted, type="lv")
+  pred_imputations = semTools::plausibleValues(fit_bollen)
+  a = pred_imputations %>% 
+    tibble::tibble() %>%                      # store as a nested tibble
+    purrr::set_names(`.`,"imputation") %>%    # rename column from "." to "imputation"
+    mutate(imp = 1:n()) %>%                   # create a new column that indexes the imputation
+    unnest(cols=c(imputation, imp)) %>%       # puts data in long format
+    group_by(case.idx) %>%                    # computes sd per perso
+    summarize_all(sd)
+  return(a)
+}
 
 
 compute_slope_angle = function(f, data) {
