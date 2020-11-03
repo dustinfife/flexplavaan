@@ -1,0 +1,532 @@
+Mplus VERSION 7.4
+MUTHEN & MUTHEN
+10/21/2020  12:27 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+  DATA: FILE = "swls.dat";
+  VARIABLE:
+  NAMES = id assess sex swls1 swls2 swls3 swls4 swls5;
+  MISSING=.;
+  USEVAR=swls1 swls2 swls3 swls4 swls5;
+  IDVAR=id;
+  ANALYSIS: type=random;
+  algorithm = integration;
+  MODEL:
+  f BY swls1 swls2 swls3 swls4 swls5;
+  int | f XWITH f;
+  swls5 ON int;
+  OUTPUT:
+  cinterval tech1 tech3 res;
+  PLOT:
+  type = plot1 plot2 plot3;
+
+
+
+*** WARNING
+  Data set contains cases with missing on all variables.
+  These cases were not included in the analysis.
+  Number of cases with missing on all variables:  30
+   1 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         346
+
+Number of dependent variables                                    5
+Number of independent variables                                  0
+Number of continuous latent variables                            2
+
+Observed dependent variables
+
+  Continuous
+   SWLS1       SWLS2       SWLS3       SWLS4       SWLS5
+
+Continuous latent variables
+   F           INT
+
+Variables with special functions
+
+  ID variable           ID
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-02
+    Relative loglikelihood change                        0.100D-05
+    Derivative                                           0.100D-02
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Integration Specifications
+  Type                                                    STANDARD
+  Number of integration points                                  15
+  Dimensions of numerical integration                            1
+  Adaptive quadrature                                           ON
+Cholesky                                                       OFF
+
+Input data file(s)
+  swls.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             1
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              SWLS1         SWLS2         SWLS3         SWLS4         SWLS5
+              ________      ________      ________      ________      ________
+ SWLS1          1.000
+ SWLS2          1.000         1.000
+ SWLS3          1.000         1.000         1.000
+ SWLS4          1.000         1.000         1.000         1.000
+ SWLS5          1.000         1.000         1.000         1.000         1.000
+
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       16
+
+Loglikelihood
+
+          H0 Value                       -2630.532
+          H0 Scaling Correction Factor      1.2868
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                    5293.063
+          Bayesian (BIC)                  5354.606
+          Sample-Size Adjusted BIC        5303.850
+            (n* = (n + 2) / 24)
+
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ F        BY
+    SWLS1              1.000      0.000    999.000    999.000
+    SWLS2              0.941      0.041     22.940      0.000
+    SWLS3              1.013      0.045     22.361      0.000
+    SWLS4              0.938      0.056     16.642      0.000
+    SWLS5              1.029      0.073     14.164      0.000
+
+ SWLS5      ON
+    INT                0.073      0.031      2.348      0.019
+
+ Intercepts
+    SWLS1              5.075      0.081     62.801      0.000
+    SWLS2              5.366      0.076     71.056      0.000
+    SWLS3              5.421      0.076     71.149      0.000
+    SWLS4              5.222      0.085     61.731      0.000
+    SWLS5              4.650      0.124     37.508      0.000
+
+ Variances
+    F                  1.644      0.160     10.251      0.000
+
+ Residual Variances
+    SWLS1              0.618      0.094      6.540      0.000
+    SWLS2              0.515      0.072      7.146      0.000
+    SWLS3              0.318      0.058      5.489      0.000
+    SWLS4              1.026      0.137      7.463      0.000
+    SWLS5              1.878      0.190      9.870      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.252E-02
+       (ratio of smallest to largest eigenvalue)
+
+
+CONFIDENCE INTERVALS OF MODEL RESULTS
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ F        BY
+    SWLS1            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    SWLS2            0.835       0.861       0.874       0.941       1.009       1.022       1.047
+    SWLS3            0.897       0.924       0.939       1.013       1.088       1.102       1.130
+    SWLS4            0.793       0.828       0.845       0.938       1.031       1.048       1.083
+    SWLS5            0.842       0.887       0.910       1.029       1.149       1.172       1.216
+
+ SWLS5    ON
+    INT             -0.007       0.012       0.022       0.073       0.125       0.135       0.154
+
+ Intercepts
+    SWLS1            4.867       4.917       4.942       5.075       5.208       5.234       5.283
+    SWLS2            5.172       5.218       5.242       5.366       5.491       5.514       5.561
+    SWLS3            5.225       5.272       5.296       5.421       5.547       5.571       5.617
+    SWLS4            5.004       5.056       5.083       5.222       5.361       5.388       5.440
+    SWLS5            4.331       4.407       4.446       4.650       4.854       4.893       4.969
+
+ Variances
+    F                1.231       1.330       1.380       1.644       1.908       1.958       2.057
+
+ Residual Variances
+    SWLS1            0.375       0.433       0.463       0.618       0.773       0.803       0.861
+    SWLS2            0.329       0.373       0.396       0.515       0.633       0.656       0.700
+    SWLS3            0.169       0.204       0.222       0.318       0.413       0.431       0.467
+    SWLS4            0.672       0.757       0.800       1.026       1.252       1.296       1.380
+    SWLS5            1.388       1.505       1.565       1.878       2.191       2.251       2.368
+
+
+RESIDUAL OUTPUT
+
+
+     ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED)
+
+
+           Model Estimated Means
+              SWLS1         SWLS2         SWLS3         SWLS4         SWLS5
+              ________      ________      ________      ________      ________
+ 1              5.075         5.366         5.421         5.222         4.770
+
+
+           Residuals for Means
+              SWLS1         SWLS2         SWLS3         SWLS4         SWLS5
+              ________      ________      ________      ________      ________
+ 1              0.000         0.001         0.001         0.001         0.001
+
+
+           Model Estimated Covariances
+              SWLS1         SWLS2         SWLS3         SWLS4         SWLS5
+              ________      ________      ________      ________      ________
+ SWLS1          2.262
+ SWLS2          1.547         1.971
+ SWLS3          1.666         1.568         2.005
+ SWLS4          1.542         1.451         1.562         2.472
+ SWLS5          1.692         1.592         1.714         1.587         3.648
+
+
+           Residuals for Covariances
+              SWLS1         SWLS2         SWLS3         SWLS4         SWLS5
+              ________      ________      ________      ________      ________
+ SWLS1         -0.002
+ SWLS2          0.079         0.002
+ SWLS3         -0.027         0.006         0.001
+ SWLS4         -0.108        -0.102         0.066         0.001
+ SWLS5         -0.059        -0.234        -0.196         0.175        -0.258
+
+
+TECHNICAL 1 OUTPUT
+
+
+     PARAMETER SPECIFICATION
+
+
+           NU
+              SWLS1         SWLS2         SWLS3         SWLS4         SWLS5
+              ________      ________      ________      ________      ________
+ 1                  1             2             3             4             0
+
+
+           LAMBDA
+              F             INT           SWLS5
+              ________      ________      ________
+ SWLS1              0             0             0
+ SWLS2              5             0             0
+ SWLS3              6             0             0
+ SWLS4              7             0             0
+ SWLS5              0             0             0
+
+
+           THETA
+              SWLS1         SWLS2         SWLS3         SWLS4         SWLS5
+              ________      ________      ________      ________      ________
+ SWLS1              8
+ SWLS2              0             9
+ SWLS3              0             0            10
+ SWLS4              0             0             0            11
+ SWLS5              0             0             0             0             0
+
+
+           ALPHA
+              F             INT           SWLS5
+              ________      ________      ________
+ 1                  0             0            12
+
+
+           BETA
+              F             INT           SWLS5
+              ________      ________      ________
+ F                  0             0             0
+ INT                0             0             0
+ SWLS5             13            14             0
+
+
+           PSI
+              F             INT           SWLS5
+              ________      ________      ________
+ F                 15
+ INT                0             0
+ SWLS5              0             0            16
+
+
+     STARTING VALUES
+
+
+           NU
+              SWLS1         SWLS2         SWLS3         SWLS4         SWLS5
+              ________      ________      ________      ________      ________
+ 1              5.075         5.367         5.422         5.223         0.000
+
+
+           LAMBDA
+              F             INT           SWLS5
+              ________      ________      ________
+ SWLS1          1.000         0.000         0.000
+ SWLS2          1.000         0.000         0.000
+ SWLS3          1.000         0.000         0.000
+ SWLS4          1.000         0.000         0.000
+ SWLS5          0.000         0.000         1.000
+
+
+           THETA
+              SWLS1         SWLS2         SWLS3         SWLS4         SWLS5
+              ________      ________      ________      ________      ________
+ SWLS1          1.130
+ SWLS2          0.000         0.986
+ SWLS3          0.000         0.000         1.003
+ SWLS4          0.000         0.000         0.000         1.237
+ SWLS5          0.000         0.000         0.000         0.000         0.000
+
+
+           ALPHA
+              F             INT           SWLS5
+              ________      ________      ________
+ 1              0.000         0.000         4.772
+
+
+           BETA
+              F             INT           SWLS5
+              ________      ________      ________
+ F              0.000         0.000         0.000
+ INT            0.000         0.000         0.000
+ SWLS5          1.000         0.000         0.000
+
+
+           PSI
+              F             INT           SWLS5
+              ________      ________      ________
+ F              0.050
+ INT            0.000         0.000
+ SWLS5          0.000         0.000         1.695
+
+
+TECHNICAL 3 OUTPUT
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                     1             2             3             4             5
+              ________      ________      ________      ________      ________
+        1   0.653070D-02
+        2   0.470136D-02  0.570365D-02
+        3   0.473984D-02  0.455132D-02  0.580560D-02
+        4   0.414845D-02  0.390223D-02  0.471211D-02  0.715547D-02
+        5   0.157936D-03 -0.569151D-03  0.638870D-04 -0.223582D-04  0.168301D-02
+        6  -0.264357D-03 -0.194263D-03 -0.789127D-03 -0.379845D-03  0.728652D-03
+        7   0.501624D-04  0.163363D-03 -0.231249D-03 -0.726400D-03  0.521497D-03
+        8  -0.250877D-02  0.108266D-03 -0.392566D-03 -0.165634D-03  0.166399D-03
+        9  -0.156293D-02 -0.875072D-03 -0.139469D-02 -0.562207D-03 -0.877679D-03
+       10  -0.484064D-03 -0.454207D-03 -0.449670D-03 -0.921995D-03 -0.322864D-03
+       11  -0.568865D-03 -0.764112D-03 -0.100488D-02 -0.448895D-02  0.113779D-03
+       12   0.497553D-02  0.402213D-02  0.452201D-02  0.567453D-02  0.238625D-04
+       13   0.928664D-03  0.122737D-02  0.812939D-03  0.223866D-03  0.334523D-03
+       14   0.925394D-04  0.175082D-03  0.173096D-03 -0.139705D-03  0.191608D-03
+       15  -0.551551D-02 -0.516680D-02 -0.561819D-02 -0.471756D-02 -0.214871D-02
+       16  -0.144354D-02 -0.169451D-02 -0.811421D-03 -0.129799D-02  0.776641D-03
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                     6             7             8             9            10
+              ________      ________      ________      ________      ________
+        6   0.205338D-02
+        7   0.149268D-02  0.317692D-02
+        8   0.140371D-02  0.147112D-02  0.892944D-02
+        9   0.829232D-03  0.632487D-03  0.259205D-02  0.518664D-02
+       10  -0.111555D-02 -0.574725D-03 -0.103155D-02 -0.573274D-03  0.334945D-02
+       11  -0.813384D-03 -0.245432D-02 -0.668670D-04  0.252946D-04  0.151670D-02
+       12  -0.393846D-03 -0.437451D-03 -0.149150D-02 -0.122800D-02 -0.612988D-03
+       13   0.100299D-02  0.182916D-02  0.156463D-02  0.540955D-03 -0.233064D-03
+       14   0.104162D-03  0.158440D-03  0.320474D-03 -0.807141D-04 -0.170054D-03
+       15  -0.267367D-02 -0.294655D-02 -0.395948D-02 -0.778615D-03  0.136348D-02
+       16  -0.937125D-04 -0.192410D-02  0.561592D-03  0.194987D-03 -0.478800D-04
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                    11            12            13            14            15
+              ________      ________      ________      ________      ________
+       11   0.189031D-01
+       12  -0.228548D-02  0.153680D-01
+       13  -0.126921D-02 -0.233808D-02  0.528065D-02
+       14   0.179544D-03 -0.228643D-02  0.936017D-03  0.975846D-03
+       15   0.628060D-03 -0.380805D-02 -0.417063D-02 -0.106242D-02  0.257143D-01
+       16   0.439144D-02 -0.734999D-02 -0.571116D-02  0.149529D-02 -0.181066D-03
+
+
+           ESTIMATED COVARIANCE MATRIX FOR PARAMETER ESTIMATES
+                    16
+              ________
+       16   0.362064D-01
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                     1             2             3             4             5
+              ________      ________      ________      ________      ________
+        1       1.000
+        2       0.770         1.000
+        3       0.770         0.791         1.000
+        4       0.607         0.611         0.731         1.000
+        5       0.048        -0.184         0.020        -0.006         1.000
+        6      -0.072        -0.057        -0.229        -0.099         0.392
+        7       0.011         0.038        -0.054        -0.152         0.226
+        8      -0.329         0.015        -0.055        -0.021         0.043
+        9      -0.269        -0.161        -0.254        -0.092        -0.297
+       10      -0.103        -0.104        -0.102        -0.188        -0.136
+       11      -0.051        -0.074        -0.096        -0.386         0.020
+       12       0.497         0.430         0.479         0.541         0.005
+       13       0.158         0.224         0.147         0.036         0.112
+       14       0.037         0.074         0.073        -0.053         0.150
+       15      -0.426        -0.427        -0.460        -0.348        -0.327
+       16      -0.094        -0.118        -0.056        -0.081         0.099
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                     6             7             8             9            10
+              ________      ________      ________      ________      ________
+        6       1.000
+        7       0.584         1.000
+        8       0.328         0.276         1.000
+        9       0.254         0.156         0.381         1.000
+       10      -0.425        -0.176        -0.189        -0.138         1.000
+       11      -0.131        -0.317        -0.005         0.003         0.191
+       12      -0.070        -0.063        -0.127        -0.138        -0.085
+       13       0.305         0.447         0.228         0.103        -0.055
+       14       0.074         0.090         0.109        -0.036        -0.094
+       15      -0.368        -0.326        -0.261        -0.067         0.147
+       16      -0.011        -0.179         0.031         0.014        -0.004
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                    11            12            13            14            15
+              ________      ________      ________      ________      ________
+       11       1.000
+       12      -0.134         1.000
+       13      -0.127        -0.260         1.000
+       14       0.042        -0.590         0.412         1.000
+       15       0.028        -0.192        -0.358        -0.212         1.000
+       16       0.168        -0.312        -0.413         0.252        -0.006
+
+
+           ESTIMATED CORRELATION MATRIX FOR PARAMETER ESTIMATES
+                    16
+              ________
+       16       1.000
+
+
+SAMPLE STATISTICS FOR ESTIMATED FACTOR SCORES
+
+
+     SAMPLE STATISTICS
+
+
+           Means
+              F             F_SE          INT           INT_SE
+              ________      ________      ________      ________
+ 1              0.001         0.341         1.645         0.706
+
+
+           Covariances
+              F             F_SE          INT           INT_SE
+              ________      ________      ________      ________
+ F              1.529
+ F_SE          -0.004         0.000
+ INT           -1.762         0.005         5.455
+ INT_SE        -0.321         0.001         1.114         0.251
+
+
+           Correlations
+              F             F_SE          INT           INT_SE
+              ________      ________      ________      ________
+ F              1.000
+ F_SE          -0.862         1.000
+ INT           -0.610         0.484         1.000
+ INT_SE        -0.518         0.422         0.952         1.000
+
+
+PLOT INFORMATION
+
+The following plots are available:
+
+  Histograms (sample values, estimated factor scores)
+  Scatterplots (sample values, estimated factor scores)
+  Latent variable distribution plots
+
+DIAGRAM INFORMATION
+
+  Use View Diagram under the Diagram menu in the Mplus Editor to view the diagram.
+  If running Mplus from the Mplus Diagrammer, the diagram opens automatically.
+
+  Diagram output
+    c:\users\kaite\dropbox\flexplavaan\exampledatasets\swls.dgm
+
+     Beginning Time:  12:27:08
+        Ending Time:  12:27:09
+       Elapsed Time:  00:00:01
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2015 Muthen & Muthen

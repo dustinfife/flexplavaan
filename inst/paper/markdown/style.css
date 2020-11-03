@@ -1,0 +1,22 @@
+h1 {
+	text-align: center;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+body {
+    font-family: times;
+    font-size: 12pt;
+}
+
+h2 {
+   	text-align: left;
+	font-size: 12pt;
+	font-weight: bold; 
+}
+
+.figure {
+    text-align: center;
+    margin:auto;
+    display: block;
+}
