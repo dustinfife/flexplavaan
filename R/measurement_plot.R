@@ -58,14 +58,14 @@ estimate_standard_errors = function(i,fitted) {
 
 #apply_measurement_plot(1, fit_twofactor)
 # i = 1; fitted = fit_twofactor
-apply_measurement_plot = function(i, fitted, ...) {
+apply_measurement_plot = function(i, fitted, ... ) {
 
   # get observed data
   data = create_latent_dataset(i, fitted)
-  
+  browser()
   # get latent name
   latent = lavaan::lavNames(fitted, type="lv")[i]
-  
+
   # append measurement
   se = estimate_standard_errors(i, fitted)
   data$se = rep(se$sd_imp, times=length(unique(data$Measure)))
@@ -73,6 +73,7 @@ apply_measurement_plot = function(i, fitted, ...) {
   data$upper = data[,latent] + data$se
   # plot it
   formula_p = as.formula(paste0(latent, "~Observed|Measure"))
+  
   p = flexplot(formula_p,
            data=data,
            method="lm",
@@ -98,7 +99,7 @@ apply_measurement_plot = function(i, fitted, ...) {
 #' @examples
 #' measurement_plot(fit_bollen, 1)
 #' measurement_plot(fit_bollen, 1:2)
-measurement_plot = function(fitted, latent_vars=NULL) {
+measurement_plot = function(fitted, latent_vars=NULL, ...) {
 
   #browser()
   ## return the latent variable index (if necessary)
@@ -108,7 +109,7 @@ measurement_plot = function(fitted, latent_vars=NULL) {
     return(apply_measurement_plot(latent_index, fitted))
   }
   
-  plot_list = latent_index %>% purrr::map(~suppressMessages(apply_measurement_plot(.x, fitted)))
+  plot_list = latent_index %>% purrr::map(~suppressMessages(apply_measurement_plot(.x, fitted, ...)))
   names(plot_list) = lavNames(fitted, type="lv")[latent_index]
   msg = paste0("There are ", length(latent_index), " measurement plots. I'm going to list the names of them below so you know how to access them. \n")
   cat(msg)

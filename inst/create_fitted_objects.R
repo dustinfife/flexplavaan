@@ -38,6 +38,8 @@ y6 ~~ y8
 fit_bollen <- sem( democ1, data = PoliticalDemocracy)
 usethis::use_data(fit_bollen)
 
+model = "
+force_score =~"
 
 d = read.csv("data/health_depression.csv")
 model = "
