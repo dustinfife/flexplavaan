@@ -1,0 +1,49 @@
+VERSION 1.1.0
+INPUT
+TITLE:
+ Your title goes here
+DATA:
+ FILE = "swls.dat";
+VARIABLE:
+NAMES = id assess sex swls1 swls2 swls3 swls4 swls5;
+MISSING=.;
+USEVAR=swls1 swls2 swls3 swls4 swls5;
+IDVAR=id;
+ANALYSIS:
+ estimator = MLR;
+OUTPUT:
+cinterval tech1 tech3 res;
+PLOT:
+type = plot1 plot2 plot3;
+MODEL:
+f BY swls1 swls2 swls3 swls4 swls5;
+INPUT_END
+3
+0
+0
+0
+MLR
+1
+GENERAL
+0
+5
+1
+0
+swls1 swls2 swls3 swls4 swls5 f
+1
+-1 -1 -1 -1 -1 0
+0
+1
+f
+swls1 swls2 swls3 swls4 swls5
+1 1 f swls1    1.000    0.000    1.000    1.000
+1 1 f swls2    0.941    0.041    0.861    1.022
+1 1 f swls3    1.013    0.046    0.924    1.103
+1 1 f swls4    0.938    0.056    0.828    1.049
+1 1 f swls5    0.949    0.065    0.820    1.077
+4 1 swls1    0.617    0.094    0.433    0.801
+4 1 swls2    0.516    0.072    0.375    0.657
+4 1 swls3    0.320    0.058    0.206    0.435
+4 1 swls4    1.028    0.137    0.758    1.297
+4 1 swls5    1.911    0.198    1.524    2.298
+5 1 f    1.643    0.161    1.328    1.959
