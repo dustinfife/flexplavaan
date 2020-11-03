@@ -72,12 +72,12 @@ visualize.lavaan = function(object, object2=NULL,
   }  
   
   if (plot == "measurement"){
-    p = measurement_plot(object, subset)  
+    p = measurement_plot(object, subset, ...)  
     return(p)
   }
   
   if (plot == "latent"){
-    p = latent_plot(object, formula)  
+    p = latent_plot(object, formula, ...)  
     return(p)
   }  
 
