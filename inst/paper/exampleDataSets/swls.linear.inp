@@ -1,0 +1,18 @@
+TITLE: Your title goes here
+DATA: FILE = "swls.dat";
+VARIABLE: 
+NAMES = id assess sex swls1 swls2 swls3 swls4 swls5; 
+MISSING=.;
+USEVAR=swls1 swls2 swls3 swls4 swls5;
+IDVAR=id;
+ANALYSIS: estimator = MLR;
+!type=random;
+!algorithm = integration;
+MODEL:
+f BY swls1 swls2 swls3 swls4 swls5;
+!int | f XWITH f;
+!swls5 ON int;
+OUTPUT:
+cinterval tech1 tech3 res;
+PLOT:
+type = plot1 plot2 plot3;
