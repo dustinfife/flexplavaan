@@ -59,10 +59,10 @@ estimate_standard_errors = function(i,fitted) {
 #apply_measurement_plot(1, fit_twofactor)
 # i = 1; fitted = fit_twofactor
 apply_measurement_plot = function(i, fitted, ... ) {
-
-  # get observed data
+ 
+  # get observed data and sample (if specified)
   data = create_latent_dataset(i, fitted)
-  browser()
+  
   # get latent name
   latent = lavaan::lavNames(fitted, type="lv")[i]
 
@@ -71,18 +71,50 @@ apply_measurement_plot = function(i, fitted, ... ) {
   data$se = rep(se$sd_imp, times=length(unique(data$Measure)))
   data$lower = data[,latent] - data$se
   data$upper = data[,latent] + data$se
-  # plot it
-  formula_p = as.formula(paste0(latent, "~Observed|Measure"))
   
+  formula_p = as.formula(paste0(latent, "~Observed|Measure"))
+  # suppress datapoints so I can get the fitted line for the actual dataset
+  # then I can add dots as a separate geom based on sampling
   p = flexplot(formula_p,
            data=data,
            method="lm",
-           ghost.line = "red", alpha=.4, ...) +
-    geom_errorbar(aes(ymin=lower, ymax=upper), alpha = .2)
+           ghost.line = "red", alpha=0,...) 
+  d_sampled = random_sample_from_data(data, ...)
+
+  p = p + 
+    geom_point(data=d_sampled) +
+    geom_errorbar(data=d_sampled, aes(ymin=lower, ymax=upper), alpha = .2)
+  p = put_geom_last(p)
   # editing the geom_smooth because it keeps giving message saying "using formula y~x"
   # now I'm making that explicit (and it wouldn't work using suppress_smooth=T)
-  p$layers[[2]] = geom_smooth(method="lm", formula = y~x)
+  p$layers[[length(p$layers)]] = geom_smooth(method="lm", formula = y~x)  
+  p = put_geom_last(p, "GeomLine")
+
   return(p)
+}
+
+
+put_geom_last = function(p, name="GeomSmooth") {
+  layer_names = sapply(p$layers, function(x) class(x$geom)[1])
+  
+  which_is_smooth = which(layer_names==name)
+  if (length(which_is_smooth)<1) return(p)  ### if the geom doesn't exist, just return the plot
+  smooth_layer = p$layers[[which_is_smooth[1]]]
+  
+  #nullify the smooth layer
+  p$layers[[which_is_smooth]] = NULL
+  p$layers = c(p$layers, smooth_layer)
+  return(p)
+}
+
+
+#
+random_sample_from_data = function(data, ...) {
+  if (is.null(names(list(...)))) return(data)
+  if ("sample" %in% names(list(...))) {
+    options = list(...)
+    return(data[sample(1:nrow(data), size=min(nrow(data), options$sample)), ])
+  }
 }
 
 
@@ -91,6 +123,7 @@ apply_measurement_plot = function(i, fitted, ... ) {
 #'
 #' @param fitted a `lavaan` object 
 #' @param latent_vars which latent variables should be plotted? Defaults to plot all of them.
+#' @param ... Other arguments passed to flexplot. 
 #'
 #' @return This function returns either a single plot (if `length(latent_vars)==1`), or it will return a list of plots. 
 #' @export
@@ -101,15 +134,14 @@ apply_measurement_plot = function(i, fitted, ... ) {
 #' measurement_plot(fit_bollen, 1:2)
 measurement_plot = function(fitted, latent_vars=NULL, ...) {
 
-  #browser()
   ## return the latent variable index (if necessary)
   latent_index = return_latent_index(fitted, latent_vars)
   
   if (length(latent_index)==1) {
-    return(apply_measurement_plot(latent_index, fitted))
+    return(apply_measurement_plot(latent_index, fitted, ...))
   }
-  
-  plot_list = latent_index %>% purrr::map(~suppressMessages(apply_measurement_plot(.x, fitted, ...)))
+
+  plot_list = latent_index %>% purrr::map(function(.x, ...) { suppressMessages(apply_measurement_plot(.x, fitted, ...))}, ...)
   names(plot_list) = lavNames(fitted, type="lv")[latent_index]
   msg = paste0("There are ", length(latent_index), " measurement plots. I'm going to list the names of them below so you know how to access them. \n")
   cat(msg)

@@ -42,4 +42,15 @@ test_that("find nth works", {
 test_that("regular measurement plot", {
   vdiffr::expect_doppelganger("simple measurement plot",measurement_plot(fit_twofactor, 1))
   vdiffr::expect_doppelganger("simple measurement plot with two plots",measurement_plot(fit_twofactor, 1:2)[[2]])
+  vdiffr::expect_doppelganger("sampling with measurement plot works",measurement_plot(force_fit, 1, sample=100))
+})
+
+test_that("random_sample_from_data works", {
+  expect_true(nrow(random_sample_from_data(avengers, sample=100))==100)
+})
+
+test_that("put_geom_last works", {
+  p = flexplot(weight.loss~motivation, data=exercise_data)
+  p = put_geom_last(p, name="GeomPoint")
+  vdiffr::expect_doppelganger("moving geom last works",p)
 })
