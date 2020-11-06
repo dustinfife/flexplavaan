@@ -87,7 +87,7 @@ viz_diagnostics <- function(data, mapping,
     names(d) = as_label(mapping$x)
     
     flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
-    flexplot::flexplot(flexplot_form, data=d)
+    flexplot::flexplot(flexplot_form, data=d,...)
   } else {
     #browser()
     variables = c(dplyr::as_label(mapping$x), dplyr::as_label(mapping$y))
@@ -161,10 +161,10 @@ viz_diagnostics <- function(data, mapping,
         data2 = data[,c(x,"residuals", resid_name)] %>% tidyr::gather("model", "residuals", c("residuals", resid_name)) %>% setNames(c(x,"model","residuals"))
         data2$model = factor(data2$model, levels=c("residuals",resid_name), labels=label_names)
         f = make.formula("residuals", c(x, "model"))
-        p = flexplot::flexplot(f, data=data2, alpha = .2,...) + geom_hline(yintercept = 0) + geom_smooth(se=F)
+        p = flexplot::flexplot(f, data=data2, alpha = .2,...) + geom_hline(yintercept = 0) 
       } else {
         flexplot_form = flexplot::make.formula("residuals", x)
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, ...) + labs(y=paste0(y, " | latent")) + geom_hline(yintercept=0, col="red")+ geom_smooth()
+        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, ...) + labs(y=paste0(y, " | latent")) + geom_hline(yintercept=0, col="red")
       }
       return(p)
     } 

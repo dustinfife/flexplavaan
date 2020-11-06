@@ -27,25 +27,83 @@ plot = visualize(mixed, plot="model")
 ggsave("inst/presentations/ABCT/screenshots/mixed.jpg", plot=plot)
 
 
-p = visualize(force_fit, plot="model", 
-              subset=c("exam_one", "exam_two", "exam_three"))
 
+data(jedi_jedi)
+
+# specify the models ------------------------------------------------------
+model = "
+force_score =~ fitness + saber + midichlorian + force_history
+jedi_score =~ exam_one + exam_two + exam_three
+jedi_score ~ force_score
+"
+
+# Fit the models ----------------------------------------------------------
+force_fit = cfa(model, jedi_jedi)
+summary(force_fit, fit.measures=TRUE, standardized=TRUE)
+
+
+p = visualize(force_fit, 
+              plot="model",
+              subset=c("fitness", "saber", "midichlorian", "force_history"),
+              method="lm")
 ggsave("inst/presentations/ABCT/screenshots/trace.jpg", plot=p)
 
-p = visualize(force_fit,subset=c("exam_one", "exam_two", "exam_three"))
+p = visualize(force_fit,
+              subset=c("fitness", "saber", "midichlorian", "force_history"),
+              method="lm")
 
-ggsave("inst/presentations/ABCT/screenshots/ddp.jpg", plot=p)
-p = visualize(force_fit, plot="model", subset=c("exam_one", "exam_two", "exam_three"),
-              suppress_smooth=F)
+ggsave("inst/presentations/ABCT/screenshots/ddp_viz.jpg", plot=p)
 
 p = visualize(force_fit)
+ggsave("inst/presentations/ABCT/screenshots/whole_mod.jpg", plot=p)
 
 p = visualize(force_fit, plot="measurement",
-              sample=100)
-p$force_score
+              sample=300)
+p = p$force_score + theme_bw(base_size=18)
+ggsave("inst/presentations/ABCT/screenshots/measurement.jpg", plot=p, 
+       width = 7.49, height = 5)
+
+p = visualize(force_fit, plot="latent")
+p = p[[1]] + theme_bw(base_size=18)
+ggsave("inst/presentations/ABCT/screenshots/latent.jpg", plot=p)
 
 
-ggsave("inst/presentations/ABCT/screenshots/whole_mod.jpg", plot=p[[1]])
 
 
-ggsave("inst/presentations/ABCT/screenshots/trace_loess.jpg", plot=p)
+model2 = "
+force_score =~ fitness + saber + midichlorian + force_history
+jedi_score =~ exam_one + exam_two + exam_three + force_history
+jedi_score ~ force_score
+"
+
+# Fit the models ----------------------------------------------------------
+force_cross = cfa(model2, jedi_jedi)
+
+
+
+
+summary(force_fit, fit.measures=TRUE, standardized=TRUE)
+
+
+p = visualize(force_fit, force_cross,
+              subset=c("fitness", "saber", "midichlorian", "force_history"),
+              method="lm")
+ggsave("inst/presentations/ABCT/screenshots/viz_model_2.jpg", plot=p)
+
+
+
+
+
+install.packages("devtools")
+devtools::install_github('dustinfife/flexplavaan')
+
+
+
+
+
+
+
+
+
+
+
