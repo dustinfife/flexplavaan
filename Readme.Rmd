@@ -147,11 +147,12 @@ visualize(fitted, sample=300)
 
 ## Detecting Cross-Loadings
 
-These diagnostic plots are designed to detect deviations from the model's implied relationship. In the next example, I'm going to utilize a simulated dataset of jedi training, where two latent variables are posited (force and jedi), each with 3 indicators (fitness, saber, midichlorian for force and exam one, exam two, and exam three for jedi). In addition, one variable (history) has cross loadings on both factors. However, I will fit a model where history is only modeled on the force latent variable, then subsequently fit a model where the variable loads on both latent variables. 
+These diagnostic plots are designed to detect deviations from the model's implied relationship. In the next example, I'm going to utilize a simulated dataset of jedi training, where two latent variables are posited (force and jedi), each with 3 indicators (fitness, saber, midichlorian for force and exam one, exam two, and exam three for jedi). In addition, one variable (history) has cross loadings on both factors. 
 
 <br>
 <center>
-```{r, force, engine="tikz", eval=TRUE, echo=FALSE, out.width='80%', fig.cap="Simulated dataset with crossloadings on the 'history' indicator."}
+
+```{r, force, engine="tikz", eval=TRUE, echo=FALSE, out.width='80%', fig.cap="Simulated dataset with crossloadings on the 'history' indicator. This is the data-generating model."}
 \usetikzlibrary{arrows}
 \begin{tikzpicture}[node distance=2cm, midway]
 
@@ -182,6 +183,43 @@ These diagnostic plots are designed to detect deviations from the model's implie
 \draw[->] (force) to node [fill=white]{\tiny $\beta$} (jedi);
 \end{tikzpicture}
 ```
+
+</center>
+
+However, I will fit a model where history is only modeled on the force latent variable, then subsequently fit a model where the variable loads on both latent variables. 
+
+<center>
+
+```{r, force2, engine="tikz", eval=TRUE, echo=FALSE, out.width='80%', fig.cap="Simulated dataset with crossloadings on the 'history' indicator."}
+\usetikzlibrary{arrows}
+\begin{tikzpicture}[node distance=2cm, midway]
+
+\node[draw, circle] (force) {Force};
+\node[draw, circle, node distance = 2cm] (jedi) [right of=force] {Jedi};
+
+\node[draw, rectangle] (saber) [left of=force] {Saber};
+\node[draw, rectangle, node distance = 1cm] (fit) [above of=saber] {Fitness};
+\node[draw, rectangle, node distance = 1cm] (midi) [below of=saber] {Midichlorian};
+
+\node[draw, rectangle] (hist) [below of=force] {History};
+
+\node[draw, rectangle] (e2) [right of=jedi] {Exam II};
+\node[draw, rectangle, node distance = 1cm] (e1) [above of=e2] {Exam I};
+\node[draw, rectangle, node distance = 1cm] (e3) [below of=e2] {Exam III};
+
+\draw[->] (force) to node [fill=white]{\tiny $b$} (saber);
+\draw[->] (force) to node [fill=white]{\tiny $a$} (fit);
+\draw[->] (force) to node [fill=white]{\tiny $c$} (midi);
+
+\draw[->] (jedi) to node [fill=white]{\tiny $d$} (e1);
+\draw[->] (jedi) to node [fill=white]{\tiny $e$} (e2);
+\draw[->] (jedi) to node [fill=white]{\tiny $f$} (e3);
+\draw[->] (force) to node [fill=white]{\tiny $g_2$} (hist);
+
+\draw[->] (force) to node [fill=white]{\tiny $\beta$} (jedi);
+\end{tikzpicture}
+```
+
 </center>
 <br>
 
