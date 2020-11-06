@@ -1,5 +1,4 @@
 require(tidyverse)
-
 require(flexplot)
 # t-test
 t = lm(ptsd~north_south, data=avengers)
