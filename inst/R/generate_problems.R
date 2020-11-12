@@ -44,6 +44,7 @@ latent_x~~latent_y
 fit = cfa(model, d)
 fit2 = cfa(model2, d)
 summary(fit)
+cbind(fitMeasures(fit), fitMeasures(fit2)) %>% round(digits=3)
 summary(fit2)
 visualize(fit, fit2, subset=c("x5", "x4", "x1"))
 implied_measurement(fit, "latent_x")
@@ -100,7 +101,5 @@ implied_measurement(fit, "latent_y")
 visualize(fit, subset=1:5, method="lm")
 
 
-
-
-
-
+summary(fit_bollen)
+implied_measurement(fit_bollen, "Eta1")
