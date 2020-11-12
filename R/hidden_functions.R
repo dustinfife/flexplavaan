@@ -1,3 +1,25 @@
+get_names = function(model) {
+  obs_names = lavNames(model)
+  latent_names = lavNames(model, type="lv")
+  list(obs_names, latent_names)
+}
+
+get_all_data = function(fitted) {
+  
+  # get names of variables
+  obs_names = lavaan::lavNames(fitted)
+  latent_names = lavaan::lavNames(fitted, type="lv")
+  
+  # get dataset of observed
+  obs_data = data.frame(fitted@Data@X)
+  
+  # get latent scores
+  latent_raw = data.frame(lavaan::lavPredict(fitted))
+  obs_data = data.frame(cbind(obs_data, latent_raw))
+  names(obs_data) = c(obs_names, latent_names)
+  return(obs_data)
+}
+
 # get the factors associated with this i variable
 find_latents_for_observed = function(i, fitted) {
   row = fitted@Model@GLIST$lambda[i,]

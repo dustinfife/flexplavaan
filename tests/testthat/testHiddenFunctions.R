@@ -36,3 +36,8 @@ test_that("random variable naming works", {
   expect_true(random_var_name()=="huhpz")
   expect_true(random_var_name_check(varnames=letters[1:5])=="dlzoi")
 })
+
+test_that("get_names works", {
+  expect_true(get_names(fit_bollen)[[1]][1] == "y1")
+  expect_true(get_names(fit_bollen)[[2]][1] == "Eta1")
+})
