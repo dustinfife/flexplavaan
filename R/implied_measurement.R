@@ -53,9 +53,9 @@ standardize_observed = function(model) {
   obs_names = names[[1]]; latent_names = names[[2]]  
   
   obs_standardized = lav_data %>% 
-    transmute_at(obs_names, scale)
-  lav_data[,obs_names] = obs_standardized[,obs_names]
-  return(lav_data)
+    transmute_all(scale)
+  #lav_data[,obs_names] = obs_standardized[,obs_names]
+  return(obs_standardized)
 }
 
 get_slopes = function(model, obs_names=NULL, latent_names=NULL) {
@@ -68,19 +68,6 @@ get_slopes = function(model, obs_names=NULL, latent_names=NULL) {
   
   # get the correlation from latents to observed
   slopes_observed = latent_observed_implied(model) %>% data.frame
-  
-  # compute residual variances (because they need to be factored into the slopes)
-  # in matrix form for easy multiplication
-  # residual_variance = matrix((1-get_observed_rsq(model, obs_names)), 
-  #                            nrow=length(obs_names), 
-  #                            ncol=length(latent_names), 
-  #                            byrow=F)
-  # # residual variances should only be multiplied IF the observed is an indicator of that latent
-  # filter_matrix = model@Model@GLIST$lambda; filter_matrix[abs(filter_matrix)>0] = 1
-  # residual_variance = filter_matrix * residual_variance + (1-filter_matrix)
-  
-  # correct for reliability
-  #slopes_observed = slopes_observed*residual_variance
   names(slopes_observed) = paste0("slope_", latent_names)
   return(slopes_observed)
 }
@@ -116,7 +103,7 @@ latent_observed_implied = function(model) {
   latent = lavNames(model, type="lv")
   observed = lavNames(model, type="ov")
   
-  cor_matrix = lavInspect(model, "cov.all") %>% data.frame
+  cor_matrix = lavInspect(model, "cor.all") %>% data.frame
   inter_correlations = cor_matrix[observed, latent]
   return(inter_correlations)
 }
