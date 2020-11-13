@@ -1,3 +1,21 @@
+#' Display the model-implied measurement plot
+#' 
+#' These models plot the latent variable on the Y-axis, and the standardized observed
+#' variables on the x axis. Each variable is shown as a separate panel. By default, 
+#' the algorithm limits the number of plots to 4, but the user can specify more. 
+#' 
+#' The model-implied fit is computed using the correlations between the observed/latent
+#' variables. Since all variables are standardized before plotting, the correlations become
+#' the slopes, and the intercepts are set to zero. 
+#'
+#' @param model A lavaan object
+#' @param latent a string, specifying which latent variable is plotted on the y-axis. 
+#' By default, it will display all the variables and return a list of plots. 
+#' @param limit The maximum number of observed variables displayed. Defaults to 4. 
+#' @param ... Other parameters passed to flexplot. 
+#'
+#' @return Either a ggplot2 plot, or a list of ggplot2 plots
+#' @export
 implied_measurement = function(model, latent=NULL, limit=4, ...) {
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model)
@@ -29,15 +47,15 @@ latent_flexplot = function(flex_data, latent, limit=4, ...) {
   ordered_differences =  k %>% mutate(Diff = abs(Actual_slopes - !!(slope_name))) %>% 
     group_by(Variable) %>% 
     summarize(mean(Diff)) %>% 
-    set_names(c("Variable", "Diff")) %>% 
+    purrr::set_names(c("Variable", "Diff")) %>% 
     arrange(desc(Diff))
   flex_data$Variable = factor(flex_data$Variable, levels=ordered_differences$Variable, ordered=T)  
   
   # limit the number of plots
-  only_plot_these = levels(flex_data$Variable)[1:limit]
+  only_plot_these = levels(flex_data$Variable)[1:min(limit, length(flex_data$Variable))]
   flex_data_2 = flex_data %>% filter(Variable %in% only_plot_these)
   
-  
+
   # now plot it
   ggplot(flex_data_2, 
          aes_string(x = "Observed", y = latent, group = "1"), ...) +         

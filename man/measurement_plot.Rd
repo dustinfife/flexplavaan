@@ -4,12 +4,14 @@
 \alias{measurement_plot}
 \title{Produce a measurement plot for a lavaan object}
 \usage{
-measurement_plot(fitted, latent_vars = NULL)
+measurement_plot(fitted, latent_vars = NULL, ...)
 }
 \arguments{
 \item{fitted}{a `lavaan` object}
 
 \item{latent_vars}{which latent variables should be plotted? Defaults to plot all of them.}
+
+\item{...}{Other arguments passed to flexplot.}
 }
 \value{
 This function returns either a single plot (if `length(latent_vars)==1`), or it will return a list of plots.
@@ -18,6 +20,6 @@ This function returns either a single plot (if `length(latent_vars)==1`), or it 
 Produce a measurement plot for a lavaan object
 }
 \examples{
-measurement_plot(fitted, 1)
-measurement_plot(fitted, 1:2)
+measurement_plot(fit_bollen, 1)
+measurement_plot(fit_bollen, 1:2)
 }

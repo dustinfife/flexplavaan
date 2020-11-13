@@ -1,3 +1,16 @@
+d = read.csv("data/health_depression.csv")
+model = "
+internet =~ Salience + ExcessiveUse + NeglectWork + Anticipation + LackofControl + NeglectSocialLife
+health =~ Nutrition + Healthresponsibility + Selfactualization + Interpersonalsupport + Exercise + Stressmanagement
+CESD~internet + health
+internet ~~ health
+"
+health = sem(model, d)
+implied_measurement(health, "internet")
+usethis::use_data(health)
+
+
+
 require(lavaan)
 data("correct_small")
 
@@ -41,12 +54,4 @@ usethis::use_data(fit_bollen)
 model = "
 force_score =~"
 
-d = read.csv("data/health_depression.csv")
-model = "
-internet =~ Salience + ExcessiveUse + NeglectWork + Anticipation + LackofControl + NeglectSocialLife
-health =~ Nutrition + Healthresponsibility + Selfactualization + Interpersonalsupport + Exercise + Stressmanagement
-CESD~internet + health
-internet ~~ health
-"
-health = sem(model, d)
-usethis::use_data(health)
+
