@@ -37,6 +37,11 @@ test_that("return_actual_slope works", {
   expect_equal(ob[1,1], 0)
 })
 
+test_that("check_for_latent", {
+  expect_error(check_for_latent(fit_bollen, "EEEE"))
+  expect_null(check_for_latent(fit_bollen, "Eta1"))
+})
+
 test_that("get_slopes and get_intercepts works", {
   names = get_names(fit_bollen)
   slopes = get_slopes(fit_bollen, names[[1]], names[[2]]) %>% transmute_all(function(x) x*100) %>% round

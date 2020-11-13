@@ -6,7 +6,12 @@ CESD~internet + health
 internet ~~ health
 "
 health = sem(model, d)
+implied_measurement(health, "internet",sort_slopes=F)[[1]] + coord_cartesian(ylim=c(-3, 3))
+implied_measurement(health, "health")
+  # some curvilinearity between NeglectSocialLife/Salience
 implied_measurement(health, "internet")
+
+
 usethis::use_data(health)
 
 
