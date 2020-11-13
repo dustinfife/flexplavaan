@@ -46,11 +46,11 @@ test_that("regular measurement plot", {
 })
 
 test_that("random_sample_from_data works", {
-  expect_true(nrow(random_sample_from_data(avengers, sample=100))==100)
+  expect_true(nrow(random_sample_from_data(jedi_jedi, sample=100))==100)
 })
 
 test_that("put_geom_last works", {
-  p = flexplot(weight.loss~motivation, data=exercise_data)
+  p = flexplot(fitness~saber, data=jedi_jedi)
   p = put_geom_last(p, name="GeomPoint")
   vdiffr::expect_doppelganger("moving geom last works",p)
 })

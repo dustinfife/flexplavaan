@@ -103,3 +103,18 @@ visualize(fit, subset=1:5, method="lm")
 
 summary(fit_bollen)
 implied_measurement(fit_bollen, "Eta1")
+
+
+set.seed(2323)
+# model with uncorrelated factors
+d = generate_latent(vars=4, loading=0, n=10000) 
+
+model = "
+latent_x =~ 0*x1 + x2 
+latent_y =~ x3 + x4 
+latent_x ~~ 0*latent_y
+"
+noloadings = cfa(model, d)
+summary(fit, fit.measures=TRUE, standardized=TRUE)
+latent_observed_implied(fit)
+usethis::use_data(noloadings)

@@ -1,18 +1,39 @@
 implied_measurement = function(model, latent=NULL) {
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model)
+  
 
   if (is.null(latent)) latent = get_names(model)[[2]]
-  
+
   plots = latent %>% purrr::map(function(x) latent_flexplot(flex_data, x))
-  print(plots)
+  return(plots)
 }
 
 
 
 latent_flexplot = function(flex_data, latent) {
+  
+  # name the abline parameters
   intercept_name = paste0("intercept_", latent)
   slope_name = paste0("slope_", latent)
+  
+  # compute actual slopes
+  unique_variables = unique(flex_data$Variable)
+  actual_slopes = unique_variables %>% 
+    purrr::map_dfr(function(x) return_actual_slope(x, latent, flex_data)) %>% 
+    mutate(Variable = unique_variables, Actual_slopes = Observed)
+  
+  # now compute difference between slopes
+  k = (merge(flex_data, actual_slopes, by="Variable"))
+  slope_name = rlang::sym(paste0("slope_", latent))
+  ordered_differences =  k %>% mutate(Diff = abs(Actual_slopes - !!(slope_name))) %>% 
+    group_by(Variable) %>% 
+    summarize(mean(Diff)) %>% 
+    set_names(c("Variable", "Diff")) %>% 
+    arrange(desc(Diff))
+  flex_data$Variable = factor(flex_data$Variable, levels=ordered_differences$Variable, ordered=T)  
+  
+  # now plot it
   ggplot(flex_data, 
          aes_string(x = "Observed", y = latent, group = "1")) +         
     geom_point() + 
@@ -20,6 +41,15 @@ latent_flexplot = function(flex_data, latent) {
     geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="blue", lwd=2) +
     geom_smooth() + 
     theme_bw()
+}
+
+vignette("programming", "dplyr")
+
+return_actual_slope = function(name, latent, flex_data) {
+  #browser()
+  f = as.formula(paste0(latent, "~Observed"))
+  d = flex_data %>% filter(Variable == name)
+  coef(lm(f, data=d))[2]
 }
 
 prepare_measurement_data = function(model) {
@@ -59,7 +89,6 @@ standardize_observed = function(model) {
 }
 
 get_slopes = function(model, obs_names=NULL, latent_names=NULL) {
-  
   if (is.null(obs_names) | is.null(latent_names)) {
     # get names
     names = get_names(model)
@@ -72,8 +101,13 @@ get_slopes = function(model, obs_names=NULL, latent_names=NULL) {
   return(slopes_observed)
 }
 
-get_intercepts = function(slopes_allvars, lav_data, latent_names, obs_names) {
+get_slopes_actual = function(model) {
   
+  
+ 
+}
+
+get_intercepts = function(slopes_allvars, lav_data, latent_names, obs_names) {
   obs_means = obs_names %>% purrr::map_dbl(function(x) mean(lav_data[,x])) %>% 
     matrix(nrow=length(obs_names), ncol=length(latent_names), byrow=F)
   lat_means = latent_names %>% purrr::map_dbl(function(x) mean(lav_data[,x])) %>% 
@@ -83,20 +117,6 @@ get_intercepts = function(slopes_allvars, lav_data, latent_names, obs_names) {
   return(intercepts)
 }
 
-get_observed_rsq = function(model, obs_names) {
-  rsq = lavInspect(model, "r2")
-
-  # if there's an exogenous variable, set its rsq to one
-  exogen_observed = which(!(obs_names %in% names(rsq)))
-  rsq[obs_names[exogen_observed]] = 1
-  return(rsq[obs_names])
-}
-
-
-loop_flexplot = function(y, data, cov_allvars, slope, intercept) {
-  f = make.formula(y, "Observed | Variable")
-  p = flexplot(f, data=data) + abline()
-}
 
 # this function will return the correlation between observed and latents
 latent_observed_implied = function(model) {
