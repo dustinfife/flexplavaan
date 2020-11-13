@@ -95,7 +95,7 @@ latent_x ~~ 0*latent_z
 "
 fit = cfa(model, d, )
 summary(fit, fit.measures=TRUE, standardized=TRUE)
-implied_measurement(fit, "latent_x")
+implied_measurement(fit, "latent_x", limit=6)
 implied_measurement(fit, "latent_z")
 implied_measurement(fit, "latent_y")
 visualize(fit, subset=1:5, method="lm")
