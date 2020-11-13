@@ -1,17 +1,17 @@
-implied_measurement = function(model, latent=NULL) {
+implied_measurement = function(model, latent=NULL, limit=4, ...) {
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model)
   
 
   if (is.null(latent)) latent = get_names(model)[[2]]
 
-  plots = latent %>% purrr::map(function(x) latent_flexplot(flex_data, x))
+  plots = latent %>% purrr::map(function(x) latent_flexplot(flex_data, x, limit=limit, ...))
   return(plots)
 }
 
 
 
-latent_flexplot = function(flex_data, latent) {
+latent_flexplot = function(flex_data, latent, limit=4, ...) {
   
   # name the abline parameters
   intercept_name = paste0("intercept_", latent)
@@ -33,9 +33,14 @@ latent_flexplot = function(flex_data, latent) {
     arrange(desc(Diff))
   flex_data$Variable = factor(flex_data$Variable, levels=ordered_differences$Variable, ordered=T)  
   
+  # limit the number of plots
+  only_plot_these = levels(flex_data$Variable)[1:limit]
+  flex_data_2 = flex_data %>% filter(Variable %in% only_plot_these)
+  
+  
   # now plot it
-  ggplot(flex_data, 
-         aes_string(x = "Observed", y = latent, group = "1")) +         
+  ggplot(flex_data_2, 
+         aes_string(x = "Observed", y = latent, group = "1"), ...) +         
     geom_point() + 
     facet_wrap(~ Variable) +
     geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="blue", lwd=2) +

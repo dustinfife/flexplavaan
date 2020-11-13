@@ -6,6 +6,7 @@ set.seed(1212)
 
 test_that("implied_measurement works", {
   vdiffr::expect_doppelganger("implied_measurement plot works", implied_measurement(fit_bollen, "Eta1")[[1]])
+  vdiffr::expect_doppelganger("implied_measurement with diff limit works", implied_measurement(fit_bollen, "Eta1", limit=3)[[1]])
 })
 
 test_that("prepare_measurement_data and latent_flexplot works", {
@@ -46,5 +47,4 @@ test_that("get_slopes and get_intercepts works", {
   expect_true(intercepts[1,2]==-448)  
 })
 
-latent = "Eta1"
-name="y1"
+
