@@ -11,25 +11,34 @@
 #' @param model A lavaan object
 #' @param latent a string, specifying which latent variable is plotted on the y-axis. 
 #' By default, it will display all the variables and return a list of plots. 
-#' @param limit The maximum number of observed variables displayed. Defaults to 4. 
+#' @param limit The maximum number of observed variables displayed. Defaults to 4.
+#' @param sort_slopes Should the plots by sorted by how much their model-implied slopes 
+#' deviate from a standard regression model slopes? Defaults to true.  
 #' @param ... Other parameters passed to flexplot. 
 #'
 #' @return Either a ggplot2 plot, or a list of ggplot2 plots
 #' @export
-implied_measurement = function(model, latent=NULL, limit=4, ...) {
+implied_measurement = function(model, latent=NULL, limit=4, sort_slopes=T, ...) {
+  
+  # check for name of latent
+  check_for_latent(model, latent)
+  
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model)
   
 
   if (is.null(latent)) latent = get_names(model)[[2]]
 
-  plots = latent %>% purrr::map(function(x) latent_flexplot(flex_data, x, limit=limit, ...))
+  plots = latent %>% purrr::map(function(x) latent_flexplot(flex_data, x, limit=limit, sort_slopes=sort_slopes,...))
   return(plots)
 }
 
+check_for_latent = function(model, latent) {
+  if (!(latent %in% lavNames(model, "lv"))) return(stop("The variable you provided is not a latent variable"))
+  return(NULL)
+}
 
-
-latent_flexplot = function(flex_data, latent, limit=4, ...) {
+latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T,...) {
   
   # name the abline parameters
   intercept_name = paste0("intercept_", latent)
@@ -40,29 +49,30 @@ latent_flexplot = function(flex_data, latent, limit=4, ...) {
   actual_slopes = unique_variables %>% 
     purrr::map_dfr(function(x) return_actual_slope(x, latent, flex_data)) %>% 
     mutate(Variable = unique_variables, Actual_slopes = Observed)
-  
+
   # now compute difference between slopes
-  k = (merge(flex_data, actual_slopes, by="Variable"))
-  slope_name = rlang::sym(paste0("slope_", latent))
-  ordered_differences =  k %>% mutate(Diff = abs(Actual_slopes - !!(slope_name))) %>% 
-    group_by(Variable) %>% 
-    summarize(mean(Diff)) %>% 
-    purrr::set_names(c("Variable", "Diff")) %>% 
-    arrange(desc(Diff))
-  flex_data$Variable = factor(flex_data$Variable, levels=ordered_differences$Variable, ordered=T)  
-  
-  # limit the number of plots
-  only_plot_these = levels(flex_data$Variable)[1:min(limit, length(flex_data$Variable))]
-  flex_data_2 = flex_data %>% filter(Variable %in% only_plot_these)
-  
+  if (sort_slopes) {
+    k = (merge(flex_data, actual_slopes, by="Variable"))
+    slope_name = rlang::sym(paste0("slope_", latent))
+    ordered_differences =  k %>% mutate(Diff = abs(Actual_slopes - !!(slope_name))) %>% 
+      group_by(Variable) %>% 
+      summarize(mean(Diff)) %>% 
+      purrr::set_names(c("Variable", "Diff")) %>% 
+      arrange(desc(Diff))
+    flex_data$Variable = factor(flex_data$Variable, levels=ordered_differences$Variable, ordered=T)  
+    
+    # limit the number of plots
+    only_plot_these = levels(flex_data$Variable)[1:min(limit, length(flex_data$Variable))]
+    flex_data = flex_data %>% filter(Variable %in% only_plot_these)
+  }
 
   # now plot it
-  ggplot(flex_data_2, 
+  ggplot(flex_data, 
          aes_string(x = "Observed", y = latent, group = "1"), ...) +         
     geom_point() + 
     facet_wrap(~ Variable) +
     geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="blue", lwd=2) +
-    geom_smooth() + 
+    geom_smooth(method="lm", formula = y~x) + 
     theme_bw()
 }
 
