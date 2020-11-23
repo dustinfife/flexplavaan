@@ -1,16 +1,41 @@
 d = read.csv("data/health_depression.csv")
 model = "
 internet =~ Salience + ExcessiveUse + NeglectWork + Anticipation + LackofControl + NeglectSocialLife
-health =~ Nutrition + Healthresponsibility + Selfactualization + Interpersonalsupport + Exercise + Stressmanagement
-CESD~internet + health
-internet ~~ health
+health_physical =~ Nutrition + Healthresponsibility +  Exercise 
+health_emotional =~ Selfactualization + Interpersonalsupport + Stressmanagement
+CESD~internet + health_physical + health_emotional
+"
+health_old = sem(model, d)
+implied_measurement(health_old, "internet")[[1]] #+ coord_cartesian(ylim=c(-3, 3))
+  # nutrition's off
+implied_measurement(health_old, "health_physical")
+  # this whole one is not as correlated as it should be with stress, exercise, neglectwork
+implied_measurement(health_old, "health_emotional")
+  # nutrition has stronger relationship with emotional health 
+
+  
+  # this model adds Stressmanagement to physical health and nutrition to emotional
+model = "
+internet =~ Salience + ExcessiveUse + NeglectWork + Anticipation + LackofControl + NeglectSocialLife+ Nutrition
+health_physical =~ Nutrition + Exercise + Healthresponsibility+ Stressmanagement
+health_emotional =~ Selfactualization + Interpersonalsupport + Stressmanagement + Nutrition
+CESD~internet + health_physical + health_emotional
+health_physical = health_emotional + health_emotional^2
 "
 health = sem(model, d)
-implied_measurement(health, "internet",sort_slopes=F)[[1]] + coord_cartesian(ylim=c(-3, 3))
-implied_measurement(health, "health")
-  # some curvilinearity between NeglectSocialLife/Salience
-implied_measurement(health, "internet")
-
+summary(health, standardized=T, fit.measures=T)
+implied_measurement(health, "internet")[[1]] #+ coord_cartesian(ylim=c(-3, 3))
+# nutrition's off
+implied_measurement(health, "health_physical")
+# this whole one is not as correlated as it should be with stress, exercise, neglectwork
+implied_measurement(health, "health_emotional")
+# nutrition has stronger relationship with emotional health 
+residual_plots(health, max_val = .05) + coord_flip()
+visualize(health, health_old, subset=1:4)
+visualize(health, plot="latent", formula = CESD~internet)
+visualize(health, plot="latent", formula = CESD~health_physical)
+visualize(health, plot="latent", formula = CESD~health_emotional)
+visualize(health, plot="latent", formula = health_physical~health_emotional)
 
 usethis::use_data(health)
 
