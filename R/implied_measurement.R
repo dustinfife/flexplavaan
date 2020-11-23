@@ -103,7 +103,7 @@ prepare_measurement_data = function(model) {
     pivot_longer(cols=obs_names, names_to="Variable", values_to="Observed") %>% 
     data.frame %>% 
     purrr::set_names(c(latent_names, "Variable", "Observed"))
-  head(lav_data_std)
+  
   # merge the intercept data with the actual data
   slopes_and_intercepts = cbind(slopes_observed, intercepts_observed, Variable=obs_names)
   flex_data = full_join(lav_data_std, slopes_and_intercepts, by="Variable")
