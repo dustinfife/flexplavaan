@@ -34,6 +34,7 @@ implied_measurement = function(model, latent=NULL, limit=4, sort_slopes=T, ...) 
 }
 
 check_for_latent = function(model, latent) {
+  if (is.null(latent)) return(NULL)
   if (!(latent %in% lavNames(model, "lv"))) return(stop("The variable you provided is not a latent variable"))
   return(NULL)
 }
@@ -72,7 +73,7 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T,...) {
     geom_point() + 
     facet_wrap(~ Variable) +
     geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="blue", lwd=2) +
-    geom_smooth(method="lm", formula = y~x) + 
+    geom_smooth(method="lm", formula = y~x, colour="red") + 
     theme_bw()
 }
 
@@ -102,9 +103,9 @@ prepare_measurement_data = function(model) {
     pivot_longer(cols=obs_names, names_to="Variable", values_to="Observed") %>% 
     data.frame %>% 
     purrr::set_names(c(latent_names, "Variable", "Observed"))
-  
+  head(lav_data_std)
   # merge the intercept data with the actual data
-  slopes_and_intercepts = cbind(slopes_observed, intercepts_observed, Variable=row.names(slopes_observed))
+  slopes_and_intercepts = cbind(slopes_observed, intercepts_observed, Variable=obs_names)
   flex_data = full_join(lav_data_std, slopes_and_intercepts, by="Variable")
   return(flex_data)
 }
