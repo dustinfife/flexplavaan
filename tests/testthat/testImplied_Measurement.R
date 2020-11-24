@@ -33,8 +33,6 @@ test_that("latent_observed_implied works", {
 test_that("return_actual_slope works", {
   flex_data = prepare_measurement_data(fit_bollen)
   return_actual_slope("y1", "Eta1", flex_data)
-  
-  expect_equal(ob[1,1], 0)
 })
 
 test_that("check_for_latent", {

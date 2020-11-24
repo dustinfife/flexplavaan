@@ -13,13 +13,13 @@ d = cbind(x_vars, y_vars)
 model = "
 latent_x =~ x1 + x2 + x3 + x4 
 latent_y =~ y1 + y2 + y3 + y4
-latent_x_~latent_y
+latent_x~~latent_y
 latent_x ~~ latent_x
 latent_y ~~ latent_y
 "
 fit = cfa(model, d)
-str(fit_bollen@Model)
 #summary(fit, fit.measures=TRUE, standardized=TRUE)
+#visualize(fit, plot="latent")
 #implied_measurement(fit, "latent_y")
 sem_a = fit
 usethis::use_data(sem_a, overwrite=TRUE)
@@ -37,6 +37,7 @@ fit = cfa(model, d)
     # nonlinear relationship between observed of y_i
     # wonky bullet shape in y_i/x_i
     # nonlinear in implied_measurement between y_i
+    # but does NOT seem to show up with latent plots
 visualize(fit, subset=1:4, plot="latent")
   
 sem_b = fit
