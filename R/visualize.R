@@ -77,6 +77,8 @@ visualize.lavaan = function(object, object2=NULL,
   }
   
   if (plot == "latent"){
+    # get length of endogenous variables to make sure we can do it
+    if (length(get_endogenous_names(object))<2) stop("You cannot do a latent plot when there's less than two endogenous variables.")
     p = latent_plot(object, formula, ...)  
     return(p)
   }  
