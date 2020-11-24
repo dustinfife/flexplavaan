@@ -6,6 +6,7 @@ require(lavaan)
 test_that("latent_plot works", {
   vdiffr::expect_doppelganger("simple latent_plot",latent_plot(fit_bollen, formula = Eta2 ~ Eta1))
   vdiffr::expect_doppelganger("multiple latent_plots",latent_plot(fit_bollen)[[2]])
+  vdiffr::expect_doppelganger("latent with only one plot",latent_plot(sem_a))  
 })  
 
 test_that("return_alpha works", {

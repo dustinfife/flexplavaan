@@ -1,8 +1,7 @@
 #fitted = fit_twofactor
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
-latent_plot = function(fitted, formula = NULL, ...) {
-  browser()
+latent_plot = function(fitted, formula = NULL, estimate_se=T,...) {
   
   latent_names = lavaan::lavNames(fitted, type="lv")
   latent_predicted = data.frame(lavPredict(fitted))
@@ -13,11 +12,11 @@ latent_plot = function(fitted, formula = NULL, ...) {
     purrr::map(~estimate_standard_errors(.x,fitted)$sd_imp) %>%  # returns list of se for each latent var
     data.frame
   names(se_data) = paste0("se_", latent_names)
-  head(se_data)
   
   ### get flexplot formulae
   if (is.null(formula)) { 
     formula = beta_to_flexplot(fitted, latent_predicted)
+    if (formula[[1]]=="~") return(latent_plot_only(formula, latent_predicted, se_data, fitted, ...))
     plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data, fitted, ...))
     return(plot_list)
   }
