@@ -18,6 +18,8 @@ test_that("return_alpha works", {
 test_that("beta_to_flexplot works", {
   expect_true(paste(beta_to_flexplot(fit_bollen, data.frame(lavPredict(fit_bollen)))[[2]])[2] == "Eta2")
   expect_true(beta_to_flexplot(fit_bollen, data.frame(lavPredict(fit_bollen)), return_dvs = T)[1] == 1)
+  expect_true(paste(beta_to_flexplot(sem_a, data.frame(lavPredict(sem_a))))[2] == "latent_x")
+  expect_true(beta_to_flexplot(sem_a, data.frame(lavPredict(sem_a)), return_dvs = T)[1] == 1)  
   beta = fit_bollen@Model@GLIST$beta
   expect_true(get_dv_iv(2, beta)[2] == 3)
 })
@@ -34,4 +36,9 @@ test_that("check_data_has_observed works", {
   d_new = cbind(d, se_data)
   expect_true(ncol(check_data_has_observed(d_new, "internet", "health", health))==3)
   expect_true(ncol(check_data_has_observed(d_new, "internet", "CESD", health))==17)
+})
+
+test_that("get_endogenous_names works", {
+  expect_true(get_endogenous_names(fit_bollen)[1] == "Eta1")
+  expect_true(get_endogenous_names(sem_a)[1] == "latent_x")  
 })

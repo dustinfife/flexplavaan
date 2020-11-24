@@ -2,16 +2,18 @@
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
 latent_plot = function(fitted, formula = NULL, ...) {
+  browser()
   
   latent_names = lavaan::lavNames(fitted, type="lv")
   latent_predicted = data.frame(lavPredict(fitted))
 
   ### estimate standard errors
+  cat("Estimating Standard Errors...\n")
   se_data = 1:length(latent_names) %>% 
     purrr::map(~estimate_standard_errors(.x,fitted)$sd_imp) %>%  # returns list of se for each latent var
     data.frame
   names(se_data) = paste0("se_", latent_names)
-  
+  head(se_data)
   
   ### get flexplot formulae
   if (is.null(formula)) { 
@@ -135,26 +137,44 @@ beta_to_flexplot = function(fitted, data, return_dvs=FALSE) {
   # beta matrix isn't just latent variables
   # if observed are endogenous, they will be there too
   # so I can't just use lavNames to get that
-  end_names = fitted@Model@dimNames[[4]][[1]]
+  if (length(fitted@Model@dimNames)>3) {
+    end_names = get_endogenous_names(fitted)
   
-  # get the beta matrix (which is the path coefficients between latent variables)
-  beta_matrix = fitted@Model@GLIST$beta
+    # get the beta matrix (which is the path coefficients between latent variables)
+    beta_matrix = fitted@Model@GLIST$beta
 
-  # dvs will identify which endogenous variables have predictors
-  dvs = which(rowSums(beta_matrix)>0)
-  #end_names[get_dv_iv(dvs, beta_matrix)]
-  beta_matrix
-  
-  if(return_dvs) return(dvs)
-  model_formulas = dvs %>% purrr::map(~
-                       flexplot:::make_flexplot_formula(
-                         predictors = end_names[get_dv_iv(.x, beta_matrix)],
-                         outcome = end_names[.x], 
-                         data=data
-                       )
-                    )
-  
-  return(model_formulas)
+    # dvs will identify which endogenous variables have predictors
+    dvs = which(rowSums(beta_matrix)>0)
+    
+    model_formulas = dvs %>% purrr::map(~
+                                          flexplot:::make_flexplot_formula(
+                                            predictors = end_names[get_dv_iv(.x, beta_matrix)],
+                                            outcome = end_names[.x], 
+                                            data=data
+                                          )
+    )
+    if (return_dvs) return(dvs)
+    model_formulas
+    
+  # if they don't have endogenous variables, just feed it to flexplot  
+  } else {
+    dvs = lavaan::lavNames(fitted, type="lv")
+    if (return_dvs) return(1:length(dvs))
+    model_formulas = flexplot:::make_flexplot_formula(predictors = dvs[-1],
+                                                      outcome = dvs[1], 
+                                                      data=data)
+    return(model_formulas)
+  }
+}
+
+get_endogenous_names = function(fitted){
+  # lavaan matrices are lambda, theta, psi, and beta.
+  # beta specifies which variables are endogenous.
+  # if there's no beta, all relationships are correlational
+  if (length(fitted@Model@dimNames)>3) {
+    return(fitted@Model@dimNames[[4]][[1]])
+  }
+  return(fitted@Model@dimNames[[3]][[1]])
 }
 
 
