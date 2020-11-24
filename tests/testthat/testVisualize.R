@@ -27,4 +27,5 @@ test_that("measurement works in visualize", {
 
 test_that("latent variables work in visualize", {
   vdiffr::expect_doppelganger("latent in visualize",visualize(fit_twofactor, plot="latent"))
+  expect_error(visualize(stats_jedi_fit, plot="latent"))
 })

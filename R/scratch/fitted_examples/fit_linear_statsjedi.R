@@ -10,7 +10,8 @@ model2 = "stats_jedi =~ NA*exam_one + exam_two + exam_three
 stats_jedi ~~ 1*stats_jedi"
 
   ### fit models
-stats_fit1 = cfa(model1, stats_jedi)
+stats_jedi_fit = cfa(model1, stats_jedi)
+usethis::use_data(stats_jedi_fit, overwrite=T)
   summary(stats_fit1, fit.measures=TRUE, standardized=TRUE)
 stats_fit2 = cfa(model2, stats_jedi)
   summary(stats_fit2, fit.measures=TRUE, standardized=TRUE)
