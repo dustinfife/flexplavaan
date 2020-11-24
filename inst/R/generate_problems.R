@@ -33,12 +33,12 @@ fit = cfa(model, d)
 #summary(fit, fit.measures=TRUE, standardized=TRUE)
 #implied_measurement(fit, "latent_y")
 #visualize(fit, subset=1:4)
+#visualize(fit, subset=1:4, plot="latent")
   # nonlinear between latents will show up as:
     # nonlinear relationship between observed of y_i
-    # wonky bullet shape in y_i/x_i
+    # wonky bullet shape in y_i/x_i, as well as latent plots
     # nonlinear in implied_measurement between y_i
-    # but does NOT seem to show up with latent plots
-visualize(fit, subset=1:4, plot="latent")
+
   
 sem_b = fit
 usethis::use_data(sem_b, overwrite=TRUE)
@@ -82,13 +82,14 @@ latent_y =~ y1 + y2 + y3 + y4
 latent_y ~~ latent_x
 "
 fit = cfa(model, d)
-visualize(fit, subset=1:3, method="lm")
-  #consistently underestimating the relationship between y_i
+#visualize(fit, subset=1:3, method="lm")
+#visualize(fit, plot="latent")
 implied_measurement(fit, "latent_x")
-  
-  # 
-implied_measurement(fit, "latent_x")
-  #
+implied_measurement(fit, "latent_y")
+  #visualize: consistently underestimating the relationship between y_is
+  #implied_measurement: consistently overestimating y_i to latent x
+sem_d = fit
+usethis::use_data(sem_d)
 
 
 # missing association between latents
@@ -110,27 +111,16 @@ latent_y ~ latent_x + latent_z
 latent_x ~~ 0*latent_z
 "
 fit = cfa(model, d, )
-summary(fit, fit.measures=TRUE, standardized=TRUE)
-implied_measurement(fit, "latent_x", limit=6)
-implied_measurement(fit, "latent_z")
-implied_measurement(fit, "latent_y")
-visualize(fit, subset=1:5, method="lm")
-
-
-summary(fit_bollen)
-implied_measurement(fit_bollen, "Eta1")
-
-
-set.seed(2323)
-# model with uncorrelated factors
-d = generate_latent(vars=4, loading=0, n=10000) 
-
-model = "
-latent_x =~ 0*x1 + x2 
-latent_y =~ x3 + x4 
-latent_x ~~ 0*latent_y
-"
-noloadings = cfa(model, d)
-summary(fit, fit.measures=TRUE, standardized=TRUE)
-latent_observed_implied(fit)
-usethis::use_data(noloadings)
+# summary(fit, fit.measures=TRUE, standardized=TRUE)
+# visualize(fit, subset=1:5, method="lm")
+# visualize(fit, plot="latent")
+# implied_measurement(fit, "latent_x", limit=6)
+# implied_measurement(fit, "latent_z")
+# implied_measurement(fit, "latent_y")
+  # implied_measurement: consistently overestimate z_i/x_i and latent_x
+  # implied_measurement: consistently overestimate x_i and latent_z
+  # implied_measurement: consistently overestimate y_i and latent_y
+  # visualize: x_i/z_i are overestimated
+  # latent isn't helpful
+sem_e = fit
+usethis::use_data(sem_e)
