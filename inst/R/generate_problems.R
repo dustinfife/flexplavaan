@@ -110,7 +110,7 @@ latent_z =~ z1 + z2 + z3 + z4
 latent_y ~ latent_x + latent_z
 latent_x ~~ 0*latent_z
 "
-fit = cfa(model, d, )
+fit = cfa(model, d)
 # summary(fit, fit.measures=TRUE, standardized=TRUE)
 # visualize(fit, subset=1:5, method="lm")
 # visualize(fit, plot="latent")
