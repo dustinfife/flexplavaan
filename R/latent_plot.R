@@ -7,11 +7,7 @@ latent_plot = function(fitted, formula = NULL, estimate_se=T,...) {
   latent_predicted = data.frame(lavPredict(fitted))
 
   ### estimate standard errors
-  cat("Estimating Standard Errors...\n")
-  se_data = 1:length(latent_names) %>% 
-    purrr::map(~estimate_standard_errors(.x,fitted)$sd_imp) %>%  # returns list of se for each latent var
-    data.frame
-  names(se_data) = paste0("se_", latent_names)
+  se_data = check_for_standard_errors(fitted)
   
   ### get flexplot formulae
   if (is.null(formula)) { 
@@ -25,6 +21,7 @@ latent_plot = function(fitted, formula = NULL, estimate_se=T,...) {
   return(plot)
 
 }
+
 
 # dv = dvs[1]
 # i=1
