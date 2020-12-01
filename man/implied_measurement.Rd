@@ -4,7 +4,7 @@
 \alias{implied_measurement}
 \title{Display the model-implied measurement plot}
 \usage{
-implied_measurement(model, latent = NULL, limit = 4, ...)
+implied_measurement(model, latent = NULL, limit = 4, sort_slopes = T, ...)
 }
 \arguments{
 \item{model}{A lavaan object}
@@ -13,6 +13,9 @@ implied_measurement(model, latent = NULL, limit = 4, ...)
 By default, it will display all the variables and return a list of plots.}
 
 \item{limit}{The maximum number of observed variables displayed. Defaults to 4.}
+
+\item{sort_slopes}{Should the plots by sorted by how much their model-implied slopes 
+deviate from a standard regression model slopes? Defaults to true.}
 
 \item{...}{Other parameters passed to flexplot.}
 }
