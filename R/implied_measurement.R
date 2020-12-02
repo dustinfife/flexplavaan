@@ -66,15 +66,16 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T,...) {
     only_plot_these = levels(flex_data$Variable)[1:min(limit, length(flex_data$Variable))]
     flex_data = flex_data %>% filter(Variable %in% only_plot_these)
   }
-
+  
   # now plot it
   ggplot(flex_data, 
          aes_string(x = "Observed", y = latent, group = "1"), ...) +         
     geom_point() + 
     facet_wrap(~ Variable) +
-    geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="blue", lwd=2) +
-    geom_smooth(method="lm", formula = y~x, colour="red") + 
-    theme_bw()
+    geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="red", lwd=2) +
+    geom_smooth(method="lm", formula = y~x, colour="blue") + 
+    theme_bw() +
+    labs(x="Observed\n(Red = Implied, Blue:=Observed)")
 }
 
 vignette("programming", "dplyr")
