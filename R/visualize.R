@@ -60,6 +60,9 @@ visualize.lavaan = function(object, object2=NULL,
             lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms,...)),
             upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", label_names=nms, ...)),
             diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", label_names=nms, ...)))
+    if (is.null(object2)) {
+      p = p + labs(title="Trace/DDP Plots", subtitle="Red=Implied, Blue=Observed")
+    }  
     return(p)
   } 
   
@@ -68,6 +71,9 @@ visualize.lavaan = function(object, object2=NULL,
             lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms, ...)),
             upper = NULL,
             diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", label_names=nms, ...)))    
+    if (is.null(object2)) {
+      p = p + labs(title="DD Plots", subtitle="Red=Implied, Blue=Observed")
+    }  
     return(p)
   }  
   

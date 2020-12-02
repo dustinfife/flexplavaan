@@ -152,7 +152,7 @@ viz_diagnostics <- function(data, mapping,
         
       } else {
         p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, ...) + 
-          geom_line(data=new_data, aes_string(x,y), col="red")  
+          geom_line(data=new_data, aes_string(x,y), col="red") + labs(title="Trace Plot")
       }
       return(p)
     } else if (plot=="disturbance") {
