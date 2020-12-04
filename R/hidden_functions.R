@@ -130,7 +130,7 @@ nonlinear_prediction = function(x,y,latent){
     setNames(c("latent", "y")) %>% 
     loess(formula = y~latent, data=., degree=2)
   pred.y = pred.y$fitted
-  #browser()
+  
   rxx = empirical_reliability(latent[,1], x, loess=TRUE)
   ryy = empirical_reliability(latent[,2], y, loess=TRUE)
   
@@ -218,7 +218,7 @@ extract_xy_mapping = function(mapping, invert.map, data, observed, latent=NULL){
     y = variables[2]
     x = variables[1]
   }
-  #browser()
+
   if (!all(variables %in% names(data))){
     problem.vars = which(!(variables %in% names(data)))
     var = ifelse(length(problem.vars>1), 
