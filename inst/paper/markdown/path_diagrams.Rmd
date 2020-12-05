@@ -1,0 +1,46 @@
+---
+title: "PathDiagrams"
+author: "Dustin Fife"
+date: "12/4/2020"
+output: pdf_document
+header-includes:
+- \usepackage{amsmath}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+<center>
+```{r, mod1, engine="tikz", eval=TRUE, echo=FALSE, out.width='50%'}
+\usetikzlibrary{arrows,shapes,positioning}
+\begin{tikzpicture}[node distance=2cm, auto,>=latex, thick, scale = 0.5]
+\node[draw, circle] (f) {$F$};
+\node[draw, rectangle] (x2) [below of=f] {$X_2$};
+\node[draw, rectangle] (x3) [right of=x2, node distance = 1cm] {$X_3$};
+\node[draw, rectangle] (x1) [left of=x2, node distance = 1cm] {$X_1$};
+\draw[->, left] (f) to node {$a$} (x1);
+\draw[->] (f) to node {$b$} (x2);
+\draw[->, right] (f) to node {$c$} (x3);
+
+\node[draw, circle] (f2) [right of=f, node distance = 3cm] {$F$};
+\node[draw, rectangle] (x22) [below of=f2] {$X_2$};
+\node[draw, rectangle] (x32) [right of=x22, node distance = 1cm] {$X_3$};
+\node[draw, rectangle] (x12) [left of=x22, node distance = 1cm] {$X_1$};
+\draw[->, left] (f2) to node {$a$} (x12);
+\draw[->, left] (f2) to node {$b$} (x22);
+\draw[<->] (x22) edge[out=270, in=270,<->, below] node {$c$} (x32)  ;
+\draw[<->] (x12) edge[out=270, in=270,<->, below] node {$d$} (x32.south east)  ;
+
+\end{tikzpicture}
+```
+</center>
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
