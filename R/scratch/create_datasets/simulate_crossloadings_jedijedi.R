@@ -4,7 +4,8 @@ require(ggplot2)
 n = round(runif(1, 500, 800))
 
 force_score = rnorm(n)
-jedi_score = .5*force_score + rnorm(n, sqrt(1-.5^2))
+jedi_score = .5*force_score -.4*force_score^2 + rnorm(n, sqrt(1-.5^2))
+
 
 # create three exams
 # jedi counsel hired a psychometrician to develop a batter of tests to identify candidate jedis

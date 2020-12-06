@@ -1,0 +1,63 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=0.5\linewidth]{flexplavaan_draft_files/figure-latex/implied-1} \caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. These two models will yield very different estimates of a/b, but have the same implied correlation between $x_1$ and $x_2$.}\label{fig:implied}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=0.5\linewidth]{flexplavaan_draft_files/figure-latex/implied-1} \caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. These two models will yield very different estimates of a/b, but have the same implied correlation between $x_1$ and $x_2$.}\label{fig:implied}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=0.8\linewidth]{flexplavaan_draft_files/figure-latex/force-1} \caption{Simulated dataset with crossloadings on the 'history' indicator. This is the data-generating model.}\label{fig:force}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=0.8\linewidth]{flexplavaan_draft_files/figure-latex/force-1} \caption{Simulated dataset with crossloadings on the 'history' indicator. This is the data-generating model.}\label{fig:force}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\centering
+\includegraphics{flexplavaan_draft_files/figure-latex/scatter-1.pdf}
+\caption{\label{fig:scatter}Example figure that shows how standard statistical models are visualized. Dots represent scores on observed variables, while other symbols (e.g., regression line, large dots) represent the fit of the model.}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\centering
+\includegraphics{flexplavaan_draft_files/figure-latex/trace1-1.pdf}
+\caption{\label{fig:trace1}The LVM-implied fit between X1 and X2, shown in red. The blue line represents the regression line between the two variables. The more closely the model-implied fit line resembles the regresson line, the better the fit of the LVM.}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\centering
+\includegraphics{flexplavaan_draft_files/figure-latex/traceMatrix-1.pdf}
+\caption{\label{fig:traceMatrix}Scatterplot matrix showing the model-implied fit (red) and regression-implied fit (blue) between three simulated indicator variables. The diagonals show the histograms.}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=10.26in]{../plots/crossloading} \caption{This plot shows structural misfit; x3 loads onto two factors, but only one is modeled.}\label{fig:crossloading}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=10.26in]{../plots/poorfit} \caption{This plot shows a model that, by standard fit indices, fits quite well. The visuals, on the other hand, illustrate that the model isn't capturing}\label{fig:poorfit}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=10.26in]{../plots/crossloading_ddp} \caption{This plot shows a disturbance-dependence plot for the same data visualized in Figure \ref{fig:crossloading} in the lower triangle.}\label{fig:ddp}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\centering
+\includegraphics{flexplavaan_draft_files/figure-latex/beech-1.pdf}
+\caption{\label{fig:beech}Structural or ``Beech Ball'' plot of the relationship between the latent variables Force and Jedi. The ellipses represent the prediction intervals for the factor scores of the latent variables.}
+\end{figure*}
