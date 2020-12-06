@@ -1,0 +1,48 @@
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+\caption{\label{tab:wide}A Table of Simulated Data Showing the Data in Wide Format}
+\centering
+\begin{tabular}[t]{r|r|r}
+\hline
+x1 & x2 & x3\\
+\hline
+7 & 10 & 11\\
+\hline
+11 & 10 & 11\\
+\hline
+10 & 13 & 10\\
+\hline
+\end{tabular}
+\end{table*}
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+\caption{\label{tab:long}This Table Contains the Same Data in Table \ref{tab:wide}, but standardized and in ``Long'' Rather Than ``Wide'' Format.}
+\centering
+\begin{tabular}[t]{l|r}
+\hline
+Measure & Observed\\
+\hline
+x1 & -1.1208971\\
+\hline
+x1 & 0.8006408\\
+\hline
+x1 & 0.3202563\\
+\hline
+x2 & -0.5773503\\
+\hline
+x2 & -0.5773503\\
+\hline
+x2 & 1.1547005\\
+\hline
+x3 & 0.5773503\\
+\hline
+x3 & 0.5773503\\
+\hline
+x3 & -1.1547005\\
+\hline
+\end{tabular}
+\end{table*}

@@ -1,15 +1,35 @@
 ---
-title: "flexplavaan_draft"
-output:
-  bookdown::pdf_document2:
-      css: style.css
-      number_sections: false
+title             : "Seeing the Impossible: Visualizing Latent Variable Models with flexplavaan"
+shorttitle        : "Seeing the impossible"
+    
+author: 
+  - name      : "Dustin Fife"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "201 Mullica Hill Road
+                    Glassboro, NJ 08028"
+    email         : "fife.dustin@gmail.com"
+  - name      : "Steven Brunwasser"
+    affiliation   : "1"  
+
+affiliation:
+  - id            : "1"
+    institution   : "Rowan University"
+documentclass     : "apa6"
+classoption       : "doc"
+output            : papaja::apa6_pdf
 bibliography: flexplavaan_citations.bib 
+header-includes:
+- \usepackage{amsmath}
+- \usepackage{tikz}
+- \usetikzlibrary{shapes.geometric,arrows, positioning}
 ---
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE, note=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, note=FALSE)
 require(tidyverse)
+require(flexplavaan)
+require(lavaan)
 ```
 
 # Introduction
@@ -88,18 +108,18 @@ In this paper, we introduce `flexplavaan`, a suite of visualization tools design
 
 ## Example Data
 
-To motivate our discussion/explanation of visualizing LVMs, we begin with a simulated dataset. Suppose the Jedi council is attempting to identify padawans who will make good jedi knights. To do so, they develop seven indicators (light saber score, fitness score, midichlorian levels, and a jedi history exam, as well as three written exams completed at the end of jedi training). The jedi council posits that these indicators represent two latent factors (Force Propensity and Jedi Expertise), according to the relationships specified in Figure \@ref(fig:force). Notice that one variable (history) has cross loadings on both factors. 
+To motivate our discussion/explanation of visualizing LVMs, we begin with a simulated dataset. Suppose the Jedi council is attempting to identify padawans who will make good jedi knights. To do so, they develop seven indicators (light saber score, fitness score, midichlorian levels, and a jedi history exam, as well as three written exams completed at the end of jedi training). Unbeknownst to the Jedi, these indicators measure two latent factors(Force Propensity and Jedi Expertise), according to the relationships specified in Figure \@ref(fig:force). Notice that one variable (history) has cross loadings on both factors. Also notice the path from Force to Jedi is represented by a curved *one*-headed arrow. This is to indicate there is a curvilinear relationship between the two variables. 
 
-In our examples that follow we will demonstrate how flexplavaan is able to detect both well-specified and poorly-specified models. 
+
 <br>
-<center>
 
-```{r, force, engine="tikz", eval=TRUE, echo=FALSE, out.width='80%', fig.cap="Simulated dataset with crossloadings on the 'history' indicator. This is the data-generating model."}
+\begin{center}
+\begin{figure}
 \usetikzlibrary{arrows}
-\begin{tikzpicture}[node distance=2cm, midway]
+\begin{tikzpicture}[node distance=2cm, midway, scale=1.75, every node/.style={scale=2}]
 
-\node[draw, circle] (force) {Force Propensity};
-\node[draw, circle, node distance = 2cm] (jedi) [right of=force] {Jedi Expertise};
+\node[draw, circle] (force) {Force};
+\node[draw, circle, node distance = 2cm] (jedi) [right of=force] {Jedi};
 
 \node[draw, rectangle] (saber) [left of=force] {Saber};
 \node[draw, rectangle, node distance = 1cm] (fit) [above of=saber] {Fitness};
@@ -111,23 +131,61 @@ In our examples that follow we will demonstrate how flexplavaan is able to detec
 \node[draw, rectangle, node distance = 1cm] (e1) [above of=e2] {Exam I};
 \node[draw, rectangle, node distance = 1cm] (e3) [below of=e2] {Exam III};
 
-\draw[->] (force) to node [fill=white]{\tiny $b$} (saber);
-\draw[->] (force) to node [fill=white]{\tiny $a$} (fit);
-\draw[->] (force) to node [fill=white]{\tiny $c$} (midi);
+\draw[->] (force) to node [fill=white]{\scriptsize $b$} (saber);
+\draw[->] (force) to node [fill=white]{\scriptsize $a$} (fit);
+\draw[->] (force) to node [fill=white]{\scriptsize $c$} (midi);
 
-\draw[->] (jedi) to node [fill=white]{\tiny $d$} (e1);
-\draw[->] (jedi) to node [fill=white]{\tiny $e$} (e2);
-\draw[->] (jedi) to node [fill=white]{\tiny $f$} (e3);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $d$} (e1);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $e$} (e2);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $f$} (e3);
 
-\draw[->] (jedi) to node [fill=white]{\tiny $g_1$} (hist);
-\draw[->] (force) to node [fill=white]{\tiny $g_2$} (hist);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $g_1$} (hist);
+\draw[->] (force) to node [fill=white]{\scriptsize $g_2$} (hist);
 
-\draw[->] (force) to node [fill=white]{\tiny $\beta$} (jedi);
+\draw[->] (force) edge[out=25, in=180,->, below] node {\scriptsize $\beta$} (jedi);
 \end{tikzpicture}
-```
+\caption{Simulated dataset with crossloadings on the 'history' indicator. This is the data-generating model.}
+\label{fig:force}
+\end{figure}
+\end{center}
 
-</center>
+Unfortunately, the Jedi council posits the model shown in Figure \@ref{fig:council_model} (Jedi are notoriously poor at psychometrics). While most of the important elements are there, the Jedi's (incorrect model) model specifies that history loads only onto force, and they posit a linear (rather than nonlinear) path from Force to Jedi. According to traditional measures of fit, the $\chi^2$ is statistically significant, but CFI (0.951), TLI (0.921), RMSEA (0.046), and SRMR (0.037) indicate respectable fit. In the examples that follow, we will use this example both to demonstrate how the visualization algorithms function and how they are able to identify misspecification that traditional fit statistics fail to capture. 
 
+\begin{center}
+\begin{figure}
+\usetikzlibrary{arrows}
+\begin{tikzpicture}[node distance=2cm, midway, scale=1.75, every node/.style={scale=2}]
+
+\node[draw, circle] (force) {Force};
+\node[draw, circle, node distance = 2cm] (jedi) [right of=force] {Jedi};
+
+\node[draw, rectangle] (saber) [left of=force] {Saber};
+\node[draw, rectangle, node distance = 1cm] (fit) [above of=saber] {Fitness};
+\node[draw, rectangle, node distance = 1cm] (midi) [below of=saber] {Midichlorian};
+
+\node[draw, rectangle] (hist) [below of=jedi] {History};
+
+\node[draw, rectangle] (e2) [right of=jedi] {Exam II};
+\node[draw, rectangle, node distance = 1cm] (e1) [above of=e2] {Exam I};
+\node[draw, rectangle, node distance = 1cm] (e3) [below of=e2] {Exam III};
+
+\draw[->] (force) to node [fill=white]{\scriptsize $b$} (saber);
+\draw[->] (force) to node [fill=white]{\scriptsize $a$} (fit);
+\draw[->] (force) to node [fill=white]{\scriptsize $c$} (midi);
+
+\draw[->] (jedi) to node [fill=white]{\scriptsize $d$} (e1);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $e$} (e2);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $f$} (e3);
+
+\draw[->] (force) to node [fill=white]{\scriptsize $g_2$} (hist);
+\draw[dotted, ->] (jedi) to node [fill=white]{\scriptsize $g_1$} (hist);
+
+\draw[->, line width = .7mm] (force) to node [above]{\scriptsize $\beta$} (jedi);
+\end{tikzpicture}
+\caption{Model specified by the Jedi council. The incorrectly specified path is shown as a thicker line, while the missing path is shown as a dotted line.}
+\label{fig:council_model}
+\end{figure}
+\end{center}
 
 ## Diagnostic Plots: Trail Plots
 
@@ -144,16 +202,19 @@ Likewise, visualizing LVMs might follow similar conventions; the dots should rep
 
 How then does one identify the slope/intercept of the LVM’s model-implied fit? It is quite easy to do so when standard linear LVMs are used. Recall how our Force Propensity factor has four indicators (e.g., saber, fitness, midichlorians, and history). To visualize the bivariate relationship between saber and fitness, for example, we can simply utilize the model-implied correlation matrix:
 
+[[but we need to incorporate the residuals of X]]
+
 $$\beta_{\text{saber}|\text{fitness}} = \hat{r}_{\text{saber},\text{fitness}}\frac{s_{\text{saber}}}{s_{\text{fitness}}}$$   
 
 where $\hat{r}_{\text{saber},\text{fitness}}$ is the model-implied correlation between saber and fitness, $s_{\text{saber}}$ and $s_{\text{fitness}}$ are the standard deviations of the two variables. One can then estimate the intercept using basic algebra:
 
 $$b_0=\overline{saber}-\beta_{\text{saber}|\text{fitness}}\times \overline{\text{fitness}}$$
 
-Figure \@ref(fig:trace1) shows the LVM model-implied fit in red with a regression line in blue for simulated data. Because the regression line minimizes the sum of squared errors, we would hope that the LVM fitted line (red) closely approximate the regression line. In this case, the two overlap quite extensively. On the other hand, if the two lines differ, we can be certain the LVM fails to capture the entire relationship between the two observed variables. 
+Figure \@ref(fig:trace1) shows the LVM model-implied fit in red with a regression line in blue for simulated data. Because the regression line minimizes the sum of squared errors, we would hope that the LVM fitted line (red) closely approximate the regression line. In this case, the two are similar, but there is a visually detectable difference between the two. In other words, the LVM fails to capture the entire relationship between the two observed variables. 
 
 ```{r trace1, fig.cap = "The LVM-implied fit between X1 and X2, shown in red. The blue line represents the regression line between the two variables. The more closely the model-implied fit line resembles the regresson line, the better the fit of the LVM."}
   # compute the model-implied slope
+cor(jedi_jedi)
 implied.cor = lavInspect(force_fit, what="cor.ov")
 implied.cov = lavInspect(force_fit, what="cov.ov")
 stdev_ov = sqrt(diag(implied.cov))
@@ -169,42 +230,37 @@ ggplot(data=jedi_jedi, aes(x=fitness,y=saber)) +
 
  
 
-Of course, Figure \@ref(fig:trace1) only shows one pairwise relationship between variables. If we wished to visualize all the variables in our model, we would have to utilize a scatterplot matrix, as in Figure \@ref(fig:traceMatrix). Naturally, this becomes quite cumbersome when users have more than seven or eight variables. In this case, it is best to visualize only a subset of variables. We will later discuss strategies for how best to select appropriate subsets. 
+Of course, Figure \@ref(fig:trace1) only shows one pairwise relationship between variables. If we wished to visualize all the variables in our model, we would have to utilize a scatterplot matrix, as in Figure \@ref(fig:traceMatrix). The diagonal elements show histograms of ICRs, enabling researchers to evaluate the assumption of normality.[^mvnorm]  Naturally, this becomes quite cumbersome when users have more than seven or eight variables. In this case, it is best to visualize only a subset of variables. We will later discuss strategies for how best to select appropriate subsets. For our figure (Figure \@ref(fig:traceMatrix)), we have examined only the variables associated with the Force variable. This figure shows a consistent pattern of underestimation between all variables except the force history variable. 
+
+[^mvnorm]: Technically, LVMs assume multivariate normality, while these plots show univariate normality. However, the univariate plots at least suggest when multivariate normality might be violated. 
 
 ```{r traceMatrix, fig.cap="Scatterplot matrix showing the model-implied fit (red) and regression-implied fit (blue) between three simulated indicator variables. The diagonals show the histograms."}
 require(flexplavaan)
-visualize(force_fit, plot = "model", sample=300, subset=1:3)
+visualize(force_fit, plot="model", subset=c("saber", "fitness", "midichlorian", "force_history"), sort_plots = FALSE, method="lm")
 ```
 
 
-The primary advantage of trail plots is that they easily show misfit in LVMs. They do so by showing differences in fit between indicators of different variables. For example, \@ref(fig:crossloading) shows a model where $x1-x2$ load onto one latent variable, x4-x5 load onto another, and x3 loads onto both; however, the specified model assumes x3 only loads onto the first model. 
-
-```{r crossloading, fig.cap="This plot shows structural misfit; x3 loads onto two factors, but only one is modeled."}
-knitr::include_graphics("../plots/crossloading.jpg")
-```
-
-Another advantage of trail plots is they visually (and often times strikingly) show how little information a model might capture. For example, Figure \@ref(fig:poorfit) shows a model that, by the fit indices, has remarkably good fit: RMSEA is <0.001, TLI/CFI/NNFI are all approximately 1, and RMR is approximately zero. However, the visual shows the model actually captures very little information; while the two lines are quite similar, the majority of slopes are very near flat. 
-
-```{r poorfit, fig.cap="This plot shows a model that, by standard fit indices, fits quite well. The visuals, on the other hand, illustrate that the model isn't capturing"}
-knitr::include_graphics("../plots/poorfit.jpg")
-```
+The primary advantage of trail plots is that they easily show some types of misspecification in LVMs. Another advantage is they visually (and often times strikingly) show how little information a model might capture. Returning to Figure \@ref(fig:traceMatrix), we see that many of the bivariate plots reveal quite weak relationships; many of the slopes are quite near zero. Recall that global fit indices suggested a well-fitting model. The trace plots, however, suggest there's little information to fit from the beginning.  
 
 # Disturbance-Dependence Plots
 	
 One common technique for visualizing the adequacy of statistical models in classic regression is residual-dependence plots. With these graphics, one simply plots the residuals of the model ($Y$ axis) against the predicted values ($X$ axis). The rationale behind this is simple: the model should have extracted any association between the prediction and the outcome. The residuals represent the remaining information after extracting the signal from the model. If there is a clear trend remaining in the data (e.g., a nonlinear pattern or a "megaphone" shape in the residuals), this indicates the model failed to capture important information.
 	
-Likewise, in LVMs, we can apply this same idea to determine whether the fit implied by the LVM has successfully extracted any association between any pair of predictors. However, in LVMs, residuals refer to the discrepancy between the model-implied and the actual variance/covariance matrix (or correlation matrix). As such, naming these plots "residual-dependence plots" would be a misnomer. Rather, misfit at the raw data level is typically called a disturbance. As such, we call these plots disturbance-dependence plots.
+Likewise, in LVMs, we can apply this same idea to determine whether the fit implied by the LVM has successfully extracted any association between any pair of predictors. However, in LVMs, residuals refer to the discrepancy between the model-implied and the actual variance/covariance matrix (or correlation matrix). As such, naming these plots "residual-dependence plots" would be a misnomer. Rather, misfit at the raw data level is typically called a disturbance. As such, we call these plots disturbance-dependence plots. 
 
-Like trace plots, we visualize disturbance-dependence plots for each pair of observed variables. To do so, `flexplavaan` subtracts the fit implied by the trace plots from the observed scores. For example, a disturbance dependence plot for an $X_1/X_2$ relationship would subtract the "fit" of $X_2$ implied by the trace plot from the actual $X_2$ scores (and vice versa for the $X_2/X_1$ relationship). If the trace-plot fit actually extracts all association between the pair of observed variables, we would expect to see a scatterplot that shows no remaining association between the two. If there is a pattern in the scatterplot remaining, we know the fit of the model misses important information about that specific relationship. To aid in interpreting these plots, we can overlay the plot with a flat line (with a slope of zero), as well as a regression (or loess) line. The first line indicates what signal should remain after fitting the model, while the second line shows what actually remains. 
-Figure \@ref(fig:ddp) shows an example of trace plots in the upper triangle and disturbance-dependence plots in the lower triangle of a scatterplot matrix. These plots are for the same data shown in the right image of Figure \@ref(fig:crossloading). Notice how the plots associated with $X_3$ all have positive slopes, indicating the model failed to capture important signal remaining in the model. 
+Like trace plots, we visualize disturbance-dependence plots for each pair of observed variables. To do so, `flexplavaan` subtracts the fit implied by the trace plots from the observed scores. For example, a disturbance dependence plot for an $X_1/X_2$ relationship would subtract the "fit" of $X_2$ implied by the trace plot from the actual $X_2$ scores (and vice versa for the $X_2/X_1$ relationship). If the trace-plot fit actually extracts all association between the pair of observed variables, we would expect to see a scatterplot that shows no remaining association between the two. If there is a pattern in the scatterplot remaining, we know the fit of the model misses important information about that specific relationship. 
 
-(ref:crossloadcitation) This plot shows a disturbance-dependence plot for the same data visualized in Figure \@ref(fig:crossloading) in the lower triangle.
+To aid in interpreting these plots, we can overlay the plot with a flat line (with a slope of zero), as well as a regression (or loess) line. The first line indicates what signal should remain after fitting the model, while the second line shows what actually remains. 
+
+Figure \@ref(fig:ddp) shows an example of trace plots in the upper triangle and disturbance-dependence plots in the lower triangle of a scatterplot matrix. These plots are for the same data shown in the right image of Figure \@ref(fig:traceMatrix). Notice how many of the plots have positive slopes, once again indicating the model systematically underestimates the relationshps between fitness, saber, and midichlorian. 
+
+(ref:crossloadcitation) This plot shows a disturbance-dependence plot for the same data visualized in Figure \@ref(fig:traceMatrix) in the lower triangle.
 
 ```{r ddp, fig.cap='(ref:crossloadcitation)'}
-knitr::include_graphics("../plots/crossloading_ddp.jpg")
+visualize(force_fit, subset=c("saber", "fitness", "midichlorian", "force_history"), sort_plots = FALSE, method="lm")
 ```
 
-Together, both of these plots (trace plots and diagnostic-dependence plots) serve as a critical diagnostic check. Both these plots will signal misfit both in the measurement and structural components of the model. Conversely, these models will also help users determine whether the model is to be believed. If they show the model adequately fits the data, the user can then proceed to plot two different types of plots: measurement plots and structural plots. 
+Together, both of these plots (trace plots and diagnostic-dependence plots) serve as a critical diagnostic check. Both these plots will signal certain types of misfit both in the measurement and structural components of the model. However, these plots suffer from a major weakness. Recall how earlier we referenced Figure \@ref(fig:implied) and noted that sometimes severe misspecification will go undetected simply because an incorrect model will often yield a model-implied covariance matrix that well approximates the actual covariance matrix. However, this sort of misspecification may show up in measurement plots, which we address next. 
 
 # Measurement Plots
 
@@ -235,38 +291,38 @@ Another alteration from a standard scatterplot is the use of vertical bars to in
 
 ```{r measurementplot, fig.cap='(ref:meas)'}
 # extract factor score estimates
-d[,c("latent")] = lavPredict(fitted)
-# convert to long format
-measurement_data = d %>% 
-  mutate_at(vars(x1:x3), scale) %>% # convert to standardized variables
-  gather(key="Measure", value="Observed", x1:x3) # convert to long format
-# plot it
-
-require(semTools)
-se_posterior = plausibleValues(fitted)
-se_posterior = se_posterior %>% tibble() %>% unnest() %>% 
-  group_by(case.idx) %>% 
-    summarize(sd_imp = sd(A))
-measurement_data$se = se_posterior$sd_imp
-
-flexplot(latent~Observed | Measure, 
-         data=measurement_data, 
-         method="lm", 
-         ghost.line = "red", alpha=.4) + 
-        geom_errorbar(aes(ymin=latent-se, ymax=latent+se), alpha = .2)
+# d[,c("latent")] = lavPredict(fitted)
+# # convert to long format
+# measurement_data = d %>% 
+#   mutate_at(vars(x1:x3), scale) %>% # convert to standardized variables
+#   gather(key="Measure", value="Observed", x1:x3) # convert to long format
+# # plot it
+# 
+# require(semTools)
+# se_posterior = plausibleValues(fitted)
+# se_posterior = se_posterior %>% tibble() %>% unnest() %>% 
+#   group_by(case.idx) %>% 
+#     summarize(sd_imp = sd(A))
+# measurement_data$se = se_posterior$sd_imp
+# 
+# flexplot(latent~Observed | Measure, 
+#          data=measurement_data, 
+#          method="lm", 
+#          ghost.line = "red", alpha=.4) + 
+#         geom_errorbar(aes(ymin=latent-se, ymax=latent+se), alpha = .2)
 
 ```
 
 Naturally, there is a great deal of overlapping points/lines in Figure \@ref(fig:measurementplot). To minimize overlap, we can instead sample datapoints, as in Figure \@ref(fig:sampledMeasurement). 
 
 ```{r sampledMeasurement}
-m2 = sample(1:nrow(measurement_data), size=100)
-m2 = measurement_data[m2,]
-flexplot(latent~Observed | Measure, 
-         data=m2, 
-         method="lm", 
-         ghost.line = "red", alpha=.4) + 
-        geom_errorbar(aes(ymin=latent-se, ymax=latent+se), alpha = .2)
+# m2 = sample(1:nrow(measurement_data), size=100)
+# m2 = measurement_data[m2,]
+# flexplot(latent~Observed | Measure, 
+#          data=m2, 
+#          method="lm", 
+#          ghost.line = "red", alpha=.4) + 
+#         geom_errorbar(aes(ymin=latent-se, ymax=latent+se), alpha = .2)
 ```
 
 # Structural (Beech Ball) Plots

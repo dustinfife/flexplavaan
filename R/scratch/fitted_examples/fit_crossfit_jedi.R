@@ -28,7 +28,7 @@ force_cross = cfa(model_cross, jedi_jedi)
 usethis::use_data(force_fit)
 usethis::use_data(force_cross)
 
-
+visualize(force_fit)
 # Visualize the models ----------------------------------------------------
 visualize(force_fit, force_cross, subset = 4:7, suppress_smooth=T)
 
