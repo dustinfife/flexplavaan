@@ -12,7 +12,7 @@ estimate_linear_fit = function(fit.lavaan, x, y, data){
     lvs = startsWith(dimnames(fit.lavaan)[[1]], "eta")
     lvs = fit.lavaan[lvs,"Mean"] #%>% as.data.frame 
     data$f2 = lvs
-    head(data)
+
     flexplot::flexplot(f2~latent, data=data)
     
     newdata = cbind(data, lvs) %>% 

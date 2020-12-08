@@ -18,7 +18,7 @@
 #'
 #' @return Either a ggplot2 plot, or a list of ggplot2 plots
 #' @export
-implied_measurement = function(model, latent=NULL, limit=4, sort_slopes=T, ...) {
+implied_measurement = function(model, latent=NULL, limit=4, sort_slopes=T, method="lm", ...) {
   
   # check for name of latent
   check_for_latent(model, latent)
@@ -29,7 +29,7 @@ implied_measurement = function(model, latent=NULL, limit=4, sort_slopes=T, ...) 
 
   if (is.null(latent)) latent = get_names(model)[[2]]
 
-  plots = latent %>% purrr::map(function(x) latent_flexplot(flex_data, x, limit=limit, sort_slopes=sort_slopes,...))
+  plots = latent %>% purrr::map(function(x) latent_flexplot(flex_data, x, limit=limit, sort_slopes=sort_slopes, method,...))
   return(plots)
 }
 
@@ -39,7 +39,7 @@ check_for_latent = function(model, latent) {
   return(NULL)
 }
 
-latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T,...) {
+latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, method="lm",...) {
   
   # name the abline parameters
   intercept_name = paste0("intercept_", latent)
@@ -70,10 +70,10 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T,...) {
   # now plot it
   ggplot(flex_data, 
          aes_string(x = "Observed", y = latent, group = "1"), ...) +         
-    geom_point() + 
+    geom_point(...) + 
     facet_wrap(~ Variable) +
     geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="red", lwd=2) +
-    geom_smooth(method="lm", formula = y~x, colour="blue") + 
+    geom_smooth(method=method, formula = y~x, colour="blue") + 
     theme_bw() +
     labs(x="Observed\n(Red = Implied, Blue:=Observed)")
 }

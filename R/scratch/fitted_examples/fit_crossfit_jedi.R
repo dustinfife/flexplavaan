@@ -25,8 +25,8 @@ force_fit = cfa(model, jedi_jedi)
 force_cross = cfa(model_cross, jedi_jedi)
   #summary(force_fit, fit.measures=TRUE, standardized=TRUE)
   #summary(force_cross, fit.measures=TRUE, standardized=TRUE)
-usethis::use_data(force_fit)
-usethis::use_data(force_cross)
+usethis::use_data(force_fit, overwrite = TRUE)
+usethis::use_data(force_cross, overwrite = TRUE)
 
 visualize(force_fit)
 # Visualize the models ----------------------------------------------------

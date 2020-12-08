@@ -4,9 +4,9 @@ require(ggplot2)
 n = round(runif(1, 500, 800))
 
 force_score = rnorm(n)
-jedi_score = .5*force_score -.4*force_score^2 + rnorm(n, sqrt(1-.5^2))
+jedi_score = .5*force_score -.5*(force_score)^2 + rnorm(n, sqrt(1-.5^2))
 
-
+plot(force_score, jedi_score)
 # create three exams
 # jedi counsel hired a psychometrician to develop a batter of tests to identify candidate jedis
 fitness = 50 + .2*(11)*force_score + rnorm(n,0, sqrt(1-.6^2)*11) ### minutes required to complete obstacle course
