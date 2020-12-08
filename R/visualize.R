@@ -92,8 +92,10 @@ visualize.lavaan = function(object, object2=NULL,
   if (plot == "model") {
     p = ggpairs(d[,observed], legend=legend,
             lower = NULL,
-            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", label_names=nms, ...)),
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", label_names=nms, ...)))     
+            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, 
+                                           alpha = .2, plot="trace", label_names=nms, ...)),
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, 
+                                          alpha = .2, plot="histogram", label_names=nms, ...)))     
     return(p)
     
   }

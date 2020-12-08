@@ -72,7 +72,7 @@
 viz_diagnostics <- function(data, mapping, 
                             fit.lavaan, fit.lavaan2 = NULL, 
                             invert.map=FALSE, alpha=.5, plot=c("trace", "disturbance", "histogram"), label_names, ...) {
-  #browser()
+
   plot = match.arg(plot, c("trace", "disturbance", "histogram"))
   ### extract name of latent variables
   observed = lavNames(fit.lavaan)
@@ -89,7 +89,7 @@ viz_diagnostics <- function(data, mapping,
     flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
     flexplot::flexplot(flexplot_form, data=d,...)
   } else {
-    #browser()
+    
     variables = c(dplyr::as_label(mapping$x), dplyr::as_label(mapping$y))
     
     ### extract name of variable in aes

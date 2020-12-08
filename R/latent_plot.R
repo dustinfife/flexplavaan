@@ -1,7 +1,7 @@
 #fitted = fit_twofactor
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
-latent_plot = function(fitted, formula = NULL, estimate_se=T,...) {
+latent_plot = function(fitted, formula = NULL, estimate_se=T, method=method,...) {
   
   latent_names = lavaan::lavNames(fitted, type="lv")
   latent_predicted = data.frame(lavPredict(fitted))
@@ -17,7 +17,7 @@ latent_plot = function(fitted, formula = NULL, estimate_se=T,...) {
     return(plot_list)
   }
   
-  plot = latent_plot_only(formula, latent_predicted, se_data, fitted, ...)
+  plot = latent_plot_only(formula, latent_predicted, se_data, fitted, method=method,...)
   return(plot)
 
 }
@@ -27,7 +27,7 @@ latent_plot = function(fitted, formula = NULL, estimate_se=T,...) {
 # i=1
 # formula = forms
 # data=latent_predicted
-latent_plot_only = function(f, data, se_data, fitted, ...) {
+latent_plot_only = function(f, data, se_data, fitted, method="lm",...) {
 
   xvar = all.vars(f)[-1]
   yvar = all.vars(f)[1]
@@ -43,7 +43,7 @@ latent_plot_only = function(f, data, se_data, fitted, ...) {
   alpha_default = return_alpha(...)
 
   #browser()
-  p = flexplot(f, data, se=F, ghost.line="red", alpha=0) + 
+  p = flexplot(f, data, se=F, ghost.line="red", alpha=0, method=method) + 
     geom_point() +
     alpha_default[1] +
     alpha_default[2]
