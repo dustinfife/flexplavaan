@@ -1,14 +1,14 @@
 #fitted = fit_twofactor
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
-latent_plot = function(fitted, formula = NULL, estimate_se=T, method=method,...) {
+latent_plot = function(fitted, formula = NULL, estimate_se=T, method="loess",...) {
   
   latent_names = lavaan::lavNames(fitted, type="lv")
   latent_predicted = data.frame(lavPredict(fitted))
 
   ### estimate standard errors
   se_data = check_for_standard_errors(fitted)
-  
+
   ### get flexplot formulae
   if (is.null(formula)) { 
     formula = beta_to_flexplot(fitted, latent_predicted)
@@ -42,7 +42,7 @@ latent_plot_only = function(f, data, se_data, fitted, method="lm",...) {
   ## see if alpha is set
   alpha_default = return_alpha(...)
 
-  #browser()
+  
   p = flexplot(f, data, se=F, ghost.line="red", alpha=0, method=method) + 
     geom_point() +
     alpha_default[1] +
