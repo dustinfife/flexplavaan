@@ -57,6 +57,7 @@ Another problem shared by both global and local fit indices is that they are a h
 
 ```{r, anscombe, fig.cap="A reproduction of Anscombe's quartet. Each plot has identical regression lines/correlations, even though the underlying data are vastly different."}
 require(tidyverse)
+require(flexplavaan)
 xs = anscombe %>% 
   pivot_longer(x1:x4, names_to="group", values_to="x", names_pattern="x(.*)") %>% 
   select(group, x)
@@ -209,6 +210,16 @@ Unfortunately, the Jedi council posits the model shown in Figure \@ref{fig:counc
 \label{fig:council_model}
 \end{figure}
 \end{center}
+
+## Hopper Plots
+
+Traditionally, conscientious researchers wanting to engaged in model evaluation will often produce stem and leaf diagrams of the residual variance/covariance matrix. However, stem and leaf diagrams are somewhat less intuitive, especially for those without experience interpreting them. As an alternative, we suggest using what we call "hopper plots," which plot the size of the residuals on the $Y$ axis against the rank-ordered correlations on the $X$ axis (see Figure \@ref(fig:hopper)). The dots represent the residual size, while the lines show the absolute value of the residual (on the top) and $-1\times$ the absolute value of the residual (on the bottom). These plots end up looking like a funnel, but the name "funnel plot" was already snagged by meta-analytic researchers. Instead, we call them hopper plots (a hopper is a type of funnel, frequently used to dispense grains). By default, hopper plots only show those variables with residuals larger than 0.01 (in absolute value). 
+
+```{r}
+require(ggplot2)
+residual_plots(force_fit) + coord_flip()
+```
+
 
 ## Diagnostic Plots: Trail Plots
 
