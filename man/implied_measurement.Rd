@@ -6,10 +6,11 @@
 \usage{
 implied_measurement(
   model,
+  model2 = NULL,
   latent = NULL,
   limit = 4,
   sort_slopes = T,
-  method = "lm",
+  method = "default",
   ...
 )
 }

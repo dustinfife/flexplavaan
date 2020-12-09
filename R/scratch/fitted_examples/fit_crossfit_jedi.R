@@ -28,10 +28,22 @@ force_cross = cfa(model_cross, jedi_jedi)
 usethis::use_data(force_fit, overwrite = TRUE)
 usethis::use_data(force_cross, overwrite = TRUE)
 
-visualize(force_fit)
-# Visualize the models ----------------------------------------------------
-visualize(force_fit, force_cross, subset = 4:7, suppress_smooth=T)
 
+d = jedi_jedi %>% mutate(
+  fit_exp = (scale(fitness))^2,
+  saber_exp = (scale(saber))^2,
+  midi_exp = (scale(midichlorian))^2,
+  history_exp = (scale(force_history))^2
+)
+model = "
+force_score =~ fitness + saber + midichlorian + force_history
+force_exp =~ fit_exp + saber_exp + midi_exp + force_history
+jedi_score =~ exam_one + exam_two + exam_three + force_history 
+jedi_score ~ force_score + force_exp
+force_score ~~ force_exp
+"
+force_exp = cfa(model, d)
+usethis::use_data(force_exp, overwrite = TRUE)
 
 # Visualize Measurement Model ---------------------------------------------
 
