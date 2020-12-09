@@ -1,3 +1,7 @@
+flexplavaan_to_lavaan = function(fitted) {
+  if (class(fitted)=="flexplavaan") return(fitted$lavaan)
+  return(fitted)
+}
 get_names = function(model) {
   obs_names = lavNames(model)
   latent_names = lavNames(model, type="lv")

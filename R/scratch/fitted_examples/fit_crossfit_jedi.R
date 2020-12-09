@@ -21,8 +21,8 @@ jedi_score ~ force_score
 
 # Fit the models ----------------------------------------------------------
 
-force_fit = cfa(model, jedi_jedi)
-force_cross = cfa(model_cross, jedi_jedi)
+force_fit = flexplavaan(model, jedi_jedi)
+force_cross = flexplavaan(model_cross, jedi_jedi)
   #summary(force_fit, fit.measures=TRUE, standardized=TRUE)
   #summary(force_cross, fit.measures=TRUE, standardized=TRUE)
 usethis::use_data(force_fit, overwrite = TRUE)
@@ -42,7 +42,7 @@ jedi_score =~ exam_one + exam_two + exam_three + force_history
 jedi_score ~ force_score + force_exp
 force_score ~~ force_exp
 "
-force_exp = cfa(model, d)
+force_exp = flexplavaan(model, d)
 usethis::use_data(force_exp, overwrite = TRUE)
 
 # Visualize Measurement Model ---------------------------------------------
