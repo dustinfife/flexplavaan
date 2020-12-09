@@ -22,7 +22,7 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
   
   # check for name of latent
   check_for_latent(model, latent)
-  
+
   # check models
   check_models(model, model2)
   
@@ -34,7 +34,7 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
     flex_data_two = prepare_measurement_data(model2)
     flex_data_two$model = m2_name
     flex_data$model = m1_name
-    flex_data = data.frame(rbind(flex_data, flex_data_two))
+    flex_data = full_join(flex_data, flex_data_two)
   }
   
   if (is.null(latent)) latent = get_names(model)[[2]]
@@ -79,12 +79,12 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, method="lm
   # limit the number of plots
   only_plot_these = levels(flex_data$Variable)[1:min(limit, length(flex_data$Variable))]
   flex_data = flex_data %>% filter(Variable %in% only_plot_these)
-  
+
   # now plot it
   if ("model" %in% names(flex_data)) {
     p = ggplot(flex_data, 
                aes_string(x = "Observed", y = latent, group = "model", colour="model", shape="model", linetype="model"), ...) 
-    smooth = ifelse(method=="default", geom_blank(), geom_smooth(method=method, formula = y~x, colour="lightgray"))
+    if (method=="default") smooth = geom_blank() else smooth = geom_smooth(method=method, formula = y~x, colour="lightgray")
     abline = geom_abline(aes_string(intercept=intercept_name, slope=slope_name, colour="model", linetype="model"), lwd=1) 
     labels = geom_blank()
   } else {
@@ -93,7 +93,6 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, method="lm
     if (method=="default") smooth = geom_smooth(method="loess", formula = y~x, colour="blue") else smooth = geom_smooth(method=method, formula = y~x, colour="blue")
     abline = geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="red", lwd=2) 
     labels = labs(x="Observed\n(Red = Implied, Blue:=Observed)")
-      
   }
   
   p +
@@ -190,12 +189,6 @@ get_slopes = function(model, obs_names=NULL, latent_names=NULL) {
   slopes_observed = latent_observed_implied(model) %>% data.frame
   names(slopes_observed) = paste0("slope_", latent_names)
   return(slopes_observed)
-}
-
-get_slopes_actual = function(model) {
-  
-  
- 
 }
 
 get_intercepts = function(slopes_allvars, lav_data, latent_names, obs_names) {

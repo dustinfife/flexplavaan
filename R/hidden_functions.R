@@ -4,12 +4,11 @@ get_names = function(model) {
   list(obs_names, latent_names)
 }
 
-check_models = function(model, model2){
+check_models = function(model, model2=NULL){
   if (is.null(model2)) return(NULL)
-  if (!(all(lavNames(model) %in% lavNames(model2))) | 
-      !(all(lavNames(model2) %in% lavNames(model)))) stop("You must have the same observed variables in both models")
-  if (!(all(lavNames(model, type="lv") %in% lavNames(model2, type="lv"))) | 
-      !(all(lavNames(model2, type="lv") %in% lavNames(model, type="lv")))) stop("You must have the same latent variables in both models")  
+  # make sure all variables in MODEL 1 are in model 2 (no need to do vice versa)
+  if (!(all(lavNames(model) %in% lavNames(model2)))) stop("You must have the same observed variables in both models")
+  if (!(all(lavNames(model, type="lv") %in% lavNames(model2, type="lv")))) stop("You must have the same latent variables in both models")  
   return(NULL)
 }
 

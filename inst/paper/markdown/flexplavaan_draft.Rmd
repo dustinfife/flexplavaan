@@ -89,6 +89,12 @@ Unfortunately, these plots suffer from two major problems. First, the residuals 
 
 A second problem with plots of correlation/covariance residuals is they are extremely limited in the amounts of misspecification they might reveal. For example, suppose we model a latent variable with three indicators ($x_1$, $x_2$, and $x_3$), but the data-generating model actually has $x_3$ associated with $x_2/x_1$, but not an indicator of the latent variable (see Figure \@ref(fig:implied)). These two models will have the same implied variance/covariance matrix.[^covmat] In other words, a stem and leaf plot will not signal any problems, despite problems existing. 
 
+xxxxx mention equivalent models. flexplavaan can handle equivalent models!! xxxxxxxxxxxx
+xxxx how to tell if it matters? xxxxx
+* do they matter in predictions?
+* do they matter in interventions?
+* do they matter in terms of utility?
+
 [^covmat]: In the left model, the standardized relationship between $x_1/x_3$ is $a_1\times c_1$, while in the right model it is $r_2$. Likewise, the $x_1/x_2$ relationship is $a_1\times b_1$ in the left model, while it is $r_1$ in the right model. The LVM machinery will attempt to make $a_1\times c_1 = r(x_1, x_3)$, which is the same as setting $a_1\times c_1 = r_2$ (and it will set $a_1\times b_1$ to $r_1$). 
 
 
@@ -314,7 +320,7 @@ cowplot::plot_grid(a[[1]], b[[1]])
 <!-- One of the primary purposes of the diagnostics is to determine whether one's conceptualization of the latent variables is to be believed. If the trace plots and disturbance dependence plots indicate the LVM is a good representation of the data, one can be more confident the latent variables are properly estimated. If this is the case, we can now make a step toward visualizing the latent variables themselves.  -->
 <!-- Another alteration from a standard scatterplot is the use of vertical bars to indicate uncertainty in estimating the latent variables. In Figure \@ref(measurementplot), the dots represent the estimated factor scores and the lines indicate $\pm 1 SD$. The red line is a "ghost line" [@Fife2019c], which simply repeats the line from the second panel ($x2$) to the other panels. This makes it easier to identify which indicators best load onto the latent variable (i.e., which indicator is most reliable). In Figure \@ref(fig:measurementplot), $x2$ has the largest factor score.  -->
 
-
+xxxx these are useless if you don't have the other plots (holmgren article) xxxxx
 When modeling latent variables, often the visuals of interest are not the observed variables, but the latent variables. In other words, the measurement model is ancillary to the substantive model. Naturally, we might wish to visualize the relationship between the latent variables.
 
 However, our latent variables are merely estimates. As such, we ought to have visuals that reflect uncertainty in our estimates of the latent scores. In `flexplavaan`, this uncertainty is represented as crosshairs. The widths of each line of the crosshair (for both the $X$ axis and the $Y$ axis) are obtained from prediction intervals for `lavaan` objects (using the `plausibleValues` function of the `semTools` package). Figure \@ref(fig:beech) shows these plots, which we call "Structural Plots," or "Cross-hair Plots". Interestingly, the relationship between the two, though simulated to be significantly nonlinear, shows up as fairly linear. This seems to suggest that, by the time a model's factor scores are estimated, any nonlinearity that exists in the data has been discarded.  
@@ -343,7 +349,11 @@ jedi_score ~ force_score + force_exp
 force_score ~~ force_exp
 "
 force_exp = cfa(model, d)
+implied_measurement(force_exp, force_fit, latent="force_score")
+
+
 implied_measurement(force_exp, latent="force_score", method="loess")
+
 implied_measurement(force_exp, latent="force_exp", method="loess")
 implied_measurement(force_exp, latent="jedi_score", method="loess")
 ```
