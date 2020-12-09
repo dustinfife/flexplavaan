@@ -26,6 +26,9 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
   # check models
   check_models(model, model2)
   
+  
+  if (is.null(latent)) latent = get_names(model)[[2]]
+  
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model)
   if (!is.null(model2)) {
@@ -34,10 +37,9 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
     flex_data_two = prepare_measurement_data(model2)
     flex_data_two$model = m2_name
     flex_data$model = m1_name
-    flex_data = full_join(flex_data, flex_data_two)
+    flex_data = full_join(flex_data, flex_data_two[,names(flex_data)], by=names(flex_data))
   }
   
-  if (is.null(latent)) latent = get_names(model)[[2]]
 
   plots = latent %>% purrr::map(function(x) latent_flexplot(flex_data, x, limit=limit, sort_slopes=sort_slopes, method,...))
   return(plots)
