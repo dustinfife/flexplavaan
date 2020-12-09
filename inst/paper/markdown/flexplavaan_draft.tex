@@ -304,6 +304,13 @@ Unfortunately, the Jedi council posits the model shown in Figure @ref\{fig:counc
 \end{figure}
 \end{center}
 
+\hypertarget{hopper-plots}{%
+\subsection{Hopper Plots}\label{hopper-plots}}
+
+Traditionally, conscientious researchers wanting to engaged in model evaluation will often produce stem and leaf diagrams of the residual variance/covariance matrix. However, stem and leaf diagrams are somewhat less intuitive, especially for those without experience interpreting them. As an alternative, we suggest using what we call ``hopper plots,'' which plot the size of the residuals on the \(Y\) axis against the rank-ordered correlations on the \(X\) axis (see Figure \ref{fig:hopper}). The dots represent the residual size, while the lines show the absolute value of the residual (on the top) and \(-1\times\) the absolute value of the residual (on the bottom). These plots end up looking like a funnel, but the name ``funnel plot'' was already snagged by meta-analytic researchers. Instead, we call them hopper plots (a hopper is a type of funnel, frequently used to dispense grains). By default, hopper plots only show those variables with residuals larger than 0.01 (in absolute value).
+
+\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-1-1.pdf}
+
 \hypertarget{diagnostic-plots-trail-plots}{%
 \subsection{Diagnostic Plots: Trail Plots}\label{diagnostic-plots-trail-plots}}
 
@@ -423,19 +430,19 @@ There is a great deal of flexibility in how one visualizes the structural model.
 ## [[1]]
 \end{verbatim}
 
-\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-1-1.pdf}
+\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-2-1.pdf}
 
 \begin{verbatim}
 ## [[1]]
 \end{verbatim}
 
-\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-1-2.pdf}
+\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-2-2.pdf}
 
 \begin{verbatim}
 ## [[1]]
 \end{verbatim}
 
-\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-1-3.pdf}
+\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-2-3.pdf}
 
 \hypertarget{references}{%
 \section*{References}\label{references}}

@@ -4,7 +4,14 @@
 \alias{implied_measurement}
 \title{Display the model-implied measurement plot}
 \usage{
-implied_measurement(model, latent = NULL, limit = 4, sort_slopes = T, ...)
+implied_measurement(
+  model,
+  latent = NULL,
+  limit = 4,
+  sort_slopes = T,
+  method = "lm",
+  ...
+)
 }
 \arguments{
 \item{model}{A lavaan object}
