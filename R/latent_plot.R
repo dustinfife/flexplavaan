@@ -1,14 +1,36 @@
 #fitted = fit_twofactor
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
-latent_plot = function(fitted, formula = NULL, estimate_se=T, method="loess",...) {
-  
+latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, method="loess",...) {
+  browser()
   latent_names = lavaan::lavNames(fitted, type="lv")
   latent_predicted = data.frame(lavPredict(fitted))
 
   ### estimate standard errors
-  se_data = check_for_standard_errors(fitted)
-
+  if (estimate_se) {
+    se_data = check_for_standard_errors(fitted) 
+  } else { 
+    se_data = data.frame(
+      matrix(0, ncol=length(latent_names), nrow=nrow(latent_predicted)))
+    names(se_data) = paste0("se_", latent_names)
+  }
+  
+  # add second dataset
+  if (!is.null(fitted2)) {
+    m1_name = paste0(substitute(fitted))
+    m2_name = paste0(substitute(fitted2))
+    latent_predicted2 = data.frame(lavPredict(fitted2)) %>% 
+      mutate(model = m2_name)
+    latent_predicted = latent_predicted %>% 
+      mutate(model = m1_name)
+    latent_predicted = full_join(latent_predicted, latent_predicted2[,c("model",latent_names)], by=c("model", latent_names))
+    tail(latent_predicted)
+    se_data = data.frame(
+      matrix(0, ncol=length(latent_names), nrow=nrow(latent_predicted)))
+    names(se_data) = paste0("se_", latent_names)
+    
+  }
+  
   ### get flexplot formulae
   if (is.null(formula)) { 
     formula = beta_to_flexplot(fitted, latent_predicted)
@@ -42,6 +64,7 @@ latent_plot_only = function(f, data, se_data, fitted, method="lm",...) {
   ## see if alpha is set
   alpha_default = return_alpha(...)
 
+  # get fit implied by the model
   
   p = flexplot(f, data, se=F, ghost.line="red", alpha=0, method=method) + 
     geom_point() +
