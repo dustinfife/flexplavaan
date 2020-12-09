@@ -2,46 +2,59 @@
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
 latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, method="loess",...) {
-  browser()
-  latent_names = lavaan::lavNames(fitted, type="lv")
-  latent_predicted = data.frame(lavPredict(fitted))
 
-  ### estimate standard errors
-  if (estimate_se) {
-    se_data = check_for_standard_errors(fitted) 
-  } else { 
-    se_data = data.frame(
-      matrix(0, ncol=length(latent_names), nrow=nrow(latent_predicted)))
-    names(se_data) = paste0("se_", latent_names)
-  }
+  fitted_l = flexplavaan_to_lavaan(fitted)
+  fitted2_l = flexplavaan_to_lavaan(fitted2)
   
+  latent_names = lavaan::lavNames(fitted_l, type="lv")
+  latent_predicted = data.frame(lavPredict(fitted_l))
+
+  # compute standard errors 
+  se_data = check_for_sd_true(estimate_se, fitted, latent_names)
+
   # add second dataset
-  if (!is.null(fitted2)) {
+  if (!is.null(fitted2_l)) {
+    # get model names
     m1_name = paste0(substitute(fitted))
     m2_name = paste0(substitute(fitted2))
-    latent_predicted2 = data.frame(lavPredict(fitted2)) %>% 
+    
+    # get latent variable estimates and combine
+    latent_predicted2 = data.frame(lavPredict(fitted2_l)) %>% 
       mutate(model = m2_name)
     latent_predicted = latent_predicted %>% 
       mutate(model = m1_name)
     latent_predicted = full_join(latent_predicted, latent_predicted2[,c("model",latent_names)], by=c("model", latent_names))
-    tail(latent_predicted)
-    se_data = data.frame(
-      matrix(0, ncol=length(latent_names), nrow=nrow(latent_predicted)))
-    names(se_data) = paste0("se_", latent_names)
     
+    # get sd for second dataset then combine
+    se_data_2 = check_for_sd_true(estimate_se, fitted2, latent_names)[,names(se_data)]
+    names(se_data_2) = names(se_data)
+    se_data_2$model = m2_name
+    se_data$model = m1_name
+    se_data = full_join(se_data, se_data_2, by=names(se_data))
   }
-  
+
   ### get flexplot formulae
   if (is.null(formula)) { 
-    formula = beta_to_flexplot(fitted, latent_predicted)
-    if (formula[[1]]=="~") return(latent_plot_only(formula, latent_predicted, se_data, fitted, ...))
-    plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data, fitted, ...))
+    formula = beta_to_flexplot(fitted_l, latent_predicted)
+    if (formula[[1]]=="~") return(latent_plot_only(formula, latent_predicted, se_data, fitted_l, ...))
+    plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data, fitted_l, ...))
     return(plot_list)
   }
   
-  plot = latent_plot_only(formula, latent_predicted, se_data, fitted, method=method,...)
+  plot = latent_plot_only(formula, latent_predicted, se_data, fitted_l, method=method,...)
   return(plot)
 
+}
+
+
+check_for_sd_true = function(estimate_se, fitted, latent_names) {
+  ### estimate standard errors
+  if (estimate_se) return(check_for_standard_errors(fitted))
+  
+  se_data = data.frame(
+    matrix(0, ncol=length(latent_names), nrow=nrow(fitted@Data@X %>% data.frame)))
+  names(se_data) = paste0("se_", latent_names)
+  return(se_data)
 }
 
 
@@ -61,11 +74,16 @@ latent_plot_only = function(f, data, se_data, fitted, method="lm",...) {
   data[["upper_pi_xvar"]] = data[[xvar[1]]] + data[[paste0("se_", xvar[1])]]
   data[["upper_pi_yvar"]] = data[[yvar[1]]] + data[[paste0("se_", yvar[1])]]
   
+  
   ## see if alpha is set
   alpha_default = return_alpha(...)
 
   # get fit implied by the model
-  
+  if ("model" %in% names(data)) {
+    f_vars = all.vars(f)
+    dv = f_vars[1]; iv = f_vars[-1]
+    f = flexplot:::make_flexplot_formula(c(iv, "model"), dv, data)
+  }
   p = flexplot(f, data, se=F, ghost.line="red", alpha=0, method=method) + 
     geom_point() +
     alpha_default[1] +
