@@ -38,8 +38,21 @@ combine_residual_datasets = function(fitted, fitted2=NULL, max_val=.01) {
 }
 
 
-#residual_plots(fitted, fitted2)
-residual_plots = function(fitted, fitted2=NULL, max_val = 0.01) {
+#' Plot a "hopper" plot (or residual plot) for a latent variable model
+#'
+#' These plots show lines representing the absolute value (and negative absolute value)
+#' of the residuals from a lavaan model. The dots indicate that actual value of the residual. 
+#' These help identify which correlations the model failed to capture. 
+#' @param fitted A lavaan object that is fitted
+#' @param fitted2 An optional second option we can compare the first model against
+#' @param max_val The value at which we stop showing correlations. 
+#'
+#' @return A hopper plot. 
+#' @export
+#'
+#' @examples
+#' hopper_plot(force_fit)
+residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
   res_d = combine_residual_datasets(fitted, fitted2, max_val)
  
   if (is.null(fitted2)) {
