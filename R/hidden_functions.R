@@ -4,6 +4,15 @@ get_names = function(model) {
   list(obs_names, latent_names)
 }
 
+check_models = function(model, model2){
+  if (is.null(model2)) return(NULL)
+  if (!(all(lavNames(model) %in% lavNames(model2))) | 
+      !(all(lavNames(model2) %in% lavNames(model)))) stop("You must have the same observed variables in both models")
+  if (!(all(lavNames(model, type="lv") %in% lavNames(model2, type="lv"))) | 
+      !(all(lavNames(model2, type="lv") %in% lavNames(model, type="lv")))) stop("You must have the same latent variables in both models")  
+  return(NULL)
+}
+
 get_all_data = function(fitted) {
   
   # get names of variables

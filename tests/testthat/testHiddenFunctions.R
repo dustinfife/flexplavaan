@@ -1,6 +1,11 @@
 context("Test hidden functions")
 require(testthat)
 
+test_that("check_models works", {
+  expect_null(check_models(force_fit, force_cross))
+  expect_error(check_models(fit_twofactor, fit_bollen))
+})
+
 test_that("get_subset works", {
   expect_true(length(get_subset(NULL, letters[1:10]))==10)
   expect_error(get_subset(11, letters[1:10]))
