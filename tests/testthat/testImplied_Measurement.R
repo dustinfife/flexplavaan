@@ -14,7 +14,7 @@ test_that("implied_measurement works", {
 })
 
 test_that("prepare_measurement_data and latent_flexplot works", {
-  b_data = prepare_measurement_data(fit_bollen)
+  b_data = prepare_measurement_data(flexplavaan_to_lavaan(fit_bollen))
   # make sure all variables are standardized
   column_means = colMeans(b_data %>% select(-Variable)) %>% round(2)
   expect_true(sum(column_means[1:4])==0)
@@ -23,8 +23,8 @@ test_that("prepare_measurement_data and latent_flexplot works", {
 
 test_that("standardize_observed works", {
   
-  names = get_names(fit_bollen)
-  slopes = get_slopes(fit_bollen,
+  names = get_names(flexplavaan_to_lavaan(fit_bollen))
+  slopes = get_slopes(flexplavaan_to_lavaan(fit_bollen),
                       names[[1]], names[[2]]) 
   expect_true(abs(slopes[1,1]-.85)<.01)
 })
@@ -35,19 +35,19 @@ test_that("latent_observed_implied works", {
 })
 
 test_that("return_actual_slope works", {
-  flex_data = prepare_measurement_data(fit_bollen)
+  flex_data = prepare_measurement_data(flexplavaan_to_lavaan(fit_bollen))
   return_actual_slope("y1", "Eta1", flex_data)
 })
 
 test_that("check_for_latent", {
-  expect_error(check_for_latent(fit_bollen, "EEEE"))
-  expect_null(check_for_latent(fit_bollen, "Eta1"))
+  expect_error(check_for_latent(flexplavaan_to_lavaan(fit_bollen), "EEEE"))
+  expect_null(check_for_latent(flexplavaan_to_lavaan(fit_bollen), "Eta1"))
 })
 
 test_that("get_slopes and get_intercepts works", {
-  names = get_names(fit_bollen)
-  slopes = get_slopes(fit_bollen, names[[1]], names[[2]]) %>% transmute_all(function(x) x*100) %>% round
-  intercepts = get_intercepts(slopes, get_all_data(fit_bollen), names[[2]], names[[1]]) %>% round
+  names = get_names(flexplavaan_to_lavaan(fit_bollen))
+  slopes = get_slopes(flexplavaan_to_lavaan(fit_bollen), names[[1]], names[[2]]) %>% transmute_all(function(x) x*100) %>% round
+  intercepts = get_intercepts(slopes, get_all_data(flexplavaan_to_lavaan(fit_bollen)), names[[2]], names[[1]]) %>% round
   expect_true(slopes[1,1]==85)
   expect_true(slopes[2,1]==72)
   expect_true(intercepts[1,1]==-464)

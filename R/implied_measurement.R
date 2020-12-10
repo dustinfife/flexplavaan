@@ -20,21 +20,24 @@
 #' @export
 implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_slopes=T, method="default", ...) {
   
+  model_l = flexplavaan_to_lavaan(model)
+  model2_l = flexplavaan_to_lavaan(model2)
+  
   # check for name of latent
-  check_for_latent(model, latent)
+  check_for_latent(model_l, latent)
 
   # check models
-  check_models(model, model2)
+  check_models(model_l, model2_l)
   
   
-  if (is.null(latent)) latent = get_names(model)[[2]]
+  if (is.null(latent)) latent = get_names(model_l)[[2]]
   
   # get long-format, standardized data
-  flex_data = prepare_measurement_data(model)
-  if (!is.null(model2)) {
+  flex_data = prepare_measurement_data(model_l)
+  if (!is.null(model2_l)) {
     m1_name = paste0(substitute(model))
     m2_name = paste0(substitute(model2))
-    flex_data_two = prepare_measurement_data(model2)
+    flex_data_two = prepare_measurement_data(model2_l)
     flex_data_two$model = m2_name
     flex_data$model = m1_name
     flex_data = full_join(flex_data, flex_data_two[,names(flex_data)], by=names(flex_data))

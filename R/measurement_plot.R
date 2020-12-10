@@ -141,6 +141,7 @@ random_sample_from_data = function(data, ...) {
 measurement_plot = function(fitted, latent_vars=NULL, ...) {
 
   ## return the latent variable index (if necessary)
+  fitted = flexplavaan_to_lavaan(fitted)
   latent_index = return_latent_index(fitted, latent_vars)
   
   if (length(latent_index)==1) {

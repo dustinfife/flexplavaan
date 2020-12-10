@@ -53,7 +53,12 @@ combine_residual_datasets = function(fitted, fitted2=NULL, max_val=.01) {
 #' @examples
 #' hopper_plot(force_fit)
 residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
-  res_d = combine_residual_datasets(fitted, fitted2, max_val)
+  
+  
+  fitted_l = flexplavaan_to_lavaan(fitted)
+  fitted2_l = flexplavaan_to_lavaan(fitted2)
+  
+  res_d = combine_residual_datasets(fitted_l, fitted2_l, max_val)
  
   if (is.null(fitted2)) {
     res_d$top = abs(res_d$Residual)
@@ -64,17 +69,17 @@ residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
       geom_point(aes(x=Correlation, y=Residual), size=2) +
       #geom_line(aes(x=Correlation, y=Residual, group=1)) + 
       geom_abline(slope=0, intercept=0) + 
-      theme_bw() +
-      annotate("text", x=.75*length(res_d$Correlation), y=max(res_d$Residual), label="Model Overestimates", vjust="top") + 
-      annotate("text", x=.75*length(res_d$Correlation), y=min(res_d$Residual), label="Model Underestimates", vjust="bottom")
+      theme_bw() #+
+      #annotate("text", x=.75*length(res_d$Correlation), y=max(res_d$Residual), label="Model Overestimates", vjust="top") + 
+      #annotate("text", x=.75*length(res_d$Correlation), y=min(res_d$Residual), label="Model Underestimates", vjust="bottom")
     return(p)
   }
   
   # rename the levels
   res_d$Model = factor(res_d$Model, levels=c("Residual.x", "Residual.y"), 
                        labels=c(
-                         deparse(substitute(fitted)),
-                         deparse(substitute(fitted2))))
+                         paste0(deparse(substitute(fitted))),
+                         paste0(deparse(substitute(fitted2)))))
 
   # set the bands for the limits
   limits = res_d %>% 
@@ -87,9 +92,9 @@ residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
     geom_line(aes(y=top, group=Model, linetype=Model, col=Model), alpha=.4) + 
     geom_point(data=limits, aes(x=Correlation, y=Residual, group=Model, col=Model), size=2) +
     geom_abline(slope=0, intercept=0) + 
-    theme_bw() +
-    annotate("text", x=.75*length(limits$Correlation), y=max(limits$Residual), label="Model Overestimates") + 
-    annotate("text", x=.75*length(limits$Correlation), y=min(limits$Residual), label="Model Underestimates")
+    theme_bw() #+
+    #annotate("text", x=.75*length(limits$Correlation), y=max(limits$Residual), label="Model Overestimates") + 
+    #annotate("text", x=.75*length(limits$Correlation), y=min(limits$Residual), label="Model Underestimates")
   return(p)
   
 }
