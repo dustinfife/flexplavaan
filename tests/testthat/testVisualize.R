@@ -9,14 +9,15 @@ f1 =~ x1 + x2 + x3
 f2 =~ x3 + y1 + y2 + y3
 f1 ~ f2
 "
-  
+fit.lavaan_2 = cfa(model_2, data=correct_small)
 test_that("regular lavaan works", {
-  fit.lavaan_2 = cfa(model_2, data=correct_small)
-  vdiffr::expect_doppelganger("simple lavaan graph",visualize(fit_twofactor, subset=1:3))
-  vdiffr::expect_doppelganger("simple lavaan graph without sorting",visualize(fit_twofactor, subset=1:3, sort_plots = F))
-  vdiffr::expect_doppelganger("lavaan graph ddp",visualize(fit_twofactor, subset=1:3, plot="disturbance"))
-  vdiffr::expect_doppelganger("lavaan graph model only",visualize(fit_twofactor, subset=1:3, plot="model"))
-  vdiffr::expect_doppelganger("two lavaan models",visualize(fit_twofactor, fit.lavaan_2, subset=1:3))
+  vdiffr::expect_doppelganger("simple lavaan graph",visualize(flexplavaan_to_lavaan(fit_twofactor), subset=1:3))
+  vdiffr::expect_doppelganger("simple lavaan graph without sorting",visualize(flexplavaan_to_lavaan(fit_twofactor), subset=1:3, sort_plots = F))
+  vdiffr::expect_doppelganger("lavaan graph ddp",visualize(flexplavaan_to_lavaan(fit_twofactor), subset=1:3, plot="disturbance"))
+  vdiffr::expect_doppelganger("lavaan graph model only",visualize(flexplavaan_to_lavaan(fit_twofactor), subset=1:3, plot="model"))
+  vdiffr::expect_doppelganger("two lavaan models",
+                              visualize(fit_twofactor, 
+                                        fit.lavaan_2, subset=1:3))
   vdiffr::expect_doppelganger("er:observed with no latents",visualize(health,subset=1:4))
   
 })

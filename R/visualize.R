@@ -27,20 +27,23 @@
 #' "
 #'   fit.lavaan = cfa(model, data=correct_small)
 #'   visualize(fit.lavaan)
-visualize.lavaan = function(object, object2=NULL, 
+visualize.lavaan = visualize.flexplavaan = function(object, object2=NULL, 
                             subset = NULL, 
                             plot=c("all", "disturbance", "model", "measurement", "latent"), 
                             formula = NULL,
                             sort_plots = TRUE,...){
   
+  object_l = flexplavaan_to_lavaan(object)
+  object2_l = flexplavaan_to_lavaan(object2)
+  
   plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent"))
-  observed = lavNames(object)
-  d = data.frame(lavInspect(object, "data"))
+  observed = lavNames(object_l)
+  d = data.frame(lavInspect(object_l, "data"))
   names(d) = observed
   
   ## sort the axes
   condition = sort_plots & plot %in% c("all", "disturbance", "model")
-  variable_order = ifelse(rep(condition, times=length(observed)), block_model_residuals(object), 1:length(observed))
+  variable_order = ifelse(rep(condition, times=length(observed)), block_model_residuals(object_l), 1:length(observed))
   d = d[,variable_order]
   observed = observed[variable_order]
   
@@ -57,9 +60,9 @@ visualize.lavaan = function(object, object2=NULL,
 
   if (plot=="all"){
     p = ggpairs(d[,observed], legend=legend,
-            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms,...)),
-            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="trace", label_names=nms, ...)),
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", label_names=nms, ...)))
+            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms,...)),
+            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="trace", label_names=nms, ...)),
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram", label_names=nms, ...)))
     if (is.null(object2)) {
       p = p + labs(title="Trace/DDP Plots", subtitle="Red=Implied, Blue=Observed")
     }  
@@ -68,33 +71,33 @@ visualize.lavaan = function(object, object2=NULL,
   
   if (plot == "disturbance"){
     p = ggpairs(d[,observed], legend=legend,
-            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms, ...)),
+            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms, ...)),
             upper = NULL,
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, alpha = .2, plot="histogram", label_names=nms, ...)))    
-    if (is.null(object2)) {
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram", label_names=nms, ...)))    
+    if (is.null(object2_l)) {
       p = p + labs(title="DD Plots", subtitle="Red=Implied, Blue=Observed")
     }  
     return(p)
   }  
   
   if (plot == "measurement"){
-    p = measurement_plot(object, subset, ...)  
+    p = measurement_plot(object_l, subset, ...)  
     return(p)
   }
   
   if (plot == "latent"){
     # get length of endogenous variables to make sure we can do it
-    if (length(get_endogenous_names(object))<2) stop("You cannot do a latent plot when there's less than two endogenous variables.")
-    p = latent_plot(object, formula, ...)  
+    if (length(get_endogenous_names(object_l))<2) stop("You cannot do a latent plot when there's less than two endogenous variables.")
+    p = latent_plot(object_l, formula, ...)  
     return(p)
   }  
 
   if (plot == "model") {
     p = ggpairs(d[,observed], legend=legend,
             lower = NULL,
-            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, 
+            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, 
                                            alpha = .2, plot="trace", label_names=nms, ...)),
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object, fit.lavaan2 = object2, 
+            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, 
                                           alpha = .2, plot="histogram", label_names=nms, ...)))     
     return(p)
     

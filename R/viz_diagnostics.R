@@ -139,8 +139,6 @@ viz_diagnostics <- function(data, mapping,
       flexplot_form = flexplot::make.formula(y, x)
       
       if (!is.null(fit.lavaan2)){
-        #browser()
-
         
         
         n = new_data %>% 

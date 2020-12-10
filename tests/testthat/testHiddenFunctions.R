@@ -2,11 +2,11 @@ context("Test hidden functions")
 require(testthat)
 
 test_that("check_models works", {
-  expect_null(check_models(force_fit, force_cross))
-  expect_error(check_models(fit_twofactor, fit_bollen))
+  expect_null(check_models(flexplavaan_to_lavaan(force_fit), flexplavaan_to_lavaan(force_cross)))
+  expect_error(check_models(flexplavaan_to_lavaan(fit_twofactor), flexplavaan_to_lavaan(fit_bollen)))
   expect_null(check_models(fit_twofactor))
-  expect_null(check_models(force_fit, force_exp))
-  expect_error(check_models(force_exp, force_fit))
+  expect_null(check_models(flexplavaan_to_lavaan(force_fit), flexplavaan_to_lavaan(force_exp)))
+  expect_error(check_models(flexplavaan_to_lavaan(force_exp), flexplavaan_to_lavaan(force_fit)))
 })
 
 test_that("get_subset works", {
@@ -18,18 +18,18 @@ test_that("get_subset works", {
 })
 
 test_that("find_latents_for_observed works", {
-  expect_true(find_latents_for_observed(1, fit_bollen)=="Eta1")
-  expect_true(length(find_latents_for_observed(3, fit_twofactor_2))==2)
+  expect_true(find_latents_for_observed(1, flexplavaan_to_lavaan(fit_bollen))=="Eta1")
+  expect_true(length(find_latents_for_observed(3, flexplavaan_to_lavaan(fit_twofactor_2)))==2)
 })
 
 test_that("residual_from_latents works", {
-  expect_equal(as.numeric(residual_from_latents(3, fit_twofactor_2)[1]), -8.617, tolerance=0.01)
-  expect_equal(as.numeric(residual_from_latents(1, fit_twofactor_2)[1]), 2.18, tolerance=0.01)
+  expect_equal(as.numeric(residual_from_latents(3, flexplavaan_to_lavaan(fit_twofactor_2))[1]), -8.617, tolerance=0.01)
+  expect_equal(as.numeric(residual_from_latents(1, flexplavaan_to_lavaan(fit_twofactor_2))[1]), 2.18, tolerance=0.01)
 })
 
 
 test_that("block_model_residuals works", {
-  expect_true(block_model_residuals(fit_bollen)[1]==8)
+  expect_true(block_model_residuals(flexplavaan_to_lavaan(fit_bollen))[1]==8)
 })
 
 test_that("vechs works", {
@@ -46,6 +46,6 @@ test_that("random variable naming works", {
 })
 
 test_that("get_names works", {
-  expect_true(get_names(fit_bollen)[[1]][1] == "y1")
-  expect_true(get_names(fit_bollen)[[2]][1] == "Eta1")
+  expect_true(get_names(flexplavaan_to_lavaan(fit_bollen))[[1]][1] == "y1")
+  expect_true(get_names(flexplavaan_to_lavaan(fit_bollen))[[2]][1] == "Eta1")
 })
