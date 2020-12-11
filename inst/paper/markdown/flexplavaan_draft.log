@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  9 DEC 2020 10:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  11 DEC 2020 13:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1018,42 +1018,36 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <9> on input line 188.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 188.
-[4]
-Underfull \vbox (badness 1231) has occurred while \output is active []
-
-[5]
-Overfull \hbox (27.10153pt too wide) in paragraph at lines 263--264
+[4] [5]
+Overfull \hbox (27.10153pt too wide) in paragraph at lines 269--270
 [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 269--270
+Underfull \hbox (badness 10000) in paragraph at lines 275--276
 []\T1/lmr/m/n/10.95 (+20) Unfortunately, the Jedi coun-cil posits the model sho
 wn in Fig-ure
  []
 
 
-Overfull \hbox (27.10153pt too wide) in paragraph at lines 301--302
+Overfull \hbox (27.10153pt too wide) in paragraph at lines 307--308
 [][] 
  []
 
-
-LaTeX Warning: Reference `fig:hopper' on page 6 undefined on input line 310.
-
-
-Underfull \vbox (badness 1796) has occurred while \output is active []
-
 [6]
-<flexplavaan_draft_files/figure-latex/unnamed-chunk-1-1.pdf, id=75, 459.7175pt 
+
+LaTeX Warning: Reference `fig:hopper' on page 7 undefined on input line 316.
+
+<flexplavaan_draft_files/figure-latex/unnamed-chunk-1-1.pdf, id=74, 459.7175pt 
 x 313.17pt>
 File: flexplavaan_draft_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file (
 type pdf)
 <use flexplavaan_draft_files/figure-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: flexplavaan_draft_files/figure-latex/unnamed-chunk-1-1
-.pdf  used on input line 312.
+.pdf  used on input line 318.
 (pdftex.def)             Requested size: 433.64267pt x 295.40723pt.
 
-Overfull \hbox (28.93022pt too wide) in paragraph at lines 312--313
+Overfull \hbox (28.93022pt too wide) in paragraph at lines 318--319
 [][] 
  []
 
@@ -1067,7 +1061,7 @@ File: flexplavaan_draft_files/figure-latex/scatter-1.pdf Graphic file (type pdf
 )
 <use flexplavaan_draft_files/figure-latex/scatter-1.pdf>
 Package pdftex.def Info: flexplavaan_draft_files/figure-latex/scatter-1.pdf  us
-ed on input line 321.
+ed on input line 327.
 (pdftex.def)             Requested size: 433.64267pt x 297.30087pt.
 [8 <./flexplavaan_draft_files/figure-latex/unnamed-chunk-1-1.pdf>] [9 <./flexpl
 avaan_draft_files/figure-latex/scatter-1.pdf>]
@@ -1077,7 +1071,7 @@ File: flexplavaan_draft_files/figure-latex/trace1-1.pdf Graphic file (type pdf)
 
 <use flexplavaan_draft_files/figure-latex/trace1-1.pdf>
 Package pdftex.def Info: flexplavaan_draft_files/figure-latex/trace1-1.pdf  use
-d on input line 343.
+d on input line 349.
 (pdftex.def)             Requested size: 433.63013pt x 295.6569pt.
 <flexplavaan_draft_files/figure-latex/traceMatrix-1.pdf, id=127, 459.7175pt x 3
 12.16624pt>
@@ -1085,7 +1079,7 @@ File: flexplavaan_draft_files/figure-latex/traceMatrix-1.pdf Graphic file (type
  pdf)
 <use flexplavaan_draft_files/figure-latex/traceMatrix-1.pdf>
 Package pdftex.def Info: flexplavaan_draft_files/figure-latex/traceMatrix-1.pdf
-  used on input line 351.
+  used on input line 357.
 (pdftex.def)             Requested size: 433.64267pt x 294.4604pt.
 [10 <./flexplavaan_draft_files/figure-latex/trace1-1.pdf>]
 <flexplavaan_draft_files/figure-latex/traceMatrix2-1.pdf, id=146, 459.7175pt x 
@@ -1094,7 +1088,7 @@ File: flexplavaan_draft_files/figure-latex/traceMatrix2-1.pdf Graphic file (typ
 e pdf)
 <use flexplavaan_draft_files/figure-latex/traceMatrix2-1.pdf>
 Package pdftex.def Info: flexplavaan_draft_files/figure-latex/traceMatrix2-1.pd
-f  used on input line 359.
+f  used on input line 365.
 (pdftex.def)             Requested size: 433.64267pt x 294.4604pt.
 [11 <./flexplavaan_draft_files/figure-latex/traceMatrix-1.pdf>]
 <flexplavaan_draft_files/figure-latex/ddp-1.pdf, id=167, 458.71375pt x 312.1662
@@ -1102,10 +1096,10 @@ f  used on input line 359.
 File: flexplavaan_draft_files/figure-latex/ddp-1.pdf Graphic file (type pdf)
 <use flexplavaan_draft_files/figure-latex/ddp-1.pdf>
 Package pdftex.def Info: flexplavaan_draft_files/figure-latex/ddp-1.pdf  used o
-n input line 380.
+n input line 386.
 (pdftex.def)             Requested size: 433.64078pt x 295.10345pt.
 [12 <./flexplavaan_draft_files/figure-latex/traceMatrix2-1.pdf>]
-Underfull \hbox (badness 1052) in paragraph at lines 391--392
+Underfull \hbox (badness 1052) in paragraph at lines 397--398
 []\T1/lmr/m/n/10.95 (+20) Fortunately, sim-i-lar to the trace plots, we can use
  the model-implied vari-
  []
@@ -1117,106 +1111,181 @@ File: flexplavaan_draft_files/figure-latex/measurementplot-1.pdf Graphic file (
 type pdf)
 <use flexplavaan_draft_files/figure-latex/measurementplot-1.pdf>
 Package pdftex.def Info: flexplavaan_draft_files/figure-latex/measurementplot-1
-.pdf  used on input line 399.
+.pdf  used on input line 405.
 (pdftex.def)             Requested size: 433.61934pt x 297.5819pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [14 <./flexplavaan_draft_files/figure-latex/measurementplot-1.pdf>]
+Overfull \hbox (49.27362pt too wide) in paragraph at lines 423--423
+[]\T1/lmtt/m/n/10.95 ## Called from: visualize.lavaan(object, object2, subset, 
+plot, formula, sort_plots,[] 
+ []
+
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 
+423.
+(/usr/local/texlive/2020/texmf-dist/tex/latex/lm/ts1lmtt.fd
+File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+Overfull \hbox (785.11151pt too wide) in paragraph at lines 423--423
+[]\T1/lmtt/m/n/10.95 ## debug at /Users/dustinfife/Documents/RPackages/flexplav
+aan/R/visualize.R#92: if (length(get_endogenous_names(object_l)) < 2) stop("You
+ cannot do a latent plot when there\TS1/lmtt/m/n/10.95 '\T1/lmtt/m/n/10.95 s le
+ss than two endogenous variables.")[] 
+ []
+
+
+Overfull \hbox (290.72043pt too wide) in paragraph at lines 423--423
+[]\T1/lmtt/m/n/10.95 ## debug at /Users/dustinfife/Documents/RPackages/flexplav
+aan/R/visualize.R#93: p = latent_plot(object, object2, formula, ...)[] 
+ []
+
+
+Overfull \hbox (78.01729pt too wide) in paragraph at lines 423--423
+[]\T1/lmtt/m/n/10.95 ## debug at /Users/dustinfife/Documents/RPackages/flexplav
+aan/R/visualize.R#94: return(p)[] 
+ []
+
 <flexplavaan_draft_files/figure-latex/beech-1.pdf, id=230, 459.7175pt x 314.173
 75pt>
 File: flexplavaan_draft_files/figure-latex/beech-1.pdf Graphic file (type pdf)
 <use flexplavaan_draft_files/figure-latex/beech-1.pdf>
 Package pdftex.def Info: flexplavaan_draft_files/figure-latex/beech-1.pdf  used
- on input line 420.
+ on input line 431.
 (pdftex.def)             Requested size: 433.64267pt x 296.35405pt.
-[15 <./flexplavaan_draft_files/figure-latex/beech-1.pdf>]
-<flexplavaan_draft_files/figure-latex/unnamed-chunk-2-1.pdf, id=247, 459.7175pt
- x 316.18124pt>
+<flexplavaan_draft_files/figure-latex/unnamed-chunk-2-1.pdf, id=231, 453.695pt 
+x 313.17pt>
 File: flexplavaan_draft_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file (
 type pdf)
 <use flexplavaan_draft_files/figure-latex/unnamed-chunk-2-1.pdf>
 Package pdftex.def Info: flexplavaan_draft_files/figure-latex/unnamed-chunk-2-1
-.pdf  used on input line 433.
-(pdftex.def)             Requested size: 433.64267pt x 298.24768pt.
+.pdf  used on input line 444.
+(pdftex.def)             Requested size: 433.62463pt x 299.3161pt.
 
-Overfull \hbox (28.93022pt too wide) in paragraph at lines 433--434
-[][] 
- []
-
-<flexplavaan_draft_files/figure-latex/unnamed-chunk-2-2.pdf, id=248, 459.7175pt
- x 316.18124pt>
-File: flexplavaan_draft_files/figure-latex/unnamed-chunk-2-2.pdf Graphic file (
-type pdf)
-<use flexplavaan_draft_files/figure-latex/unnamed-chunk-2-2.pdf>
-Package pdftex.def Info: flexplavaan_draft_files/figure-latex/unnamed-chunk-2-2
-.pdf  used on input line 439.
-(pdftex.def)             Requested size: 433.64267pt x 298.24768pt.
-
-Overfull \hbox (28.93022pt too wide) in paragraph at lines 439--440
+Overfull \hbox (28.91219pt too wide) in paragraph at lines 444--445
 [][] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[16 <./flexplavaan_draft_files/figure-latex/unnamed-chunk-2-1.pdf>]
-<flexplavaan_draft_files/figure-latex/unnamed-chunk-2-3.pdf, id=265, 459.7175pt
- x 316.18124pt>
-File: flexplavaan_draft_files/figure-latex/unnamed-chunk-2-3.pdf Graphic file (
-type pdf)
-<use flexplavaan_draft_files/figure-latex/unnamed-chunk-2-3.pdf>
-Package pdftex.def Info: flexplavaan_draft_files/figure-latex/unnamed-chunk-2-3
-.pdf  used on input line 445.
-(pdftex.def)             Requested size: 433.64267pt x 298.24768pt.
+[15]
+Overfull \vbox (38.17516pt too high) has occurred while \output is active []
 
-Overfull \hbox (28.93022pt too wide) in paragraph at lines 445--446
+[16 <./flexplavaan_draft_files/figure-latex/beech-1.pdf> <./flexplavaan_draft_f
+iles/figure-latex/unnamed-chunk-2-1.pdf>]
+<flexplavaan_draft_files/figure-latex/unnamed-chunk-3-1.pdf, id=265, 452.69125p
+t x 312.16624pt>
+File: flexplavaan_draft_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (
+type pdf)
+<use flexplavaan_draft_files/figure-latex/unnamed-chunk-3-1.pdf>
+Package pdftex.def Info: flexplavaan_draft_files/figure-latex/unnamed-chunk-3-1
+.pdf  used on input line 446.
+(pdftex.def)             Requested size: 433.61852pt x 299.0141pt.
+
+Overfull \hbox (28.90607pt too wide) in paragraph at lines 446--447
+[][] 
+ []
+
+<flexplavaan_draft_files/figure-latex/unnamed-chunk-4-1.pdf, id=266, 453.695pt 
+x 313.17pt>
+File: flexplavaan_draft_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (
+type pdf)
+<use flexplavaan_draft_files/figure-latex/unnamed-chunk-4-1.pdf>
+Package pdftex.def Info: flexplavaan_draft_files/figure-latex/unnamed-chunk-4-1
+.pdf  used on input line 452.
+(pdftex.def)             Requested size: 433.62463pt x 299.3161pt.
+
+Overfull \hbox (28.91219pt too wide) in paragraph at lines 452--453
 [][] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[17 <./flexplavaan_draft_files/figure-latex/unnamed-chunk-2-2.pdf>] [18 <./flex
-plavaan_draft_files/figure-latex/unnamed-chunk-2-3.pdf>] [19] [20] [21]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 590.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 590.
+[17 <./flexplavaan_draft_files/figure-latex/unnamed-chunk-3-1.pdf>]
+Overfull \hbox (49.27362pt too wide) in paragraph at lines 460--460
+[]\T1/lmtt/m/n/10.95 ## Called from: visualize.lavaan(object, object2, subset, 
+plot, formula, sort_plots,[] 
+ []
+
+
+Overfull \hbox (785.11151pt too wide) in paragraph at lines 460--460
+[]\T1/lmtt/m/n/10.95 ## debug at /Users/dustinfife/Documents/RPackages/flexplav
+aan/R/visualize.R#92: if (length(get_endogenous_names(object_l)) < 2) stop("You
+ cannot do a latent plot when there\TS1/lmtt/m/n/10.95 '\T1/lmtt/m/n/10.95 s le
+ss than two endogenous variables.")[] 
+ []
+
+
+Overfull \hbox (290.72043pt too wide) in paragraph at lines 460--460
+[]\T1/lmtt/m/n/10.95 ## debug at /Users/dustinfife/Documents/RPackages/flexplav
+aan/R/visualize.R#93: p = latent_plot(object, object2, formula, ...)[] 
+ []
+
+
+Overfull \hbox (78.01729pt too wide) in paragraph at lines 460--460
+[]\T1/lmtt/m/n/10.95 ## debug at /Users/dustinfife/Documents/RPackages/flexplav
+aan/R/visualize.R#94: return(p)[] 
+ []
+
+<flexplavaan_draft_files/figure-latex/unnamed-chunk-5-1.pdf, id=283, 464.73625p
+t x 314.17375pt>
+File: flexplavaan_draft_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (
+type pdf)
+<use flexplavaan_draft_files/figure-latex/unnamed-chunk-5-1.pdf>
+Package pdftex.def Info: flexplavaan_draft_files/figure-latex/unnamed-chunk-5-1
+.pdf  used on input line 466.
+(pdftex.def)             Requested size: 433.63268pt x 293.14693pt.
+
+Overfull \hbox (28.92023pt too wide) in paragraph at lines 466--467
+[][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[18 <./flexplavaan_draft_files/figure-latex/unnamed-chunk-4-1.pdf>] [19 <./flex
+plavaan_draft_files/figure-latex/unnamed-chunk-5-1.pdf>] [20] [21] [22]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 611.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 611.
 (./flexplavaan_draft.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 590.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 590.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 611.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 611.
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 27746 strings out of 480608
- 496923 string characters out of 5903631
- 779009 words of memory out of 5000000
- 42816 multiletter control sequences out of 15000+600000
- 631602 words of font info for 181 fonts, out of 8000000 for 9000
+ 27791 strings out of 480608
+ 497943 string characters out of 5903631
+ 779246 words of memory out of 5000000
+ 42855 multiletter control sequences out of 15000+600000
+ 631907 words of font info for 182 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  60i,12n,60p,3200b,1075s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/lo
-cal/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/20
-20/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2020/texmf-d
-ist/fonts/enc/dvips/lm/lm-ec.enc}</usr/local/texlive/2020/texmf-dist/fonts/type
-1/public/lm/lmbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/l
-m/lmmi10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi8.pf
-b></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></usr/loc
-al/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/
-2020/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2020/texmf-
-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/
-type1/public/lm/lmr6.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public
-/lm/lmr8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr9.pfb
-></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/loc
-al/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive
-/2020/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2020/texmf
--dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2020/texmf-dist/fonts
-/type1/public/lm/lmtt10.pfb>
-Output written on flexplavaan_draft.pdf (21 pages, 2452502 bytes).
+{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/local
+/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2
+020/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2020/texmf-dist
+/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc
+/dvips/lm/lm-ec.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/l
+mbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi10.pfb>
+</usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local
+/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></usr/local/texlive/20
+20/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2020/texmf-di
+st/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/ty
+pe1/public/lm/lmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/
+lm/lmr6.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr8.pfb>
+</usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/
+texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/20
+20/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2020/texmf-d
+ist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2020/texmf-dist/fonts/t
+ype1/public/lm/lmsy9.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public
+/lm/lmtt10.pfb>
+Output written on flexplavaan_draft.pdf (22 pages, 2889176 bytes).
 PDF statistics:
- 501 PDF objects out of 1000 (max. 8388607)
- 422 compressed objects within 5 object streams
- 105 named destinations out of 1000 (max. 500000)
- 14505 words of extra memory for PDF output out of 17280 (max. 10000000)
+ 520 PDF objects out of 1000 (max. 8388607)
+ 437 compressed objects within 5 object streams
+ 106 named destinations out of 1000 (max. 500000)
+ 14510 words of extra memory for PDF output out of 17280 (max. 10000000)
 

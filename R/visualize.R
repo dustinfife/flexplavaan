@@ -16,6 +16,7 @@
 #' @import GGally
 #' @importFrom flexplot visualize
 #' @export
+#' @aliases visualize visualize.lavaan
 #' @examples
 #' require(lavaan)
 #' data("correct_small")
@@ -27,12 +28,12 @@
 #' "
 #'   fit.lavaan = cfa(model, data=correct_small)
 #'   visualize(fit.lavaan)
-visualize.lavaan = visualize.flexplavaan = function(object, object2=NULL, 
+visualize.lavaan = function(object, object2=NULL, 
                             subset = NULL, 
                             plot=c("all", "disturbance", "model", "measurement", "latent"), 
                             formula = NULL,
                             sort_plots = TRUE,...){
-  
+
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
   
@@ -86,9 +87,10 @@ visualize.lavaan = visualize.flexplavaan = function(object, object2=NULL,
   }
   
   if (plot == "latent"){
+    
     # get length of endogenous variables to make sure we can do it
     if (length(get_endogenous_names(object_l))<2) stop("You cannot do a latent plot when there's less than two endogenous variables.")
-    p = latent_plot(object_l, formula, ...)  
+    p = latent_plot(object, object2, formula, ...)  
     return(p)
   }  
 
@@ -107,6 +109,20 @@ visualize.lavaan = visualize.flexplavaan = function(object, object2=NULL,
   
 } 
 
+#' Visualize a flexplavaan model
+#'
+#' Visualize a flexplavaan model
+#' @aliases visualize visualize.flexplavaan
+#' @export
+visualize.flexplavaan = function(object, object2=NULL, 
+                                 subset = NULL, 
+                                 plot=c("all", "disturbance", "model", "measurement", "latent"), 
+                                 formula = NULL,
+                                 sort_plots = TRUE,...){
+  object_l = flexplavaan_to_lavaan(object)
+  object2_l = flexplavaan_to_lavaan(object2)
+  visualize.lavaan(object, object2, subset, plot, formula, sort_plots, ...)
+}  
 
 #' Visualize a runjags model 
 #'
@@ -116,6 +132,7 @@ visualize.lavaan = visualize.flexplavaan = function(object, object2=NULL,
 #' the fit of two different models. 
 #' @param plot what should be plotted? User can specify "diagnostics" or "model"
 #' @param ... Other arguments passed to flexplot
+#' @aliases visualize visualize.runjags
 #' @import GGally
 #' @import dplyr
 #' @export

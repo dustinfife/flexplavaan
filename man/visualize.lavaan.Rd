@@ -2,6 +2,7 @@
 % Please edit documentation in R/visualize.R
 \name{visualize.lavaan}
 \alias{visualize.lavaan}
+\alias{visualize.flexplavaan}
 \title{Visualize a linear lavaan model}
 \usage{
 \method{visualize}{lavaan}(

@@ -23,7 +23,7 @@ return_residual_dataset = function(fitted, max_val = 0.01) {
 combine_residual_datasets = function(fitted, fitted2=NULL, max_val=.01) {
   #browser()
   if (is.null(fitted2)) return(return_residual_dataset(fitted, max_val))
-  
+
   # get the first dataset, but set maxval to zero
   d_1 = return_residual_dataset(fitted, max_val=0)
   d_2 = return_residual_dataset(fitted2, max_val=0)
@@ -31,7 +31,8 @@ combine_residual_datasets = function(fitted, fitted2=NULL, max_val=.01) {
   # merge the datasets, sort, and gather
   d = merge(d_1, d_2, by="Correlation") %>% 
     filter(abs(Residual.x) > max_val | abs(Residual.y) > max_val ) %>% 
-    arrange(-Residual.x) %>% 
+    mutate(average_residual = abs(Residual.x) + abs(Residual.y)) %>% 
+    arrange(average_residual) %>% 
     gather(key="Model", value="Residual", Residual.x, Residual.y)
 
   return(d)
@@ -59,7 +60,7 @@ residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
   fitted2_l = flexplavaan_to_lavaan(fitted2)
   
   res_d = combine_residual_datasets(fitted_l, fitted2_l, max_val)
- 
+
   if (is.null(fitted2)) {
     res_d$top = abs(res_d$Residual)
     res_d$bottom = -1*abs(res_d$Residual)
@@ -85,18 +86,21 @@ residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
   limits = res_d %>% 
     group_by(Model) %>% 
     mutate(top = abs(Residual),
-           bottom = -1*abs(Residual))
+           bottom = -1*abs(Residual),
+           Correlation = factor(Correlation))
 
   p = ggplot2::ggplot(limits, aes(x=Correlation, y=Residual, group=Model)) +
     geom_line(aes(y=bottom, group=Model, linetype=Model, col=Model), alpha=.4) +
     geom_line(aes(y=top, group=Model, linetype=Model, col=Model), alpha=.4) + 
     geom_point(data=limits, aes(x=Correlation, y=Residual, group=Model, col=Model), size=2) +
     geom_abline(slope=0, intercept=0) + 
-    theme_bw() #+
-    #annotate("text", x=.75*length(limits$Correlation), y=max(limits$Residual), label="Model Overestimates") + 
-    #annotate("text", x=.75*length(limits$Correlation), y=min(limits$Residual), label="Model Underestimates")
-  return(p)
-  
+    scale_x_discrete(limits = rev(levels(limits[["Correlation"]])))+
+    theme_bw() +
+    annotate("text", x=max(limits$Correlation), y=min(limits$Residual), label="Model Overestimates", vjust=1, hjust=1) + 
+    annotate("text", x=max(limits$Correlation), y=max(limits$Residual), label="Model Underestimates", vjust=1, hjust=1) + 
+    coord_flip()
+  p
+    
 }
 
 
