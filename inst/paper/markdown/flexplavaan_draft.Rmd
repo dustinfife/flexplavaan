@@ -232,9 +232,8 @@ residual_plots(force_fit) + coord_flip()
 In order to conceptualize our approach to visualizing LVMs, let us first consider how typical linear models are visualized. In a standard regression, each dot in a scatterplot represents scores on the observed variables. Often, analysts overlay additional symbols to represent the fit of the model (e.g., a line to represented the fitted regression model, or large dots to represent the mean). Sometimes additional symbols are overlaid to represent uncertainty (e.g., confidence bands for a regression line or standard error bars). See Figure \@ref(fig:scatter) as an example. In either case, the dots represent observed information, while the fitted information is conveyed using other symbols. 
 
 ```{r scatter, fig.cap="Example figure that shows how standard statistical models are visualized. Dots represent scores on observed variables, while other symbols (e.g., regression line, large dots) represent the fit of the model."}
-require(flexplot)
-a = flexplot(weight.loss~therapy.type, data=exercise_data) + labs(x="Therapy", y="Weight Loss")
-b = flexplot(weight.loss~motivation, data=exercise_data) + labs(x="Motivation", y="Weight Loss")
+a = flexplot::flexplot(weight.loss~therapy.type, data=exercise_data) + labs(x="Therapy", y="Weight Loss")
+b = flexplot::flexplot(weight.loss~motivation, data=exercise_data) + labs(x="Motivation", y="Weight Loss")
 cowplot::plot_grid(a,b)
 ```
 
@@ -256,7 +255,7 @@ Figure \@ref(fig:trace1) shows the LVM model-implied fit in red with a regressio
 
 ```{r trace1, fig.cap = "The LVM-implied fit between fitness score and light saber score, shown in red. The blue line represents the regression line between the two variables. The more closely the model-implied fit line resembles the regresson line, the better the fit of the LVM."}
   # compute the model-implied slope
-viz_diagnostics(jedi_jedi, aes(y=fitness, x=saber), fit.lavaan = force_fit, plot="trace", method="lm")+
+viz_diagnostics(jedi_jedi, aes(y=fitness, x=saber), fit.lavaan = force_fit$lavaan, plot="trace", method="lm")+
   labs(y="Fitness Score", x="Light Saber Score") +
   theme_bw()
 ```
@@ -268,7 +267,7 @@ Of course, Figure \@ref(fig:trace1) only shows one pairwise relationship between
 
 ```{r traceMatrix, fig.cap="Scatterplot matrix showing the model-implied fit (red) and regression-implied fit (blue) between three simulated indicator variables. The diagonals show the histograms."}
 require(flexplavaan)
-visualize(force_fit, plot="model", subset=c("saber", "fitness", "midichlorian", "force_history"), sort_plots = FALSE)
+flexplavaan::visualize(force_fit, plot="model", subset=c("saber", "fitness", "midichlorian", "force_history"), sort_plots = FALSE)
 ```
 
 
@@ -276,7 +275,7 @@ The primary advantage of trail plots is that they easily show many types of miss
 
 ```{r traceMatrix2, fig.cap="Scatterplot matrix showing the model-implied fit (red) and regression-implied fit (blue) between three simulated indicator variables. The diagonals show the histograms."}
 require(flexplavaan)
-visualize(force_fit, plot="model", subset=c("exam_one", "exam_two", "exam_three", "force_history"), sort_plots = FALSE)
+flexplavaan::visualize(force_fit, plot="model", subset=c("exam_one", "exam_two", "exam_three", "force_history"), sort_plots = FALSE)
 ```
 
 # Disturbance-Dependence Plots
@@ -294,7 +293,7 @@ Figure \@ref(fig:ddp) shows an example of trace plots in the upper triangle and 
 (ref:crossloadcitation) This plot shows a disturbance-dependence plot for the same data visualized in Figure \@ref(fig:traceMatrix2) in the lower triangle.
 
 ```{r ddp, fig.cap='(ref:crossloadcitation)'}
-visualize(force_fit, subset=c("exam_one", "exam_two", "exam_three", "force_history"), sort_plots = FALSE)
+flexplavaan::visualize(force_fit, subset=c("exam_one", "exam_two", "exam_three", "force_history"), sort_plots = FALSE)
 ```
 
 Together, both of these plots (trace plots and diagnostic-dependence plots) serve as a critical diagnostic check. Both these plots will signal certain types of misfit both in the measurement and structural components of the model. However, these plots suffer from a major weakness. Recall how earlier we referenced Figure \@ref(fig:implied) and noted that sometimes severe misspecification will go undetected simply because an incorrect model will often yield a model-implied covariance matrix that well approximates the actual covariance matrix. However, this sort of misspecification may show up in measurement plots, which we address next. 
@@ -326,7 +325,7 @@ When modeling latent variables, often the visuals of interest are not the observ
 However, our latent variables are merely estimates. As such, we ought to have visuals that reflect uncertainty in our estimates of the latent scores. In `flexplavaan`, this uncertainty is represented as crosshairs. The widths of each line of the crosshair (for both the $X$ axis and the $Y$ axis) are obtained from prediction intervals for `lavaan` objects (using the `plausibleValues` function of the `semTools` package). Figure \@ref(fig:beech) shows these plots, which we call "Structural Plots," or "Cross-hair Plots". Interestingly, the relationship between the two, though simulated to be significantly nonlinear, shows up as fairly linear. This seems to suggest that, by the time a model's factor scores are estimated, any nonlinearity that exists in the data has been discarded.  
 
 ```{r beech, fig.cap='Structural or "Beech Ball" plot of the relationship between the latent variables Force and Jedi. The ellipses represent the prediction intervals for the factor scores of the latent variables.', echo=FALSE}
-visualize(force_fit, plot="latent", method="loess")
+flexplavaan::visualize(force_fit, plot="latent", method="loess")
 
 ```
 
@@ -348,14 +347,22 @@ jedi_score =~ exam_one + exam_two + exam_three + force_history
 jedi_score ~ force_score + force_exp
 force_score ~~ force_exp
 "
-force_exp = cfa(model, d)
-implied_measurement(force_exp, force_fit, latent="force_score")
-
-
-implied_measurement(force_exp, latent="force_score", method="loess")
-
-implied_measurement(force_exp, latent="force_exp", method="loess")
-implied_measurement(force_exp, latent="jedi_score", method="loess")
+force_exp = flexplavaan(model, d)
+residual_plots(force_fit, force_exp)
 ```
+
+```{r}
+visualize(force_fit, force_exp, subset=c("saber", "fitness", "midichlorian", "force_history"))
+```
+
+```{r}
+implied_measurement(force_fit, force_exp, latent="force_score", alpha = .5)
+```
+
+```{r}
+visualize(force_fit, force_exp, plot="latent")
+```
+
+
 
 # References

@@ -187,6 +187,12 @@ Unfortunately, these plots suffer from two major problems. First, the residuals 
 
 A second problem with plots of correlation/covariance residuals is they are extremely limited in the amounts of misspecification they might reveal. For example, suppose we model a latent variable with three indicators (\(x_1\), \(x_2\), and \(x_3\)), but the data-generating model actually has \(x_3\) associated with \(x_2/x_1\), but not an indicator of the latent variable (see Figure \ref{fig:implied}). These two models will have the same implied variance/covariance matrix.\footnote{In the left model, the standardized relationship between \(x_1/x_3\) is \(a_1\times c_1\), while in the right model it is \(r_2\). Likewise, the \(x_1/x_2\) relationship is \(a_1\times b_1\) in the left model, while it is \(r_1\) in the right model. The LVM machinery will attempt to make \(a_1\times c_1 = r(x_1, x_3)\), which is the same as setting \(a_1\times c_1 = r_2\) (and it will set \(a_1\times b_1\) to \(r_1\)).} In other words, a stem and leaf plot will not signal any problems, despite problems existing.
 
+xxxxx mention equivalent models. flexplavaan can handle equivalent models!! xxxxxxxxxxxx
+xxxx how to tell if it matters? xxxxx
+* do they matter in predictions?
+* do they matter in interventions?
+* do they matter in terms of utility?
+
 \begin{figure}
 \begin{center}
 \begin{tikzpicture}[node distance=2cm, auto,>=latex, thick, scale = 0.5]
@@ -403,12 +409,17 @@ Figure \ref{fig:measurementplot} plots several graphs of the relationship betwee
 \hypertarget{structural-cross-hair-plots}{%
 \section{Structural (Cross-Hair) Plots}\label{structural-cross-hair-plots}}
 
+xxxx these are useless if you don't have the other plots (holmgren article) xxxxx
 When modeling latent variables, often the visuals of interest are not the observed variables, but the latent variables. In other words, the measurement model is ancillary to the substantive model. Naturally, we might wish to visualize the relationship between the latent variables.
 
 However, our latent variables are merely estimates. As such, we ought to have visuals that reflect uncertainty in our estimates of the latent scores. In \texttt{flexplavaan}, this uncertainty is represented as crosshairs. The widths of each line of the crosshair (for both the \(X\) axis and the \(Y\) axis) are obtained from prediction intervals for \texttt{lavaan} objects (using the \texttt{plausibleValues} function of the \texttt{semTools} package). Figure \ref{fig:beech} shows these plots, which we call ``Structural Plots,'' or ``Cross-hair Plots''. Interestingly, the relationship between the two, though simulated to be significantly nonlinear, shows up as fairly linear. This seems to suggest that, by the time a model's factor scores are estimated, any nonlinearity that exists in the data has been discarded.
 
 \begin{verbatim}
-## Estimating Standard Errors...
+## Called from: visualize.lavaan(object, object2, subset, plot, formula, sort_plots, 
+##     ...)
+## debug at /Users/dustinfife/Documents/RPackages/flexplavaan/R/visualize.R#92: if (length(get_endogenous_names(object_l)) < 2) stop("You cannot do a latent plot when there's less than two endogenous variables.")
+## debug at /Users/dustinfife/Documents/RPackages/flexplavaan/R/visualize.R#93: p = latent_plot(object, object2, formula, ...)
+## debug at /Users/dustinfife/Documents/RPackages/flexplavaan/R/visualize.R#94: return(p)
 \end{verbatim}
 
 \begin{verbatim}
@@ -427,22 +438,32 @@ There is a great deal of flexibility in how one visualizes the structural model.
 \section{Model Comparisons}\label{model-comparisons}}
 
 \begin{verbatim}
-## [[1]]
+## Estimating Standard Errors...
 \end{verbatim}
 
 \includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-2-1.pdf}
 
-\begin{verbatim}
-## [[1]]
-\end{verbatim}
-
-\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-2-2.pdf}
+\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-3-1.pdf}
 
 \begin{verbatim}
 ## [[1]]
 \end{verbatim}
 
-\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-2-3.pdf}
+\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{verbatim}
+## Called from: visualize.lavaan(object, object2, subset, plot, formula, sort_plots, 
+##     ...)
+## debug at /Users/dustinfife/Documents/RPackages/flexplavaan/R/visualize.R#92: if (length(get_endogenous_names(object_l)) < 2) stop("You cannot do a latent plot when there's less than two endogenous variables.")
+## debug at /Users/dustinfife/Documents/RPackages/flexplavaan/R/visualize.R#93: p = latent_plot(object, object2, formula, ...)
+## debug at /Users/dustinfife/Documents/RPackages/flexplavaan/R/visualize.R#94: return(p)
+\end{verbatim}
+
+\begin{verbatim}
+## [[1]]
+\end{verbatim}
+
+\includegraphics{flexplavaan_draft_files/figure-latex/unnamed-chunk-5-1.pdf}
 
 \hypertarget{references}{%
 \section*{References}\label{references}}
