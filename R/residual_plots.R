@@ -68,11 +68,12 @@ residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
       geom_line(aes(y=bottom, group=1), col="gray") +
       geom_line(aes(y=top, group=1), col="gray") + 
       geom_point(aes(x=Correlation, y=Residual), size=2) +
-      #geom_line(aes(x=Correlation, y=Residual, group=1)) + 
       geom_abline(slope=0, intercept=0) + 
-      theme_bw() #+
-      #annotate("text", x=.75*length(res_d$Correlation), y=max(res_d$Residual), label="Model Overestimates", vjust="top") + 
-      #annotate("text", x=.75*length(res_d$Correlation), y=min(res_d$Residual), label="Model Underestimates", vjust="bottom")
+      scale_x_discrete(limits = rev(levels(res_d[["Correlation"]])))+
+      theme_bw() +
+      annotate("text", x=max(res_d$Correlation), y=min(res_d$Residual), label="Model Overestimates", vjust=1, hjust=1) + 
+      annotate("text", x=max(res_d$Correlation), y=max(res_d$Residual), label="Model Underestimates", vjust=1, hjust=1) + 
+      coord_flip()
     return(p)
   }
   
