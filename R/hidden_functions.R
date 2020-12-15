@@ -16,6 +16,17 @@ check_models = function(model, model2=NULL){
   return(NULL)
 }
 
+get_and_check_names = function(model_names, object, object2) {
+
+    
+  if (!is.null(model_names)) return(model_names)
+  if (is.null(model_names) & is.null(object2)) return(c("Model-Implied", "Data-Implied"))
+  a = deparse(substitute(object,sys.frame(sys.nframe()-1)))
+  b = deparse(substitute(object2,sys.frame(sys.nframe()-1)))
+  if (!is.null(object2) & is.null(model_names)) return(c(a,b))
+  return(model_names)
+}
+
 get_all_data = function(fitted) {
   
   # get names of variables

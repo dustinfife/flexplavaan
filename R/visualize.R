@@ -12,6 +12,7 @@
 #' Option is ignored for the other plots
 #' @param sort_plots Should the axes be sorted according to the size of the residuals? Setting to 
 #' TRUE (default) will plot the variables with the largest residuals first
+#' @param model_names What should the legend be named for the two lines? Defaults to NULL. 
 #' @param ... Other arguments passed to flexplot
 #' @import GGally
 #' @importFrom flexplot visualize
@@ -32,7 +33,8 @@ visualize.lavaan = function(object, object2=NULL,
                             subset = NULL, 
                             plot=c("all", "disturbance", "model", "measurement", "latent"), 
                             formula = NULL,
-                            sort_plots = TRUE,...){
+                            sort_plots = TRUE,
+                            model_names = NULL,...){
 
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
@@ -55,9 +57,10 @@ visualize.lavaan = function(object, object2=NULL,
   } else {
     legend = NULL
   }
-  
+
+
   ## get names
-  nms = c(deparse(substitute(object)), deparse(substitute(object2)))
+  nms = get_and_check_names(model_names, object, object2)
 
   if (plot=="all"){
     p = ggpairs(d[,observed], legend=legend,
@@ -90,7 +93,7 @@ visualize.lavaan = function(object, object2=NULL,
     
     # get length of endogenous variables to make sure we can do it
     if (length(get_endogenous_names(object_l))<2) stop("You cannot do a latent plot when there's less than two endogenous variables.")
-    p = latent_plot(object, object2, formula, ...)  
+    p = latent_plot(object, object2, formula, model_names=model_names, ...)  
     return(p)
   }  
 
@@ -118,10 +121,12 @@ visualize.flexplavaan = function(object, object2=NULL,
                                  subset = NULL, 
                                  plot=c("all", "disturbance", "model", "measurement", "latent"), 
                                  formula = NULL,
-                                 sort_plots = TRUE,...){
+                                 sort_plots = TRUE,
+                                 model_names = NULL,...){
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
-  visualize.lavaan(object, object2, subset, plot, formula, sort_plots, ...)
+  model_names = get_and_check_names(model_names, object, object2)
+  visualize.lavaan(object, object2, subset, plot, formula, sort_plots, model_names = model_names,...)
 }  
 
 #' Visualize a runjags model 
