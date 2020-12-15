@@ -1,7 +1,7 @@
 #fitted = fit_twofactor
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
-latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, method="loess",...) {
+latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, method="loess", model_names,...) {
 
   fitted_l = flexplavaan_to_lavaan(fitted)
   fitted2_l = flexplavaan_to_lavaan(fitted2)
@@ -15,8 +15,8 @@ latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, me
   # add second dataset
   if (!is.null(fitted2_l)) {
     # get model names
-    m1_name = paste0(substitute(fitted))
-    m2_name = paste0(substitute(fitted2))
+    m1_name = model_names[1]
+    m2_name = model_names[2]
     
     # get latent variable estimates and combine
     latent_predicted2 = data.frame(lavPredict(fitted2_l)) %>% 
@@ -82,9 +82,9 @@ latent_plot_only = function(f, data, se_data, fitted, method="lm",...) {
   if ("model" %in% names(data)) {
     f_vars = all.vars(f)
     dv = f_vars[1]; iv = f_vars[-1]
-    f = flexplot:::make_flexplot_formula(c(iv, "model"), dv, data)
+    f = flexplot:::make_flexplot_formula(c(iv, "model"), dv, data, ...)
   }
-  p = flexplot(f, data, se=F, ghost.line="red", alpha=0, method=method) + 
+  p = flexplot(f, data, se=F, ghost.line="red", alpha=0, method=method,...) + 
     geom_point() +
     alpha_default[1] +
     alpha_default[2]

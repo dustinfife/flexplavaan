@@ -13,19 +13,38 @@ header-includes:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r tabresults}
+require(tidyverse)
+require(lavaan)
+require(flexplavaan)
+fit_o = fitMeasures(force_fit$lavaan) %>% round(digits=3)
+fit_n = fitMeasures(nonlinear$lavaan) %>% round(digits=3)
+measures = c("chisq", "df", "pvalue", "cfi", "tli", "bic", "rmsea", "srmr")
+tab = data.frame(Original=fit_o[measures], Nonlinear=fit_n[measures])
+row.names(tab) = c("$\\chi^2$", "$df$", "$p$", "CFI", "TLI", "BIC", "RMSEA", "SRMR")
+knitr::kable(tab, row.names=T, caption="Global Fit Indices for the Original and Nonlinear Model for the Jedi Dataset.")
+```
+
 ## R Markdown
 
-\begin{center}
 \begin{figure}
-\usetikzlibrary{arrows}
-\begin{tikzpicture}[node distance=2cm, midway, scale=2, every node/.style={scale=2}]
+\begin{center}
+\begin{tikzpicture}[node distance=2cm, midway, scale=1.5, every node/.style={scale=1.5}]
 
 \node[draw, circle] (force) {Force};
+\node[draw, circle, node distance = 2cm] (forcesq) [above right of=force] {$\text{Force}^2$};
 \node[draw, circle, node distance = 2cm] (jedi) [right of=force] {Jedi};
 
 \node[draw, rectangle] (saber) [left of=force] {Saber};
 \node[draw, rectangle, node distance = 1cm] (fit) [above of=saber] {Fitness};
 \node[draw, rectangle, node distance = 1cm] (midi) [below of=saber] {Midichlorian};
+
+
+\node[draw, rectangle] (sabersq) [above of=forcesq] {$\text{Saber}^2$};
+\node[draw, rectangle, node distance = 1.6cm] (fitsq) [left of=sabersq] {$\text{Fitness}^2$};
+\node[draw, rectangle, node distance = 2cm] (midisq) [right of=sabersq] {$\text{Midichlorian}^2`$};
+
 
 \node[draw, rectangle] (hist) [below of=jedi] {History};
 
@@ -37,18 +56,28 @@ knitr::opts_chunk$set(echo = TRUE)
 \draw[->] (force) to node [fill=white]{\scriptsize $a$} (fit);
 \draw[->] (force) to node [fill=white]{\scriptsize $c$} (midi);
 
+\draw[->] (forcesq) to node [fill=white]{\scriptsize $b_2$} (sabersq);
+\draw[->] (forcesq) to node [fill=white]{\scriptsize $a_2$} (fitsq);
+\draw[->] (forcesq) to node [fill=white]{\scriptsize $c_2$} (midisq);
+
 \draw[->] (jedi) to node [fill=white]{\scriptsize $d$} (e1);
 \draw[->] (jedi) to node [fill=white]{\scriptsize $e$} (e2);
 \draw[->] (jedi) to node [fill=white]{\scriptsize $f$} (e3);
 
-\draw[->] (jedi) to node [fill=white]{\scriptsize $g_1$} (hist);
 \draw[->] (force) to node [fill=white]{\scriptsize $g_2$} (hist);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $g_1$} (hist);
 
-\draw[->] (force) edge[out=25, in=180-25,->, below] node {\scriptsize $\beta$} (jedi);
+\draw[->, line width = .7mm] (force) to node [below]{\scriptsize $\beta$} (jedi);
+
+\draw[<->] (force.north) edge[out=90, in=180, above] node {$c$} (forcesq.west)  ;
+\draw[->] (forcesq.south east) to node [above right]{$d$} (jedi.north)  ;
+
+
 \end{tikzpicture}
-\caption{Simulated dataset with crossloadings on the 'history' indicator. This is the data-generating model.}
-\end{figure}
+\label{fig:force}
+\caption{Nonlinear model for the dataset generated from \ref{fig:force}. }
 \end{center}
+\end{figure}
 
 
 \begin{center}
