@@ -1,0 +1,3 @@
+load("/Users/dustinfife/Documents/RPackages/flexplavaan/data/nihtoolbox.RData")
+ls()
+load("/Users/dustinfife/Documents/RPackages/flexplavaan/data/nihtoolbox.RData")
