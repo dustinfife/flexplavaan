@@ -22,7 +22,9 @@ affiliation:
 documentclass     : "apa6"
 classoption       : "doc"
 output            : papaja::apa6_pdf
-bibliography: flexplavaan_citations.bib 
+bibliography: 
+- flexplavaan_citations.bib 
+- references.bib 
 header-includes:
 - \usepackage{amsmath}
 - \usepackage{tikz}
@@ -429,21 +431,23 @@ papaja::apa_table(tab, row.names=T,
 
 
 # Applied Example: Social Distress & Wellbeing
-To demonstrate the utility of flexplavaan with real-world data, we evaluate a model using publicly-accessible data from the NIH Toolbox Norming Study [@gershon2016]. The hypothesized model evaluates the effect of social distress on general well-being using composite scores of several multi-item questionnaires from the NIH Toolbox Emotion Domain among adult (18+ years old) participants (*N* = 1,629). The hypothesized model is depicted in Figure {insert appropriate number}:
+To demonstrate the utility of flexplavaan with real-world data, we evaluate a model using publicly-accessible data from the NIH Toolbox Norming Study [@gershon2016]. The hypothesized model evaluates the effect of social distress on general well-being using composite scores of several multi-item questionnaires from the NIH Toolbox Emotion Domain among adult (18+ years old) participants (*N* = 1,629). The hypothesized model is depicted in Figure \ref{fig:toolbox}.
 
-![Hypothesized Model of Social Distress' Effect on Well-Being](//rowanads.rowan.edu/home/brunwasser/Documents/GitHub/flexplavaan/flexplavaan/toolboxDiagramPrimary.png)
+![Hypothesized Model of Social Distress' Effect on Well-Being\label{fig:toolbox}](images/toolboxDiagramPrimary.png)
 
 The model freely estimates 15 parameters labeled with red Greek letters. The primary response variable, $\eta_{2}$, measures well-being as a latent factor with two reflective indicators, life satisfaction and meaning. The primary exposure variable is social distress ($\eta_{1}$), measured with two reflective indicators: loneliness and sadness. Social distress also has two causal indicators, perceived hostility and rejection. Rather than treating these two causal indicators as being perfectly measured, we use reliability estimates reported in @cyranowski2013assessing to form single-indicator latent variables ($\xi_1$ and $\xi_2$) with error variances equal to (1-$\alpha$)*var($\xi$), where $\alpha$ is the estimate of reliability [@hayduk2012should]. We allow the sadness reflective effect indicator to have a direct causal effect on well-being, indicating the hypothesis that the association between sadness and well-being is not merely due to the having social distress as a common cause. 
 
-It is sometimes difficult to distinguish between causal and effect indicators for latent factors [@bollen2011three], and modelers may differ in how they conceptualize the same indicators.  Figure {insert #} presents an alternative model in which perceived hostility and rejection are treated as reflective indicators of the social distress factor, rather than causal indicators. In our hypothesized model, changes in perceived hostility and rejection lead to corresponding changes in levels of the social distress latent factor and its effect indicators; however, changes in social distress do not lead to changes in perceived hostility and rejection. In the alternative model, changes in the social distress factor lead to changes in perceived rejection and hostility. This difference between models has important clinical implications. In the hypothesized model, interventions reducing perceived rejection and hostility would lead to improvements in social distress and subsequently well-being. The same is not true in the alternative model where rejection and hostility exert no causal influence on social distress or well-being. The alternative model estimates one fewer parameter than the preferred model (14 vs. 15) and, consequently has one additional degree of freedom. 
+It is sometimes difficult to distinguish between causal and effect indicators for latent factors [@bollen2011three], and modelers may differ in how they conceptualize the same indicators.  Figure \ref{fig:alternativeToolbox} presents an alternative model in which perceived hostility and rejection are treated as reflective indicators of the social distress factor, rather than causal indicators. In our hypothesized model, changes in perceived hostility and rejection lead to corresponding changes in levels of the social distress latent factor and its effect indicators; however, changes in social distress do not lead to changes in perceived hostility and rejection. In the alternative model, changes in the social distress factor lead to changes in perceived rejection and hostility. This difference between models has important clinical implications. In the hypothesized model, interventions reducing perceived rejection and hostility would lead to improvements in social distress and subsequently well-being. The same is not true in the alternative model where rejection and hostility exert no causal influence on social distress or well-being. The alternative model estimates one fewer parameter than the preferred model (14 vs. 15) and, consequently has one additional degree of freedom. 
 
-![Alternative Model of Social Distress' Effect on Well-Being](//rowanads.rowan.edu/home/brunwasser/Documents/GitHub/flexplavaan/flexplavaan/toolboxDiagramAlternative.png)
+![Alternative Model of Social Distress' Effect on Well-Being\label{fig:alternativeToolbox}](images/toolboxDiagramAlternative.png)
 
 We use flexplavaan to evaluate the tenability of these two models. All measured variables are treated as continuous. As there is evidence of floor and ceiling effects causing considerable skewness and kurtosis for several variables, we use the MLR estimator which yields standard errors and $\chi^2$ test statistic that are more robust to distributional violations compared to the default ML option.  
 
 We evaluate the competing models using the $\chi^2$ fit test and three approximate fit indices: the root mean square error of approximation (RMSEA) with a 90% confidence interval, the Tucker-Lewis Index (TLI), and the square root mean residual (SRMR).
+
 ```{r warning=F, message=F}
-load("~/GitHub/flexplavaan/flexplavaan/nihtoolbox.RData")
+load("../data/nihtoolbox.RData")
+threatadult = toolbox
 require(lavaan)
 
 hypoth <- '
@@ -471,19 +475,25 @@ alternatefit <- sem( alternate, data = threatadult, estimator= 'mlr')
 fitpref <- fitMeasures( hypothfit, c('npar',"chisq", "df", "pvalue", "rmsea",'rmsea.ci.lower','rmsea.ci.upper',"tli",'srmr') )
 fitalt <- fitMeasures( alternatefit, c('npar',"chisq", "df", "pvalue", "rmsea",'rmsea.ci.lower','rmsea.ci.upper',"tli",'srmr') )
 
-( fitcomp <- data.frame( Model=c('Alternative','Hypothesized'), rbind( fitalt, fitpref ) ) )
+fitcomp <- data.frame( Model=c('Alternative','Hypothesized'), rbind( fitalt, fitpref ) ) 
+papaja::apa_table(fitcomp, row.names=F, 
+             caption="Global Fit Indices for the Alternative and Hypothesized Model for the NIH Toolbox Dataset.",
+             escape = FALSE,
+             col.names = c("Model","parameters", "$\\chi^2$", "$df$", "$p$","RMSEA", "RMSEA$_{l}$", "RMSEA$_{u}$", "TLI", "SRMR"),
+             align = c("l", rep("c", 9)),
+             digits = c(0,0,1,0,3,3,3,3,3, 3))
+
 ```
 
-The $\chi^2$ tests for both models indicate that there are model-data discrepancies that exceed the conventional (though arbitrary) threshold (*p*=.05) used to distinguish chance vs. non-chance expectation, though the $\chi^2$ test statistic is considerably smaller in the hypothesized model. The approximate fit indices, most notably the RMSEA, favor the hypothesized model. Using flexplavaan's residual_plots() function, we can visualize which bivariate correlations are most poorly approximated by the model in hopper plots. 
+The $\chi^2$ tests for both models indicate that there are model-data discrepancies that exceed the conventional (though arbitrary) threshold (*p*=.05) used to distinguish chance vs. non-chance expectation, though the $\chi^2$ test statistic is considerably smaller in the hypothesized model. The approximate fit indices, most notably the RMSEA, favor the hypothesized model. Using flexplavaan's `residual_plots()` function, we can visualize which bivariate correlations are most poorly approximated by the model in hopper plots. 
 
 ```{r message=F, warning=F}
 residual_plots( alternatefit, hypothfit )
 ```
 
-The hypothesized model yields smaller residual correlations for nearly all variable pairs, with all residual correlations < .03. It is notable, therefore, that the alternate model does a relatively poor job reproducing the bivariate associations among the indicators of social distress. For example, When including hostility and reject as reflective indicators, the alternative model underestimates the lonely-sad and  
-reject-hostility correlations, whereas the preferred model reproduces these relationships nearly perfectly. The hypothesized model also generally does better reproducing correlations between the social distress indicators and the well-being indicators. The alternative model most notably overestimates the lonely-meaning correlation.
+The hypothesized model yields smaller residual correlations for nearly all variable pairs, with all residual correlations < .03. It is notable, therefore, that the alternate model does a relatively poor job reproducing the bivariate associations among the indicators of social distress. For example, When including hostility and reject as reflective indicators, the alternative model underestimates the lonely-sad and reject-hostility correlations, whereas the preferred model reproduces these relationships nearly perfectly. The hypothesized model also generally does better reproducing correlations between the social distress indicators and the well-being indicators. The alternative model most notably overestimates the lonely-meaning correlation.
 
-Next, we use the visualize() function to evaluate trace and disturbance dependence plots for our hypothesized model. To make the plot matrix manageable, We first plot only the indicators for the social distress latent factor using the *subset* argument.   
+Next, we use the `visualize()` function to evaluate trace and disturbance dependence plots for our hypothesized model. To make the plot matrix manageable, We first plot only the indicators for the social distress latent factor using the *subset* argument.   
 ```{r}
 visualize(hypothfit, subset=c('hostility','reject','lonely','sad'))
 ```
@@ -519,13 +529,13 @@ The measurement plots for the well-being latent factor show that the implied lin
 implied_measurement(hypothfit, latent='well', limit=8)
 ```
 
-As many of the flexaplavaan visualizations showed outlying points that were inconsistent with the model-implied relationships, we use the fitinfluence() function in the influence.SEM package to identify cases with the greatest influence on the hypothesized model's $\chi^2$ test. The 10 cases with the greatest influence on model fit are plotted below.  
+As many of the flexaplavaan visualizations showed outlying points that were inconsistent with the model-implied relationships, we use the `fitinfluence()` function in the `influence.SEM` package to identify cases with the greatest influence on the hypothesized model's $\chi^2$ test. The 10 cases with the greatest influence on model fit are plotted below.  
 
 ```{r}
 require(influence.SEM)
 
 #hypoth.inf <- fitinfluence(model=hypothfit,index = 'chisq', data=threatadult) #Takes too long to run -- output saved as 'hypoth.inf.RData'
-load("~/GitHub/flexplavaan/flexplavaan/hypoth.inf.RData")
+load("../data/hypoth.inf.RData")
 hypoth.inf.sort <- hypoth.inf$Dind[ order(-abs(hypoth.inf$Dind$chisq)), ]
 hypoth.inf.sort1.10 <- hypoth.inf.sort[1:10,]
 hypoth.inf.sort1.10$chisqabs <- abs( hypoth.inf.sort1.10$chisq )
@@ -540,15 +550,15 @@ It can be informative to evaluate data patterns for individuals cases for which 
 
 A big discrepancy in meaning-satisfaction and loneliness-sadness composite scores was common among participants for whom the model performed poorly. This may be an indication that we should further refine our theory and model. It might, for example, be preferable to treat life satisfaction and meaning as separate latent variables rather than as indicators of a single latent.
 
-A key point from this example is that using the flexplavaan package's visualization features can facilitate in-depth evaluation of LVMs. 
+A key point from this example is that using the `flexplavaan` package's visualization features can facilitate in-depth evaluation of LVMs. 
 
 * Hopper plots overlaying the residuals from our hypothesized and alternative models showed plainly that our hypothesized model better reproduced bivariate associations than the alternative model, identified specific bivariate correlations least well accounted for by the model, and showed plainly whether discrepancies were due to over- vs. underestimation of associations.
 * Trace, disturbance dependence, and measurement plots alerted us to potentially problematic distributional properties (i.e., floor and ceiling effects) and high-leverage outliers. We has a sense of these problems prior to modeling and used the a robust estimation procedure; however, the plots elucidated the potential impact on model estimates. This example is instructive as it utilized data from real-world instruments with unwieldy distributions common in psychology applications.
-* When used in conjunction with the influence.SEM package, we identified cases for which the model performed poorly, giving us hypotheses about potential modifications to our theory and model.
+* When used in conjunction with the `influence.SEM` package, we identified cases for which the model performed poorly, giving us hypotheses about potential modifications to our theory and model.
 
-Importantly, modelers relying exclusively on conventional cutoffs on the approximate fit indices -- all of which had values indicative of a well-fitting model by conventional standards -- would be unlikely to appreciate the potential shortcomings of our model. The scaled $\chi^2$ test, which is often dismissed as being overly sensitive, alerted us to model-data discrepancies. Importantly, flexplavaan could be helpful in identifying problems in models even when the $\chi^2$ test is not significant or even if in cases where model is just-identified and the $\chi^2$ test is uninformative. 
+Importantly, modelers relying exclusively on conventional cutoffs on the approximate fit indices -- all of which had values indicative of a well-fitting model by conventional standards -- would be unlikely to appreciate the potential shortcomings of our model. The scaled $\chi^2$ test, which is often dismissed as being overly sensitive, alerted us to model-data discrepancies. Importantly, `flexplavaan` could be helpful in identifying problems in models even when the $\chi^2$ test is not significant or even if in cases where model is just-identified and the $\chi^2$ test is uninformative. 
 
-There are important limitations of these analyses, unrelated to flexplavaan's capabilities. Each of the measured variables in these models is truly a linear composite of multiple items, but we had access only to the composite scores. If the individual items were available, modelers could use multiple items, if appropriate, as indicators of the latent variables of interest. 
+There are important limitations of these analyses, unrelated to `flexplavaan`'s capabilities. Each of the measured variables in these models is truly a linear composite of multiple items, but we had access only to the composite scores. If the individual items were available, modelers could use multiple items, if appropriate, as indicators of the latent variables of interest. 
 
 
 ```{r echo=F}

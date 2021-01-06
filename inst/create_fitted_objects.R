@@ -1,4 +1,19 @@
 d = read.csv("data/health_depression.csv")
+require(tidyverse)
+flexplot(NeglectWork~1, data=d)
+require(MASS)
+boxcox(NeglectWork~1, data=d)
+d = d %>% mutate(
+  Salience = log(Salience),
+  ExcessiveUse = log(ExcessiveUse), 
+  NeglectWork = (NeglectWork)^(-.8),
+  Anticipation = log(Anticipation), 
+  LackofControl = log(LackofControl), 
+  NeglectSocialLife = log(NeglectSocialLife)
+)
+flexplot(NeglectWork~1, data=d)
+
+
 pl = names(d)
 model = "
 internet =~ Salience + ExcessiveUse + NeglectWork + Anticipation + LackofControl + NeglectSocialLife
@@ -8,9 +23,10 @@ CESD~internet + health_physical + health_emotional
 "
 health_old = flexplavaan(model, d)
 pl = lavNames(health_old$lavaan)
+summary(health_old$lavaan, fit.measures=T)
 residual_plots(health_old, max_val = .05)
 implied_measurement(health_old, latent="internet", limit = 6, method="lm")[[1]] + geom_smooth(col="black", method="lm", formula=y ~ poly(x, 2, raw=TRUE), se=F)
-  # ok
+  # ok, but maybe add nutrition and internet?
 implied_measurement(health_old, latent="health_physical", limit=6, method="lm")[[1]] + geom_smooth(col="black", method="lm", formula=y ~ poly(x, 2, raw=TRUE), se=F)
   # add stress to physical
 implied_measurement(health_old, latent="health_emotional", limit = 6, method="lm")[[1]] + geom_smooth(col="black", method="lm", formula=y ~ poly(x, 2, raw=TRUE), se=F)
@@ -19,23 +35,43 @@ visualize(health_old)
 visualize(health_old, plot="latent", bins=2)
   
 
+d$LackofControlsq = scale(d$LackofControl)^2
 d$Saliencesq = scale(d$Salience)^2
-d$NeglectSocialLifesq = scale(d$NeglectSocialLife)^2
+model = "
+internet =~ Salience + ExcessiveUse + NeglectWork + Anticipation + LackofControl + NeglectSocialLife
+internet_sq =~ Saliencesq + LackofControlsq
+health_physical =~ Healthresponsibility +  Exercise + Stressmanagement
+health_emotional =~ Selfactualization + Interpersonalsupport + Stressmanagement
+Nutrition ~ health_physical + health_emotional + internet
+CESD~internet + health_physical + health_emotional + internet_sq
+"
+
+# lack of control and salience
+health = flexplavaan(model, d)
+summary(health$lavaan, fit.measures=T, standardized=T)
+visualize(health, subset=sample(pl, size=4), sort_plots = F, method="quadratic")
+implied_measurement(health, latent="internet", limit = 9, method="lm")[[1]] + geom_smooth(col="black", method="lm", formula=y ~ poly(x, 2, raw=TRUE), se=F)
+implied_measurement(health, latent="health_physical", limit=9, method="lm")[[1]] + geom_smooth(col="black", formula=y ~ poly(x, 2, raw=TRUE), method="lm", se=F)
+implied_measurement(health, latent="health_emotional", method="lm")[[1]]+ geom_smooth(col="black", formula=y ~ poly(x, 2, raw=TRUE), method="lm", se=F)
+visualize(health, plot="latent", formula = CESD~internet_sq)
+
+integrate(dnorm, -1.96, 1.96)
 
 model = "
 internet =~ Salience + ExcessiveUse + NeglectWork + Anticipation + LackofControl + NeglectSocialLife
 internet_sq =~ Saliencesq + NeglectSocialLifesq
-health_physical =~ Nutrition + Healthresponsibility +  Exercise + Stressmanagement
-health_emotional =~ Selfactualization + Interpersonalsupport + Stressmanagement
+health_physical =~ Nutrition + Healthresponsibility +  Exercise 
+health_emotional =~ Selfactualization + Interpersonalsupport 
+health_physical + health_emotional ~ Stressmanagement
 health_emotional ~~ internet_sq
 health_emotional ~~ internet
 health_physical ~~ internet
 health_emotional ~~ health_physical
-CESD~internet + health_physical + health_emotional
+CESD~internet + health_physical + health_emotional + Stressmanagement
 "
 health = flexplavaan(model, d)
-summary(health$lavaan)
-visualize(health, subset=sample(pl, 6), sort_plots = F, method="quadratic")
+summary(health$lavaan, fit.measures=T)
+visualize(health, subset=1:4, sort_plots = F, method="quadratic")
 implied_measurement(health, latent="internet", limit = 9, method="lm")[[1]] + geom_smooth(col="black", method="lm", formula=y ~ poly(x, 2, raw=TRUE), se=F)
 implied_measurement(health, latent="health_physical", limit=9, method="lm")[[1]] + geom_smooth(col="black", formula=y ~ poly(x, 2, raw=TRUE), method="lm", se=F)
 implied_measurement(health, latent="health_emotional", method="lm")[[1]]+ geom_smooth(col="black", formula=y ~ poly(x, 2, raw=TRUE), method="lm", se=F)
