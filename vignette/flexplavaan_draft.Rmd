@@ -520,13 +520,13 @@ The models produce generally similar trace and disturbance dependence plots. How
 
 Measurement plots for the hypothesized model generally show that the model-implied relationships between the latent and observed variables are consistent with the observed relationships between factor score estimates and the observed variables. For the social distress latent factor, there is some evidence of curvature deviating from the implied linear slope in the sparse regions of the plots. This is particularly notable for the plot of the distress factor scores against hostility. This may be at least partly an artifact of the floor effect for the hostility variable, resulting in a slight underestimate of the effect of hostility on the social distress factor. There also appear to be a cluster of outliers -- individuals reporting low levels of meaning *and* low levels of distress -- pulling the loess line for the plot of distress against meaning away from the implied linear relationship.  
 ```{r}
-implied_measurement(hypothfit, latent='distress', limit=8)
+implied_measurement(hypothfit, latent='distress', limit=8)[[1]]
 ```
 
 The measurement plots for the well-being latent factor show that the implied linear relationships generally provide a decent summary of the observed relationships between the latent factor scores estimates and the observed variables. The ceiling and floor effects are again evident. 
 
 ```{r}
-implied_measurement(hypothfit, latent='well', limit=8)
+implied_measurement(hypothfit, latent='well', limit=8)[[1]]
 ```
 
 As many of the flexaplavaan visualizations showed outlying points that were inconsistent with the model-implied relationships, we use the `fitinfluence()` function in the `influence.SEM` package to identify cases with the greatest influence on the hypothesized model's $\chi^2$ test. The 10 cases with the greatest influence on model fit are plotted below.  
