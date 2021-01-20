@@ -37,7 +37,7 @@ require(tidyverse)
 require(flexplavaan)
 require(lavaan)
 ```
-
+ We are modeling blind. 
 # Introduction
 It is currently an unprecedented time in the social sciences; multiple scientific disciplines are reeling from a "replication crisis" [@Camerer2018; @Ioannidis2005; @Pashler2012a], new norms for credibility are becoming more prevalent (Nelson, Simmons, & Simonsohn, 2018; Nosek, Ebersole, DeHaven, & Mellor, 2018), and the push for open science is accelerating at a rapid pace [@Nosek2018]. Amidst this push for open science practices, some have called for greater use of visualization techniques [@Fife2019a; @Fife2019e; @Tay2016a]. As noted by Tay, et al. (2016), "[visualizations]...can strengthen the quality of research by further increasing the transparency of data..." (p. 694). In other words, one of the best, and most efficient ways of making data analysis open and transparent is to display each and every data point through visualization techniques. This is particularly important in research applications where participant-level data cannot be shared.
 
