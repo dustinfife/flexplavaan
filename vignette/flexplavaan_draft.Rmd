@@ -550,11 +550,20 @@ diff1oth <- adult$sad[ -hypoth.inf.sort1.10$case ] - adult$lonely[ -hypoth.inf.s
 #summary(diffoth)
 ```
 
+# Extensions 
+
+- just-identified models
+- equivalent models 
+
+
 # Discussion
 
 LVM scholars have long warned about the deficiencies of relying *exclusively* on the $\chi^2$ fit test and approximate fit indices when judging model adequacy. It is well-known that models meeting conventional standards for model adequacy can have serious problems that go undetected, potentially leading to biased estimates and faulty inferences. The $\chi^2$ test, though more sensitive to misspecifications than approximate fit indices, cannot detect all problems. Therefore, regardless of whether there is evidence of misspecification, in-depth model evaluation strategies are needed to identify problems (including those flying under the fit index radar) and to inform subsequent model development. When models perform poorly, numeric fit indices provide, at best, vague hints about what went wrong. A model could provide a poor match to the data because of misspecifications in the causal structure, violations of distributional assumptions, or a combination of both. Poorly fitting models can help the field progress if they lead to useful theoretical revisions, development of better instruments, or the use of modeling strategies that do not require problematic assumptions. flexplavaan provides LVM practitioners user-friendly tools to conduct rigorous and intuitive model evaluation. 
 
+Another benefit of flexplavaan is that it provides methods of evaluating models even when 
+
 Beyond helping LVM modelers, we believe that flexplavaan can improve model transparency and allow reviewers and research consumers to better scrutinize LVMs than they could if they had to rely exclusively on summaries of aggregate statistics. In our applied example with the NIH Toolbox data, the visualizations clearly alert the user to potential model shortcomings even when the approximate fit indices would generally be considered to be indicative of a close fit. Thus, data visualizations can make it more difficult for model problems to go undetected by readers.
+
 
 
 # References
