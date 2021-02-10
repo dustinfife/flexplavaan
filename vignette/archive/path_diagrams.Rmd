@@ -7,6 +7,10 @@ header-includes:
 - \usepackage{amsmath}
 - \usepackage{tikz}
 - \usetikzlibrary{shapes.geometric,arrows, positioning}
+- \usepackage{pgfplots}
+- \usetikzlibrary{matrix}
+- \usepgfplotslibrary{groupplots}
+- \pgfplotsset{compat=newest}
 ---
 
 ```{r setup, include=FALSE}
@@ -25,6 +29,38 @@ tab = data.frame(Original=fit_o[measures], Nonlinear=fit_n[measures])
 row.names(tab) = c("$\\chi^2$", "$df$", "$p$", "CFI", "TLI", "BIC", "RMSEA", "SRMR")
 knitr::kable(tab, row.names=T, caption="Global Fit Indices for the Original and Nonlinear Model for the Jedi Dataset.")
 ```
+
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}[node distance=2cm, auto,>=latex, thick, scale = 0.5]
+\begin{groupplot}[group style={group size= 2 by 1},height=5cm,width=6.4cm]
+\nextgroupplot[title=type1]
+\node[draw, circle] (f) {$F$};
+\node[draw, rectangle] (x2) [below of=f] {$X_2$};
+\node[draw, rectangle] (x3) [right of=x2, node distance = 1cm] {$X_3$};
+\node[draw, rectangle] (x1) [left of=x2, node distance = 1cm] {$X_1$};
+\draw[->, left] (f) to node {$a_1$} (x1);
+\draw[->] (f) to node {$b_1$} (x2);
+\draw[->, right] (f) to node {$c_1$} (x3);
+
+\nextgroupplot[title=type2]
+\node[draw, circle] (f2) [right of=f, node distance = 3cm] {$F$};
+\node[draw, rectangle] (x22) [below of=f2] {$X_2$};
+\node[draw, rectangle] (x32) [right of=x22, node distance = 1cm] {$X_3$};
+\node[draw, rectangle] (x12) [left of=x22, node distance = 1cm] {$X_1$};
+\draw[->, left] (f2) to node {$a_2$} (x12);
+\draw[->, right] (f2) to node {$b_2$} (x22);
+\draw[<->] (x22) edge[out=270, in=270,<->, below] node {$r_1$} (x32)  ;
+\draw[<->] (x12) edge[out=270, in=270,<->, below] node {$r_2$} (x32.south east)  ;
+\end{groupplot}
+\end{tikzpicture}
+\caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. These two models make very different theoretical statements, but have the same implied correlation between the variables. Visualizing the raw data from these models can help identify structural problems for the model on the left.}
+\label{fig:implied}
+\end{center}
+\end{figure}
+
+
 
 ## R Markdown
 
