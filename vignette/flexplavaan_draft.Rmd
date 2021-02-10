@@ -3,7 +3,7 @@ title             : "Seeing the Impossible: Visualizing Latent Variable Models w
 shorttitle        : "Seeing the impossible"
     
 author: 
-  - name      : "Dustin Fife"
+  - name      : "Dustin A. Fife"
     affiliation   : "1"
     corresponding : yes    # Define only one corresponding author
     address       : "201 Mullica Hill Road
