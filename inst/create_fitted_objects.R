@@ -1,3 +1,47 @@
+# simulate data according to Figure 2 in paper
+set.seed(12121)
+f1 = rnorm(1000)
+a = .6; b = .7
+c1 = .3; c2 = .4
+x1 = a*f1 + rnorm(length(f1), 0, sqrt(1-a^2))
+x2 = b*f1 + rnorm(length(f1), 0, sqrt(1-b^2))
+res_err = sqrt(1-(c1^2 + c2^2 + 2*c1*c2*a*b))
+x3 = c1*x1 + c2*x2 + rnorm(length(f1), 0, res_err)
+d = data.frame(x1, x2, x3)
+
+  # specify incorrect model
+mod = "
+f =~x1 + x2 + x3
+"
+  # specify correct model
+mod2 = "
+f =~x1 + x2
+x3 ~~ x1
+x2 ~~x3
+"
+
+# mod_bad = sem(mod, data=d)
+# mod_good = sem(mod2, data=d)
+# residuals(mod_bad, type="cor")$cov 
+# residuals(mod_good, type="cor")$cov 
+# summary(mod_bad)
+# summary(mod_good)
+
+
+#visualize(mod_bad, mod_good)
+#implied_measurement(mod_good, mod_bad)
+#summary(mod_bad)
+#summary(mod_good)
+#residuals(mod_good, type="cor")$cov 
+just_identified = d
+ji_model_correct = mod_good
+ji_model_incorrect = mod_bad
+usethis::use_data(just_identified, overwrite=T)
+usethis::use_data(ji_model_correct, overwrite=T)
+usethis::use_data(ji_model_incorrect, overwrite=T)
+
+
+
 d = read.csv("data/health_depression.csv")
 require(tidyverse)
 flexplot(NeglectWork~1, data=d)

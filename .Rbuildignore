@@ -4,3 +4,4 @@ writing/
 ^.*\.csv$
 R/scratch/
 ^codecov\.yml$
+R/justidentified.R
