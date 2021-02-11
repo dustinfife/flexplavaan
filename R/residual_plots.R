@@ -97,8 +97,8 @@ residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
     geom_abline(slope=0, intercept=0) + 
     scale_x_discrete(limits = rev(levels(limits[["Correlation"]])))+
     theme_bw() +
-    annotate("text", x=max(limits$Correlation), y=min(limits$Residual), label="Model Overestimates", vjust=1, hjust=1) + 
-    annotate("text", x=max(limits$Correlation), y=max(limits$Residual), label="Model Underestimates", vjust=1, hjust=1) + 
+    annotate("text", x=max(res_d$Correlation), y=max(res_d$top), label="Model Overestimates", vjust="inward", hjust="inward") + 
+    annotate("text", x=max(res_d$Correlation), y=min(res_d$bottom), label="Model Underestimates", vjust="inward", hjust="inward") + 
     coord_flip()
   p
     

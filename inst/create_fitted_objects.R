@@ -30,6 +30,7 @@ x2 ~~x3
 
 #visualize(mod_bad, mod_good)
 #implied_measurement(mod_good, mod_bad)
+implied_measurement(mod_bad)
 #summary(mod_bad)
 #summary(mod_good)
 #residuals(mod_good, type="cor")$cov 
