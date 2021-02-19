@@ -999,7 +999,7 @@ Then, using the devtools package, the \texttt{flexplavaan} package can be instal
 \StringTok{"}
 
 \CommentTok{\# Fit the models {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
-\NormalTok{force\_fit =}\StringTok{ }\KeywordTok{lavaan}\NormalTok{(model, jedi\_jedi)}
+\NormalTok{force\_fit =}\StringTok{ }\KeywordTok{sem}\NormalTok{(model, jedi\_jedi)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1021,7 +1021,7 @@ Once the user has the fitted \texttt{lavaan} object, they may use visuals in \te
 \KeywordTok{implied\_measurement}\NormalTok{(force\_fit, }\DataTypeTok{latent=}\StringTok{"Force"}\NormalTok{)}
 
 \CommentTok{\# show the structural plot, with Force on the Y axis. }
-\KeywordTok{visualize}\NormalTok{(force\_fit, }\DataTypeTok{plot=}\StringTok{"model"}\NormalTok{, }\DataTypeTok{formula =}\NormalTok{ Force}\OperatorTok{\textasciitilde{}}\NormalTok{Jedi)}
+\KeywordTok{visualize}\NormalTok{(force\_fit, }\DataTypeTok{plot=}\StringTok{"latent"}\NormalTok{, }\DataTypeTok{formula =}\NormalTok{ Force}\OperatorTok{\textasciitilde{}}\NormalTok{Jedi)}
 \end{Highlighting}
 \end{Shaded}
 
