@@ -1,63 +1,357 @@
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
-\includegraphics[width=0.5\linewidth]{flexplavaan_draft_files/figure-latex/implied-1} \caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. These two models will yield very different estimates of a/b, but have the same implied correlation between $x_1$ and $x_2$.}\label{fig:implied}
+
+{\centering \includegraphics[width=0.5\linewidth]{flexplavaan_draft_files/figure-latex/anscombe-1}
+
+}
+
+\caption{A reproduction of Anscombe's quartet. Each plot has identical regression lines/correlations, even though the underlying data are vastly different.}\label{fig:anscombe}
 \end{figure*}
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
-\includegraphics[width=0.5\linewidth]{flexplavaan_draft_files/figure-latex/implied-1} \caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. These two models will yield very different estimates of a/b, but have the same implied correlation between $x_1$ and $x_2$.}\label{fig:implied}
+\begin{center}
+\begin{tikzpicture}[node distance=2cm, auto,>=latex, thick, scale = 0.5]
+\node[draw, circle] (f) {$F$};
+\node[draw, rectangle] (x2) [below of=f] {$X_2$};
+\node[draw, rectangle] (x3) [right of=x2, node distance = 1cm] {$X_3$};
+\node[draw, rectangle] (x1) [left of=x2, node distance = 1cm] {$X_1$};
+\draw[->, left] (f) to node {$a_1$} (x1);
+\draw[->] (f) to node {$b_1$} (x2);
+\draw[->, right] (f) to node {$c_1$} (x3);
+
+\node[draw, circle] (f2) [right of=f, node distance = 3cm] {$F$};
+\node[draw, rectangle] (x22) [below of=f2] {$X_2$};
+\node[draw, rectangle] (x32) [right of=x22, node distance = 1cm] {$X_3$};
+\node[draw, rectangle] (x12) [left of=x22, node distance = 1cm] {$X_1$};
+\draw[->, left] (f2) to node {$a_2$} (x12);
+\draw[->, right] (f2) to node {$b_2$} (x22);
+\draw[<->] (x22) edge[out=270, in=270,<->, below] node {$r_1$} (x32)  ;
+\draw[<->] (x12) edge[out=270, in=270,<->, below] node {$r_2$} (x32.south east)  ;
+\end{tikzpicture}
+\caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. These two models make very different theoretical statements, but have the same implied correlation between the variables. Visualizing the raw data from these models can help identify structural problems for the model on the left.}
+\label{fig:implied}
+\end{center}
 \end{figure*}
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
-\includegraphics[width=0.8\linewidth]{flexplavaan_draft_files/figure-latex/force-1} \caption{Simulated dataset with crossloadings on the 'history' indicator. This is the data-generating model.}\label{fig:force}
+\begin{center}
+\begin{tikzpicture}[node distance=2cm, midway, scale=1, every node/.style={scale=1}]
+
+\node[draw, circle] (force) {Force};
+\node[draw, circle, node distance = 2cm] (jedi) [right of=force] {Jedi};
+
+\node[draw, rectangle] (saber) [left of=force] {Saber};
+\node[draw, rectangle, node distance = 1cm] (fit) [above of=saber] {Fitness};
+\node[draw, rectangle, node distance = 1cm] (midi) [below of=saber] {Midichlorian};
+
+\node[draw, rectangle] (hist) [below of=jedi] {History};
+
+\node[draw, rectangle] (e2) [right of=jedi] {Exam II};
+\node[draw, rectangle, node distance = 1cm] (e1) [above of=e2] {Exam I};
+\node[draw, rectangle, node distance = 1cm] (e3) [below of=e2] {Exam III};
+
+\draw[->] (force) to node [fill=white]{\scriptsize $b$} (saber);
+\draw[->] (force) to node [fill=white]{\scriptsize $a$} (fit);
+\draw[->] (force) to node [fill=white]{\scriptsize $c$} (midi);
+
+\draw[->] (jedi) to node [fill=white]{\scriptsize $d$} (e1);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $e$} (e2);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $f$} (e3);
+
+\draw[->] (jedi) to node [fill=white]{\scriptsize $g_1$} (hist);
+\draw[->] (force) to node [fill=white]{\scriptsize $g_2$} (hist);
+
+\draw[->] (force) edge[out=25, in=180,->, below] node {\scriptsize $\beta$} (jedi);
+\end{tikzpicture}
+\caption{Simulated dataset of Jedi selection and training. This model features a crossloading on the history indicator, as well as a nonlinear relationship between force and Jedi. This is the data-generating model.}
+\label{fig:force}
+\end{center}
 \end{figure*}
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
-\includegraphics[width=0.8\linewidth]{flexplavaan_draft_files/figure-latex/force-1} \caption{Simulated dataset with crossloadings on the 'history' indicator. This is the data-generating model.}\label{fig:force}
+\begin{center}
+\begin{tikzpicture}[node distance=2cm, midway, scale=1, every node/.style={scale=1}]
+
+\node[draw, circle] (force) {Force};
+\node[draw, circle, node distance = 2cm] (jedi) [right of=force] {Jedi};
+
+\node[draw, rectangle] (saber) [left of=force] {Saber};
+\node[draw, rectangle, node distance = 1cm] (fit) [above of=saber] {Fitness};
+\node[draw, rectangle, node distance = 1cm] (midi) [below of=saber] {Midichlorian};
+
+\node[draw, rectangle] (hist) [below of=jedi] {History};
+
+\node[draw, rectangle] (e2) [right of=jedi] {Exam II};
+\node[draw, rectangle, node distance = 1cm] (e1) [above of=e2] {Exam I};
+\node[draw, rectangle, node distance = 1cm] (e3) [below of=e2] {Exam III};
+
+\draw[->] (force) to node [fill=white]{\scriptsize $b$} (saber);
+\draw[->] (force) to node [fill=white]{\scriptsize $a$} (fit);
+\draw[->] (force) to node [fill=white]{\scriptsize $c$} (midi);
+
+\draw[->] (jedi) to node [fill=white]{\scriptsize $d$} (e1);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $e$} (e2);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $f$} (e3);
+
+\draw[->] (force) to node [fill=white]{\scriptsize $g_2$} (hist);
+\draw[dotted, ->] (jedi) to node [fill=white]{\scriptsize $g_1$} (hist);
+
+\draw[->, line width = .7mm] (force) to node [above]{\scriptsize $\beta$} (jedi);
+\end{tikzpicture}
+\caption{Actual model fitted to the Jedi dataset. This posits a linear (rather than nonlinear) relationship between the latent variables Jedi and force (indicated by the thick black line labeled $\beta$) and fails to model the Jedi to history relationship (indicated by the dotted line labeled $g1$). }
+\label{fig:councilModel}
+\end{center}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.7\linewidth]{flexplavaan_draft_files/figure-latex/hopper-1}
+
+}
+
+\caption{An example of a "hopper plot," which graphs the discrepancy between the implied and observed correlation matrix. The dots represent observed residuals, while the lines represent the absolute value/negative absolute value.}\label{fig:hopper}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.7\linewidth]{flexplavaan_draft_files/figure-latex/trail1-1}
+
+}
+
+\caption{The LVM-implied fit between fitness score and light saber score, shown in red. The blue line represents the regression line between the two variables. The more closely the model-implied fit line resembles the regression line, the better the fit of the LVM.}\label{fig:trail1}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.9\linewidth]{flexplavaan_draft_files/figure-latex/trailMatrix-1}
+
+}
+
+\caption{Scatterplot matrix showing the model-implied fit (red) and loess lines (blue) between four simulated indicator variables. These four variables are the indicators for the force latent variable. The diagonals show the histograms of the ICRs.}\label{fig:trailMatrix}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.9\linewidth]{flexplavaan_draft_files/figure-latex/trailMatrix2-1}
+
+}
+
+\caption{Scatterplot matrix showing the model-implied fit (red) and regression-implied fit (blue) between four simulated indicator variables. These four variables are the indicators for the Jedi latent variable. The diagonals show the histograms.}\label{fig:trailMatrix2}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.9\linewidth]{flexplavaan_draft_files/figure-latex/ddp-1}
+
+}
+
+\caption{The upper triangle of this plot is the same as the plot shown in Figure \ref{fig:trailMatrix2}. However, the lower triangle adds the disturbance-dependence plots.}\label{fig:ddp}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.9\linewidth]{flexplavaan_draft_files/figure-latex/measurementplot-1}
+
+}
+
+\caption{This image, called a measurement plot, shows the relationship between the latent variables ($Y$ axis) and each standardized indicator. The blue lines are loess lines, while the red lines are the model-implied fits of the model.}\label{fig:measurementplot}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.5\linewidth]{flexplavaan_draft_files/figure-latex/beech-1}
+
+}
+
+\caption{Structural or "cross-hair" plot of the relationship between the latent variables force and Jedi. The crosshairs represent the prediction intervals for the factor scores of the latent variables.}\label{fig:beech}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2cm, midway, scale=1, every node/.style={scale=1}]
+
+\node[draw, circle] (force) {Force};
+\node[draw, circle, node distance = 2cm] (forcesq) [above right of=force] {$\text{Force}^2$};
+\node[draw, circle, node distance = 2cm] (jedi) [right of=force] {Jedi};
+
+\node[draw, rectangle] (saber) [left of=force] {Saber};
+\node[draw, rectangle, node distance = 1cm] (fit) [above of=saber] {Fitness};
+\node[draw, rectangle, node distance = 1cm] (midi) [below of=saber] {Midichlorian};
+
+
+\node[draw, rectangle] (sabersq) [above of=forcesq] {$\text{Saber}^2$};
+\node[draw, rectangle, node distance = 1.6cm] (fitsq) [left of=sabersq] {$\text{Fitness}^2$};
+\node[draw, rectangle, node distance = 2.1cm] (midisq) [right of=sabersq] {$\text{Midichlorian}^2`$};
+
+
+\node[draw, rectangle] (hist) [below of=jedi] {History};
+
+\node[draw, rectangle] (e2) [right of=jedi] {Exam II};
+\node[draw, rectangle, node distance = 1cm] (e1) [above of=e2] {Exam I};
+\node[draw, rectangle, node distance = 1cm] (e3) [below of=e2] {Exam III};
+
+\draw[->] (force) to node [fill=white]{\scriptsize $b$} (saber);
+\draw[->] (force) to node [fill=white]{\scriptsize $a$} (fit);
+\draw[->] (force) to node [fill=white]{\scriptsize $c$} (midi);
+
+\draw[->] (forcesq) to node [fill=white]{\scriptsize $b_2$} (sabersq);
+\draw[->] (forcesq) to node [fill=white]{\scriptsize $a_2$} (fitsq);
+\draw[->] (forcesq) to node [fill=white]{\scriptsize $c_2$} (midisq);
+
+\draw[->] (jedi) to node [fill=white]{\scriptsize $d$} (e1);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $e$} (e2);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $f$} (e3);
+
+\draw[->] (force) to node [fill=white]{\scriptsize $g_2$} (hist);
+\draw[->] (jedi) to node [fill=white]{\scriptsize $g_1$} (hist);
+
+\draw[->, line width = .7mm] (force) to node [below]{\scriptsize $\beta$} (jedi);
+
+\draw[<->] (force.north) edge[out=90, in=180, above] node {$r_1$} (forcesq.west)  ;
+\draw[->] (forcesq.south east) to node [above right]{$r_2$} (jedi.north)  ;
+
+
+\end{tikzpicture}
+\caption{Nonlinear model for the Jedi dataset. This model proposes a new latent variable ($\text{Force}^2$) that has saber, fitness, and midichlorian as squared indicators. This model also allows history to load onto both force and Jedi.}
+\label{fig:forceNonlin}
+\end{center}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.6\linewidth]{flexplavaan_draft_files/figure-latex/hopperModcomp-1}
+
+}
+
+\caption{A hopper plot, but this time two models are being compared. The red line shows the residuals for the original model, while the blue lines show the residuals for the nonlinear model.}\label{fig:hopperModcomp}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.9\linewidth]{flexplavaan_draft_files/figure-latex/trailnl-1}
+
+}
+
+\caption{Trail plots and DDPs for the two models. The red shows the original model, while the blue shows the fit for the nonlinear model. Trail/DDPs show very little difference between the two models, indicating the two models seem to have similar implied variance/covariance matrices.}\label{fig:trailnl}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.7\linewidth]{flexplavaan_draft_files/figure-latex/measnl-1}
+
+}
+
+\caption{Measurement plots for the force latent variable, with both the nonlinear, red, model and original, blue, model.}\label{fig:measnl}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.6\linewidth]{flexplavaan_draft_files/figure-latex/structureNonlin-1}
+
+}
+
+\caption{Relationship between the two latent variables for the original model (left) and the nonlinear model (right). The red line is a 'ghost line,' which simply repeats the line from the left plot to the right plot. This line makes it easier to compare the fits of the models across panels.}\label{fig:structureNonlin}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.9\linewidth]{flexplavaan_draft_files/figure-latex/equivalentmodels-1}
+
+}
+
+\caption{Measurement plots of the user-specified model in Figure 2. While fit statistics will not reveal any problems, the measurement plots do. The top plot shows that the model-implied fit consistently underestimates the relationship between the observed and latent variable. The bottom plot compares the true model to the proposed model and reveals the two models say very different things about the relationships between the observed and latent variable.}\label{fig:equivalentmodels}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.8\linewidth]{toolboxDiagramPrimary}
+
+}
+
+\caption{Hypothesized Model of the Effect of Social Distress on Emotional Well-Being with the NIH Toolbox Norming Data Set. In this model, Perceived Rejection and Perceived Hostility are treated as causal indicators of the Social Distress latent factor. Estimated parameters have red labels.}\label{fig:toolbox1}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.9\linewidth]{toolboxDiagramAlternative}
+
+}
+
+\caption{Alternative Model of the Effect of Social Distress on Emotional Well-Being with the NIH Toolbox Norming Data Set. In this model, Perceived Rejection and Perceived Hostility are treated as reflective indicators of the Social Distress latent factor rather than causal indicators. Estimated parameters have red labels.}\label{fig:toolbox2}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.7\linewidth]{flexplavaan_draft_files/figure-latex/hopperreal-1}
+
+}
+
+\caption{Hopper plot of the hypothesized and alternative models.}\label{fig:hopperreal}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.9\linewidth]{flexplavaan_draft_files/figure-latex/trailreal-1}
+
+}
+
+\caption{Trail/DDPs of the hypothesized model for the indicators of the social distress latent factor.}\label{fig:trailreal}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=0.9\linewidth]{flexplavaan_draft_files/figure-latex/trailreal2-1}
+
+}
+
+\caption{Trail/DDPs of the hypothesized model for the indicators of the social distress latent factor.}\label{fig:trailreal2}
 \end{figure*}
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
 \centering
-\includegraphics{flexplavaan_draft_files/figure-latex/scatter-1.pdf}
-\caption{\label{fig:scatter}Example figure that shows how standard statistical models are visualized. Dots represent scores on observed variables, while other symbols (e.g., regression line, large dots) represent the fit of the model.}
+\includegraphics{flexplavaan_draft_files/figure-latex/tralboth-1.pdf}
+\caption{\label{fig:tralboth}Trail/DDPs for both the hypothesized and altnerative model for the distress latent factor.}
 \end{figure*}
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
-\centering
-\includegraphics{flexplavaan_draft_files/figure-latex/trace1-1.pdf}
-\caption{\label{fig:trace1}The LVM-implied fit between X1 and X2, shown in red. The blue line represents the regression line between the two variables. The more closely the model-implied fit line resembles the regresson line, the better the fit of the LVM.}
+
+{\centering \includegraphics[width=0.8\linewidth]{flexplavaan_draft_files/figure-latex/measurementrealdistress-1}
+
+}
+
+\caption{Measurement plot for the hypothesized model, showing the relationship between several indicators and the distress latent factor.}\label{fig:measurementrealdistress}
 \end{figure*}
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
-\centering
-\includegraphics{flexplavaan_draft_files/figure-latex/traceMatrix-1.pdf}
-\caption{\label{fig:traceMatrix}Scatterplot matrix showing the model-implied fit (red) and regression-implied fit (blue) between three simulated indicator variables. The diagonals show the histograms.}
-\end{figure*}
-\begin{figure*}[hbt]
-\ifnextchar[{\eatarg}{}
 
-\includegraphics[width=10.26in]{../plots/crossloading} \caption{This plot shows structural misfit; x3 loads onto two factors, but only one is modeled.}\label{fig:crossloading}
-\end{figure*}
-\begin{figure*}[hbt]
-\ifnextchar[{\eatarg}{}
+{\centering \includegraphics[width=0.6\linewidth]{flexplavaan_draft_files/figure-latex/influence-1}
 
-\includegraphics[width=10.26in]{../plots/poorfit} \caption{This plot shows a model that, by standard fit indices, fits quite well. The visuals, on the other hand, illustrate that the model isn't capturing}\label{fig:poorfit}
-\end{figure*}
-\begin{figure*}[hbt]
-\ifnextchar[{\eatarg}{}
+}
 
-\includegraphics[width=10.26in]{../plots/crossloading_ddp} \caption{This plot shows a disturbance-dependence plot for the same data visualized in Figure \ref{fig:crossloading} in the lower triangle.}\label{fig:ddp}
-\end{figure*}
-\begin{figure*}[hbt]
-\ifnextchar[{\eatarg}{}
-
-\centering
-\includegraphics{flexplavaan_draft_files/figure-latex/beech-1.pdf}
-\caption{\label{fig:beech}Structural or ``Beech Ball'' plot of the relationship between the latent variables Force and Jedi. The ellipses represent the prediction intervals for the factor scores of the latent variables.}
+\caption{Influence plot for the hypothesized model.}\label{fig:influence}
 \end{figure*}

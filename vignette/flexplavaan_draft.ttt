@@ -1,48 +1,44 @@
 \begin{table*}[hbt]
 \ifnextchar[{\eatarg}{}
+[tbp]
 
+\begin{center}
+\begin{threeparttable}
 
-\caption{\label{tab:wide}A Table of Simulated Data Showing the Data in Wide Format}
-\centering
-\begin{tabular}[t]{r|r|r}
-\hline
-x1 & x2 & x3\\
-\hline
-7 & 10 & 11\\
-\hline
-11 & 10 & 11\\
-\hline
-10 & 13 & 10\\
-\hline
+\caption{\label{tab:tabresults}Global Fit Indices for the Original and Nonlinear Model for the Jedi Dataset.}
+
+\begin{tabular}{lcccccccc}
+\toprule
+ & $\chi^2$ & $df$ & $p$ & CFI & TLI & BIC & RMSEA & SRMR\\
+\midrule
+Original & 19.4 & 13 & 0.110 & 0.996 & 0.994 & 42,616.2 & 0.026 & 0.025\\
+Nonlinear & 26.3 & 31 & 0.705 & 1.000 & 1.004 & 50,388.6 & 0.000 & 0.022\\
+\bottomrule
 \end{tabular}
+
+\end{threeparttable}
+\end{center}
+
 \end{table*}
 \begin{table*}[hbt]
 \ifnextchar[{\eatarg}{}
+[tbp]
 
+\begin{center}
+\begin{threeparttable}
 
-\caption{\label{tab:long}This Table Contains the Same Data in Table \ref{tab:wide}, but standardized and in ``Long'' Rather Than ``Wide'' Format.}
-\centering
-\begin{tabular}[t]{l|r}
-\hline
-Measure & Observed\\
-\hline
-x1 & -1.1208971\\
-\hline
-x1 & 0.8006408\\
-\hline
-x1 & 0.3202563\\
-\hline
-x2 & -0.5773503\\
-\hline
-x2 & -0.5773503\\
-\hline
-x2 & 1.1547005\\
-\hline
-x3 & 0.5773503\\
-\hline
-x3 & 0.5773503\\
-\hline
-x3 & -1.1547005\\
-\hline
+\caption{\label{tab:fitapplied}Global Fit Indices for the Alternative and Hypothesized Model for the NIH Toolbox Dataset.}
+
+\begin{tabular}{lcccccccc}
+\toprule
+Model & $\chi^2$ & $df$ & $p$ & RMSEA & RMSEA$_{l}$ & RMSEA$_{u}$ & TLI & SRMR\\
+\midrule
+Alternative & 148.5 & 7 & 0.000 & 0.120 & 0.110 & 0.140 & 0.910 & 0.040\\
+Hypothesized & 20.2 & 6 & 0.000 & 0.040 & 0.020 & 0.060 & 0.990 & 0.010\\
+\bottomrule
 \end{tabular}
+
+\end{threeparttable}
+\end{center}
+
 \end{table*}
