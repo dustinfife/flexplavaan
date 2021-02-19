@@ -5,3 +5,4 @@ writing/
 R/scratch/
 ^codecov\.yml$
 R/justidentified.R
+^README\.Rmd$
