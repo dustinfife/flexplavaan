@@ -643,7 +643,7 @@ Jedi ~ Force
 "
 
 # Fit the models ----------------------------------------------------------
-force_fit = lavaan(model, jedi_jedi)
+force_fit = sem(model, jedi_jedi)
 ```
 
 Once the user has the fitted `lavaan` object, they may use visuals in `flexplavaan`, as in the following code:
@@ -663,7 +663,7 @@ visualize(force_fit, subset=c("fitness", "midichlorian", "exam_one"))
 implied_measurement(force_fit, latent="Force")
 
 # show the structural plot, with Force on the Y axis. 
-visualize(force_fit, plot="model", formula = Force~Jedi)
+visualize(force_fit, plot="latent", formula = Force~Jedi)
 ```
 
 The source code for `flexplavaan` is available on github at github.com/dustinfife/flexplavaan, as well as the source code that generated this document. 
