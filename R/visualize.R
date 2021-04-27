@@ -68,7 +68,7 @@ visualize.lavaan = function(object, object2=NULL,
             upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="trace", label_names=nms, ...)),
             diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram", label_names=nms, ...)))
     if (is.null(object2)) {
-      p = p + labs(title="Trace/DDP Plots", subtitle="Red=Implied, Blue=Observed")
+      p = p + labs(title="Trail/DDP Plots", subtitle="Red=Implied, Blue=Observed")
     }  
     return(p)
   } 
