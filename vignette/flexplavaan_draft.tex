@@ -5,8 +5,8 @@
 \documentclass[
   english,
   man]{apa6}
-\usepackage{amsmath,amssymb}
 \usepackage{lmodern}
+\usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
@@ -38,7 +38,7 @@
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
   pdftitle={Seeing the Impossible: Visualizing Latent Variable Models with flexplavaan},
-  pdfauthor={Dustin A. Fife1, Steven Brunwasser1, \& Edgar C. Merkle2},
+  pdfauthor={Dustin A. Fife1, Steven M. Brunwasser1, \& Edgar C. Merkle2},
   pdflang={en-EN},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
@@ -124,9 +124,9 @@
 
 % Create new environments so endfloat can handle them
 % \newenvironment{ltable}
-%   {\begin{landscape}\begin{center}\begin{threeparttable}}
-%   {\end{threeparttable}\end{center}\end{landscape}}
-\newenvironment{lltable}{\begin{landscape}\begin{center}\begin{ThreePartTable}}{\end{ThreePartTable}\end{center}\end{landscape}}
+%   {\begin{landscape}\centering\begin{threeparttable}}
+%   {\end{threeparttable}\end{landscape}}
+\newenvironment{lltable}{\begin{landscape}\centering\begin{ThreePartTable}}{\end{ThreePartTable}\end{landscape}}
 
 % Enables adjusting longtable caption width to table width
 % Solution found at http://golatex.de/longtable-mit-caption-so-breit-wie-die-tabelle-t15767.html
@@ -160,39 +160,27 @@
   \usepackage{polyglossia}
   \setmainlanguage[]{english}
 \else
-  \usepackage[main=english]{babel}
-% get rid of language-specific shorthands (see #6817):
-\let\LanguageShortHands\languageshorthands
-\def\languageshorthands#1{}
-\fi
-\ifluatex
-  \usepackage{selnolig}  % disable illegal ligatures
+  \usepackage[shorthands=off,main=english]{babel}
 \fi
 \newlength{\cslhangindent}
 \setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
-  % set entry spacing
-  \ifnum #2 > 0
-  \setlength{\parskip}{#2\baselineskip}
-  \fi
- }%
- {}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\newenvironment{cslreferences}%
+  {\setlength{\parindent}{0pt}%
+  \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces}%
+  {\par}
 
 \title{Seeing the Impossible: Visualizing Latent Variable Models with \texttt{flexplavaan}}
-\author{Dustin A. Fife\textsuperscript{1}, Steven Brunwasser\textsuperscript{1}, \& Edgar C. Merkle\textsuperscript{2}}
+\author{Dustin A. Fife\textsuperscript{1}, Steven M. Brunwasser\textsuperscript{1}, \& Edgar C. Merkle\textsuperscript{2}}
 \date{}
 
+
+\authornote{
+
+Some of the ideas and datasets contained within this article have been disseminated elsewhere. The basics of the flexplavaan package was presented at a national conference and the first author has utilized some of the datasets in pedagogical videos found on his YouTube channel. Also, the paper in its entirety has been published on the PsyArxiv and been publicized on Twitter.
+
+Correspondence concerning this article should be addressed to Dustin A. Fife, 201 Mullica Hill Road Glassboro, NJ 08028. E-mail: \href{mailto:fife.dustin@gmail.com}{\nolinkurl{fife.dustin@gmail.com}}
+
+}
 
 \affiliation{\vspace{0.5cm}\textsuperscript{1} Rowan University\\\textsuperscript{2} University of Missouri}
 
@@ -208,9 +196,9 @@ Latent variable models (LVMs) are incredibly flexible tools that allow users to 
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-It is currently an unprecedented time in the social sciences; multiple scientific disciplines are reeling from a ``replication crisis'' (Camerer et al., 2018; Ioannidis, 2005; Pashler \& Wagenmakers, 2012), new norms for credibility are becoming more prevalent (Nelson, Simmons, \& Simonsohn, 2018; Nosek, Ebersole, DeHaven, \& Mellor, 2018), and the push for open science is accelerating at a rapid pace (Nosek, Ebersole, DeHaven, \& Mellor, 2018). Amidst this push for open science practices, some have called for greater use of visualization techniques (Fife, 2020; Fife, Longo, Correll, \& Tremoulet, 2021; Fife \& Rodgers, in press; Tay, Parrigon, Huang, \& LeBreton, 2016). As noted by Tay, et al.~(2016), ``{[}visualizations{]}\ldots can strengthen the quality of research by further increasing the transparency of data\ldots{}'' (p.~694). In other words, one of the best, and most efficient ways of making data analysis open and transparent is to display each and every data point through visualization techniques. This is particularly important in research applications where participant-level data cannot be shared.
+It is currently an unprecedented time in the social sciences; multiple scientific disciplines are reeling from a ``replication crisis'' (Camerer et al., 2018; Ioannidis, 2005; Pashler \& Wagenmakers, 2012), new norms for credibility are becoming more prevalent (Nelson, Simmons, \& Simonsohn, 2018; Nosek, Ebersole, DeHaven, \& Mellor, 2018), and the push for open science is accelerating at a rapid pace (Nosek, Ebersole, DeHaven, \& Mellor, 2018). Amidst this push for open science practices, some have called for greater use of visualization techniques (Fife, 2020b; Fife, Longo, Correll, \& Tremoulet, 2021; Fife \& Rodgers, in press; Tay, Parrigon, Huang, \& LeBreton, 2016). As noted by Tay, et al.~(2016), ``{[}visualizations{]}\ldots can strengthen the quality of research by further increasing the transparency of data\ldots{}'' (p.~694). In other words, one of the best, and most efficient ways of making data analysis open and transparent is to display each and every data point through visualization techniques. This is particularly important in research applications where participant-level data cannot be shared.
 
-Not only do visualizations adhere to the principles of openness and transparency, but they offer several additional advantages; they vastly improve encoding of information (Correll, 2015), they highlight model misfit (Healy \& Moody, 2014), and they are an essential component in evaluating model assumptions (Levine, 2018; Tay, Parrigon, Huang, \& LeBreton, 2016). As such, we (as well as others, e.g., Fife, 2020; Fife, Longo, Correll, \& Tremoulet, 2021; Wilkinson \& Task Force on Statistical Inference, 1999) recommend a graphic accompany every statistical model.
+Not only do visualizations adhere to the principles of openness and transparency, but they offer several additional advantages; they vastly improve encoding of information (Correll, 2015), they highlight model misfit (Healy \& Moody, 2014), and they are an essential component in evaluating model assumptions (Levine, 2018; Tay et al., 2016). As such, we (as well as others, e.g., Fife, 2020b; Fife et al., 2021; Wilkinson \& Task Force on Statistical Inference, 1999) recommend a graphic accompany every statistical model.
 
 Unfortunately, this suggestion is easier said than done. While visualizing some statistical models is trivial (e.g., regressions, \(t\)-tests, ANOVAs, multiple regression), visualizing others is not. One particularly troublesome class of models to visualize is latent variable models (LVMs). While researchers routinely visualize LVMs with conceptual models (e.g., via path diagrams), visualizing the fits of statistical models is not so easy. The former visualizations are common, while the latter are not (Hallgren, McCabe, King, \& Atkins, 2019). The reason statistical visualizations of LVM are not intuitive is because they rely on unobserved variables (Bollen, 1989). If the variables of interest are unobserved, how can we possibly visualize them?
 
@@ -223,7 +211,7 @@ The validity of LVM-based inferences assume structural models closely approximat
 
 Yet global fit indices themselves represent an obstacle to intelligent model evaluation. Models can yield desirable values (e.g., a non-significant \(\chi^2\) test), even when specific aspects of the model are substantially misspecified (Goodboy \& Kline, 2017; Hayduk, 2014; Tomarken \& Waller, 2003). In other words, a nonsensical model can still yield estimates that lead one to believe in their own statistical models. Conversely, fit indices might penalize even well-specified models for fit-irrelevant characteristics of the model (Browne, MacCallum, Kim, Andersen, \& Glaser, 2002). Moreover, in our experience, applied users often lack an intuitive understanding of what global fit statistics tell them about their models. Does a Tucker-Lewis Index (TLI) value of 0.95 mean we have established a strong theoretical foundation for a model? If the root mean square error of approximation (RMSEA) value dips below 0.05, should we assumed that the model estimates closely approximate real-world relationships? This lack of understanding is evident when applied users express confusion about why global fit indices sometimes provide seemingly conflicting assessments of model fit (Lai \& Green, 2016). While global fit measures may be useful in comparing models and/or identifying problematic model features, users instead rely on conventional cutoffs (e.g, Hu \& Bentler, 1998) to determine whether a model is ``adequate,'' a practice that has received resounding criticism (Barrett, 2007; Chen, Curran, Bollen, Kirby, \& Paxton, 2008; Hayduk, 2014; McIntosh, 2007).
 
-A number of scholars have emphasized the importance of supplementing LVM global fit indices with local fit assessment, investigating the tenability of all specific model implications individually (Bollen, 2019; Goodboy \& Kline, 2017; Hayduk, 2014; Thoemmes, Rosseel, \& Textor, 2018; Tomarken \& Waller, 2003; Tomarken \& Waller, 2005). Local fit evaluation procedures such as inspection of residual correlation matrices (e.g., Bollen, 1989), confirmatory tetrad analysis (Hipp \& Bollen, 2003), and equation-based overidentification tests (Bollen, 2019) can help identify individual model specifications that are inconsistent with the data and may give clues about effective remedial strategies (Bollen, 1989; Goodboy \& Kline, 2017; Thoemmes, Rosseel, \& Textor, 2018; Tomarken \& Waller, 2003; Tomarken \& Waller, 2005).
+A number of scholars have emphasized the importance of supplementing LVM global fit indices with local fit assessment, investigating the tenability of all specific model implications individually (Bollen, 2019; Goodboy \& Kline, 2017; Hayduk, 2014; Thoemmes, Rosseel, \& Textor, 2018; Tomarken \& Waller, 2003, 2005). Local fit evaluation procedures such as inspection of residual correlation matrices (e.g., Bollen, 1989), confirmatory tetrad analysis (Hipp \& Bollen, 2003), and equation-based overidentification tests (Bollen, 2019) can help identify individual model specifications that are inconsistent with the data and may give clues about effective remedial strategies (Bollen, 1989; Goodboy \& Kline, 2017; Thoemmes et al., 2018; Tomarken \& Waller, 2003, 2005).
 
 While local fit indices are an important part of model evaluation (Kline, 2004), they too have limitations. First, although local fit evaluation can be helpful in identifying which implied bivariate associations are most discrepant with the data, they do not necessarily pinpoint the source of the problems (Hayduk, 2018). For instance, an error in the specification of the measurement of an exogenous latent variable could lead to a large residual correlation between measured indicators for the exogenous and endogenous latent variables even if the structural portion of the model is properly specified.\footnote{Notably, the model-implied instrumental variable (MIIV) approach can contain problems caused by misfit in one aspect of a model and prevent ill effects from spreading (Bollen, 2019).} Second, it is unclear when a non-zero residual correlation should be interpreted as meaningful. Imposing a cutoff value is one approach (Goodboy \& Kline, 2017), though the magnitude of discrepancies is an imperfect metric for determining its practical import (Hayduk, 2014). Standardized residual correlations allow for significance tests for each element of the residual correlation matrix, though residual correlation matrices often include many elements, requiring an adjustment to the p-value to avoid an inflated Type I error rate (Bollen \& Arminger, 1991). Additionally, residual correlations may not alert modelers to strong nonlinear associations among observed variables (Flora, LaBrish, \& Chalmers, 2012). Finally, local fit indices often produce an overwhelming amount of statistical information that must be filtered. This can be a daunting process, particularly for those not accustomed to LVMs.
 
@@ -238,16 +226,16 @@ Another problem shared by both global and local fit indices is that they are a h
 \caption{A reproduction of Anscombe's quartet. Each plot has identical regression lines/correlations, even though the underlying data are vastly different.}\label{fig:anscombe}
 \end{figure}
 
-The best defense against this compression is to supplement statistics with evaluation strategies that evaluate \emph{un}compressed data. Perhaps the best way to evaluate uncompressed data is through visualizations, particularly visuals that display raw data (Fife, 2020).
+The best defense against this compression is to supplement statistics with evaluation strategies that evaluate \emph{un}compressed data. Perhaps the best way to evaluate uncompressed data is through visualizations, particularly visuals that display raw data (Fife, 2020b).
 
 \hypertarget{previous-approaches-to-visualizing-lvms}{%
 \section{Previous Approaches to Visualizing LVMs}\label{previous-approaches-to-visualizing-lvms}}
 
-There is sparse literature describing visual strategies for evaluating the adequacy of LVMs, at least when compared to the extensive literature discussing the merits of global fit tests and indices (e.g., Barrett, 2007; Chen, Curran, Bollen, Kirby, \& Paxton, 2008; Hayduk, 2014; Hu \& Bentler, 1998; McIntosh, 2007; Shi \& Maydeu-Olivares, 2020; Smith \& McMillan, 2001; James H. Steiger, 2007). Additionally, while reporting of numeric fit indices is ubiquitous in LVM applications (Jackson, Gillaspy, \& Purc-Stephenson, 2009), plots of data underlying LVMs are rare (Hallgren, McCabe, King, \& Atkins, 2019). There are, however, some strategies for using visuals to evaluate the tenability of model assumptions, diagnose causal misspecifications, and select the best model from a group of competitors.
+There is sparse literature describing visual strategies for evaluating the adequacy of LVMs, at least when compared to the extensive literature discussing the merits of global fit tests and indices (e.g., Barrett, 2007; Chen et al., 2008; Hayduk, 2014; Hu \& Bentler, 1998; McIntosh, 2007; Shi \& Maydeu-Olivares, 2020; Smith \& McMillan, 2001; Steiger, 2007). Additionally, while reporting of numeric fit indices is ubiquitous in LVM applications (Jackson et al., 2009), plots of data underlying LVMs are rare (Hallgren et al., 2019). There are, however, some strategies for using visuals to evaluate the tenability of model assumptions, diagnose causal misspecifications, and select the best model from a group of competitors.
 
-A common visual approach for identifying model-data discrepancies is to plot the distribution of the residuals of the covariances/correlation matrix {[}e.g., using stem-and-leaf plots or histograms; Bollen (1989){]}. This can aid in identifying specific components of the data that the model struggles to capture (Bollen, 1989; Bollen \& Arminger, 1991), which might not be detected with global fit indices (Goodboy \& Kline, 2017; Tomarken \& Waller, 2003; Tomarken \& Waller, 2005). Unfortunately, these plots suffer from two major problems. First, the residuals in this case are themselves compressed estimates. As such, we might have a model that is poorly represented by linear correlations (e.g., if the data contain nonlinear relationships), but that problem would never be uncovered by studying residual plots.
+A common visual approach for identifying model-data discrepancies is to plot the distribution of the residuals of the covariances/correlation matrix (e.g., using stem-and-leaf plots or histograms; Bollen, 1989). This can aid in identifying specific components of the data that the model struggles to capture (Bollen, 1989; Bollen \& Arminger, 1991), which might not be detected with global fit indices (Goodboy \& Kline, 2017; Tomarken \& Waller, 2003, 2005). Unfortunately, these plots suffer from two major problems. First, the residuals in this case are themselves compressed estimates. As such, we might have a model that is poorly represented by linear correlations (e.g., if the data contain nonlinear relationships), but that problem would never be uncovered by studying residual plots.
 
-A second problem with plots of correlation/covariance residuals is they are extremely limited in the amounts of misspecification they might reveal. For example, suppose we posit a latent variable with three indicators: \(X_1\), \(X_2\), and \(X_3\) (see left image in Figure \ref{fig:implied}). However, the data-generating model actually has \(X_3\) associated with \(X_2/X_1\) (right diagram in Figure \ref{fig:implied}).\footnote{This problem is similar, but not identical to equivalent models (S. Lee \& Hershberger, 1990; MacCallum, Wegener, Uchino, \& Fabrigar, 1993). When two models are equivalent, they have identical variance/covariance matrices \emph{and} identical degrees of freedom (DF). In this case, the two models do not have identical DF. However, the visuals we present do offer an intuitive approach for evaluating equivalent models. Two equivalent models with different latent models will have different visuals. Additionally, these visuals will allow one to detect problems with equivalent models, which cannot be detected with traditional model-evaluation statistics.} These two models will have the same implied variance/covariance matrix.\footnote{The model on the left is the user-specified model. The model on the right is the data-generating model. In the left model, the standardized relationship between \(X_1/X_3\) is \(a_1\times c_1\), while in the right model it is \(r_2\). Likewise, the \(X_1/X_2\) relationship is \(a_1\times b_1\) in the left model, while it is \(r_1\) in the right model. The LVM machinery will attempt to make \(a_1\times c_1 = r(X_1, X_3)\), which is the same as setting \(a_1\times c_1 = r_2\) (and it will set \(a_1\times b_1\) to \(r_1\)). In other words, the implied variance/covariance matrix will not reveal any problems, despite having a misspecified model.} In other words, a stem and leaf plot will not signal any problems, despite problems existing.
+A second problem with plots of correlation/covariance residuals is they are extremely limited in the amounts of misspecification they might reveal. For example, suppose we posit a latent variable with three indicators: \(X_1\), \(X_2\), and \(X_3\) (see left image in Figure \ref{fig:implied}). However, the data-generating model actually has \(X_3\) associated with \(X_2/X_1\) (right diagram in Figure \ref{fig:implied}).\footnote{This problem is similar, but not identical to equivalent models (Lee \& Hershberger, 1990; MacCallum, Wegener, Uchino, \& Fabrigar, 1993). When two models are equivalent, they have identical variance/covariance matrices \emph{and} identical degrees of freedom (DF). In this case, the two models do not have identical DF. However, the visuals we present do offer an intuitive approach for evaluating equivalent models. Two equivalent models with different latent models will have different visuals. Additionally, these visuals will allow one to detect problems with equivalent models, which cannot be detected with traditional model-evaluation statistics.} These two models will have the same implied variance/covariance matrix.\footnote{The model on the left is the user-specified model. The model on the right is the data-generating model. In the left model, the standardized relationship between \(X_1/X_3\) is \(a_1\times c_1\), while in the right model it is \(r_2\). Likewise, the \(X_1/X_2\) relationship is \(a_1\times b_1\) in the left model, while it is \(r_1\) in the right model. The LVM machinery will attempt to make \(a_1\times c_1 = r(X_1, X_3)\), which is the same as setting \(a_1\times c_1 = r_2\) (and it will set \(a_1\times b_1\) to \(r_1\)). In other words, the implied variance/covariance matrix will not reveal any problems, despite having a misspecified model.} In other words, a stem and leaf plot will not signal any problems, despite problems existing.
 
 \begin{figure}
 \begin{center}
@@ -274,15 +262,15 @@ A second problem with plots of correlation/covariance residuals is they are extr
 \end{center}
 \end{figure}
 
-Rather than visualizing aggregates in LVMs, the raw data themselves ought to be visualized. Bollen and Arminger (1991) developed methods for calculating raw and standardized individual case residuals (ICRs), which represent the difference between observed and model-estimated case values for outcome variables. These ICRs are then plotted to help locate outlying and influential observations. Pek and MacCallum (2011) demonstrated how diagnostic procedures commonly used in generalized linear models (e.g., Mahalanobis distance, generalized Cook's D, and DFBETAs) can be applied to LVMs to detect influential cases with index plots. Flora, LaBrish, and Chalmers (2012) applied these diagnostic procedures and others specifically to factor analysis models, and Yuan and Hayashi (2010) used visualizations of Mahalanobis distance metrics to identify high-leverage cases and outliers. Open-source R packages, including \texttt{faoutlier} (Chalmers \& Flora, 2015) and \texttt{influence.SEM} (Gianmarco Altoe', 2018), have used these visualization procedures to show case influence on model fit (e.g., likelihood differences) and parameter estimations (e.g., generalized Cook's D). T. Lee and MacCallum (2015) also demonstrated how visualization can be used to identify specific parameter estimates with strong influence on global model fit.
+Rather than visualizing aggregates in LVMs, the raw data themselves ought to be visualized. Bollen and Arminger (1991) developed methods for calculating raw and standardized individual case residuals (ICRs), which represent the difference between observed and model-estimated case values for outcome variables. These ICRs are then plotted to help locate outlying and influential observations. Pek and MacCallum (2011) demonstrated how diagnostic procedures commonly used in generalized linear models (e.g., Mahalanobis distance, generalized Cook's D, and DFBETAs) can be applied to LVMs to detect influential cases with index plots. Flora et al. (2012) applied these diagnostic procedures and others specifically to factor analysis models, and Yuan and Hayashi (2010) used visualizations of Mahalanobis distance metrics to identify high-leverage cases and outliers. Open-source R packages, including \texttt{faoutlier} (Chalmers \& Flora, 2015) and \texttt{influence.SEM} (Pastore \& Altoe', 2018), have used these visualization procedures to show case influence on model fit (e.g., likelihood differences) and parameter estimations (e.g., generalized Cook's D). Lee and MacCallum (2015) also demonstrated how visualization can be used to identify specific parameter estimates with strong influence on global model fit.
 
 Aside from outlier detection, other visualization approaches have been proposed to detect structural problems. Asparouhov and Muthén (2014), for example, proposed a method for extending the diagnosticity of ICRs to detect specific structural misspecifications. They demonstrated that plots of estimated factor scores against observed predictor variables can be used to detect unspecified nonlinear effects of the predictor on the latent outcome. Furthermore, they used ICR scatterplots to detect violations of local independence in a congeneric latent factor model. Finally, they demonstrated in a latent factor model how plotting predicted values for a reflective indicator against the observed indicator values could aid in uncovering unmodeled heterogeneity that could be better captured using a mixture model.
 
 Others have introduced visual techniques for growth curve models. Raykov and Penev (2014), for example, compared linear and quadratic growth curve models for the same data. They showed that a scatterplot of the ICRs for the quadratic model vs.~ICRs for a linear model can help identify which model best minimizes model-data discrepancies. In the context of growth mixture modeling, Wang, Hendricks Brown, and Bandeen-Roche (2005) showed how visualization of empirical Bayes residuals (e.g., Q-Q and trajectory plots) can aid in determining the appropriate number of classes, an adequate shape of within-class growth trajectories, and missing confounders.
 
-In short, ICRs have been used to identify high influence/leverage data points, nonlinear effects, heterogeneity, and to compare models. While these are certainly a step in the right direction, existing approaches suffer from a few weaknesses. First, ICRs rely on factor score estimates. Individual latent factor scores cannot be uniquely determined (Grice, 2001; Rigdon, Becker, \& Sarstedt, 2019; James H. Steiger, 1996). In cases where factors are highly indeterminate -- e.g., factors with few indicators only weakly predicted by the latent factor -- different factor score estimation methods can yield highly discrepant values, potentially even estimates that are negatively correlated (Grice, 2001). Also, ICRs are computed under the assumption the model is correct. When the model is misspecified, it is unclear how these visual diagnostics will behave. It is possible, of course, that for misspecified models, ICRs will reveal that misfit. (In fact, we show later that, at least under some circumstances, this is indeed the case). A final limitation of some existing approaches is that many of their visuals were achieved using coding without a dedicated package (e.g., Raykov \& Penev, 2014).
+In short, ICRs have been used to identify high influence/leverage data points, nonlinear effects, heterogeneity, and to compare models. While these are certainly a step in the right direction, existing approaches suffer from a few weaknesses. First, ICRs rely on factor score estimates. Individual latent factor scores cannot be uniquely determined (Grice, 2001; Rigdon, Becker, \& Sarstedt, 2019; Steiger, 1996). In cases where factors are highly indeterminate -- e.g., factors with few indicators only weakly predicted by the latent factor -- different factor score estimation methods can yield highly discrepant values, potentially even estimates that are negatively correlated (Grice, 2001). Also, ICRs are computed under the assumption the model is correct. When the model is misspecified, it is unclear how these visual diagnostics will behave. It is possible, of course, that for misspecified models, ICRs will reveal that misfit. (In fact, we show later that, at least under some circumstances, this is indeed the case). A final limitation of some existing approaches is that many of their visuals were achieved using coding without a dedicated package (e.g., Raykov \& Penev, 2014).
 
-In this paper, we introduce \texttt{flexplavaan}, which is an amalgamation of the model-plotting capabilities of \texttt{flexplot} (Fife, in press) and the latent variable modeling capabilities of \texttt{lavaan} (Rosseel, 2012). Before we introduce \texttt{flexplavaan} and its core functions, however, we explain the types of graphics used and the rationale behind them.
+In this paper, we introduce \texttt{flexplavaan}, which is an amalgamation of the model-plotting capabilities of \texttt{flexplot} (Fife, 2020a) and the latent variable modeling capabilities of \texttt{lavaan} (Rosseel, 2012). Before we introduce \texttt{flexplavaan} and its core functions, however, we explain the types of graphics used and the rationale behind them.
 
 \hypertarget{our-approach-linear-lvms}{%
 \section{Our Approach (Linear LVMs)}\label{our-approach-linear-lvms}}
@@ -497,7 +485,7 @@ Figure \ref{fig:measurementplot} plots several graphs of the relationship betwee
 
 When modeling latent variables, often the visuals of interest are not the observed variables, but the latent variables. In other words, the measurement model is ancillary to the substantive model. Naturally, we might wish to visualize the relationship between the latent variables.
 
-However, latent factor scores computed by LVM software are merely predictions. As such, we ought to have visuals that reflect uncertainty in our predictions for the latent scores. In \texttt{flexplavaan}, this uncertainty is represented as crosshairs. The widths of each line of the crosshair (for both the \(X\) axis and the \(Y\) axis) are obtained from prediction intervals for \texttt{lavaan} objects (using the \texttt{plausibleValues} function of the \texttt{semTools} package; Jorgensen, Pornprasertmanit, Schoemann, and Rosseel, (2020)). Importantly, the value of factor score estimates is dependent on the degree of factor indeterminacy (Grice, 2001; Rigdon, Becker, \& Sarstedt, 2019; James H. Steiger, 1996). Figure \ref{fig:beech} shows these plots, which we call ``structural plots,'' or ``cross-hair plots'' with a loess line (in blue). We also added a regression line (in red). Interestingly, the relationship between the two, though simulated to be significantly nonlinear, shows up as fairly linear. (The blue loess line and red regression line are quite similar). This seems to suggest that, by the time a model's factor scores are estimated, any nonlinearity that exists in the data has been discarded. For this reason, we disagree with the approach recommended by Hallgren, McCabe, King, and Atkins (2019), who suggest researchers plot a structural plot as evidence for model fit; simply plotting structural plots without the previous graphics will yield a very misleading picture of data/model fit. This final plot is little more than a summary of the model, provided the model diagnostics check out. As such, showing these is like plotting only a fitted line for a regression model without the underlying raw data.
+However, latent factor scores computed by LVM software are merely predictions. As such, we ought to have visuals that reflect uncertainty in our predictions for the latent scores. In \texttt{flexplavaan}, this uncertainty is represented as crosshairs. The widths of each line of the crosshair (for both the \(X\) axis and the \(Y\) axis) are obtained from prediction intervals for \texttt{lavaan} objects (using the \texttt{plausibleValues} function of the \texttt{semTools} package; Jorgensen, Pornprasertmanit, Schoemann, and Rosseel, (2020)). Importantly, the value of factor score estimates is dependent on the degree of factor indeterminacy (Grice, 2001; Rigdon et al., 2019; Steiger, 1996). Figure \ref{fig:beech} shows these plots, which we call ``structural plots,'' or ``cross-hair plots'' with a loess line (in blue). We also added a regression line (in red). Interestingly, the relationship between the two, though simulated to be significantly nonlinear, shows up as fairly linear. (The blue loess line and red regression line are quite similar). This seems to suggest that, by the time a model's factor scores are estimated, any nonlinearity that exists in the data has been discarded. For this reason, we disagree with the approach recommended by Hallgren et al. (2019), who suggest researchers plot a structural plot as evidence for model fit; simply plotting structural plots without the previous graphics will yield a very misleading picture of data/model fit. This final plot is little more than a summary of the model, provided the model diagnostics check out. As such, showing these is like plotting only a fitted line for a regression model without the underlying raw data.
 
 \begin{figure}
 
@@ -508,7 +496,7 @@ However, latent factor scores computed by LVM software are merely predictions. A
 \caption{Structural or "cross-hair" plot of the relationship between the latent variables force and Jedi. The crosshairs represent the prediction intervals for the factor scores of the latent variables.}\label{fig:beech}
 \end{figure}
 
-When there are multiple latent variables, there is a great deal of flexibility in how one visualizes the structural model. \texttt{flexplavaan} makes a best guess at how to visualize this relationship using the model specified by the user. However, the user can always specify how to plot the structural model using a \texttt{flexplot} equation (Fife, in press). In our example, we only had two variables to visualize, so a simple bivariate plot was most natural. When more variables are included, we might utilize paneling, added variable plots, beeswarm plots, etc. For a review of the types of plots possible, see Fife (in press).
+When there are multiple latent variables, there is a great deal of flexibility in how one visualizes the structural model. \texttt{flexplavaan} makes a best guess at how to visualize this relationship using the model specified by the user. However, the user can always specify how to plot the structural model using a \texttt{flexplot} equation (Fife, 2020a). In our example, we only had two variables to visualize, so a simple bivariate plot was most natural. When more variables are included, we might utilize paneling, added variable plots, beeswarm plots, etc. For a review of the types of plots possible, see Fife (2020a).
 
 \hypertarget{model-comparisons}{%
 \subsection{Model Comparisons}\label{model-comparisons}}
@@ -759,7 +747,7 @@ Figure \ref{fig:measurementrealdistress} plots measurement plots for the hypothe
 \caption{Measurement plot for the hypothesized model, showing the relationship between several indicators and the distress latent factor.}\label{fig:measurementrealdistress}
 \end{figure}
 
-As many of the \texttt{flexplavaan} visualizations showed outlying points that were inconsistent with the model-implied relationships, we use the \texttt{fitinfluence()} function in the \texttt{influence.SEM} package (Gianmarco Altoe', 2018) to identify cases with the greatest influence on the hypothesized model's \(\chi^2\) test. The 10 cases with the greatest influence on model fit are plotted in Figure \ref{fig:influence}. Notice there are cases whose removal would improve model fit and others whose removal would worsen fit. The removal of the case with the largest influence on the model fit (highlighted in green) would result in a reduction (improvement) in the \(\chi^2\) value of 2.34. This participant had an unusual pattern of values on the measured variables, scoring 1.58 \emph{SD}s above the sample mean on the \emph{meaning} composite despite scoring 1.70 \emph{SD}s below average on \emph{life satisfaction} and well above the sample means on \emph{loneliness} (+2.70 \emph{SD}s) and \emph{sadness} (+1.90 \emph{SD}s). Importantly, these unusual combinations are theoretically plausible. One could, for example, maintain high levels of meaning despite having poor life satisfaction and high levels of sadness and loneliness. A big discrepancy in \emph{meaning-satisfaction} and \emph{loneliness-sadness} composite scores was common among participants for whom the model performed poorly. This is an indication that we may need to further refine our theory and model. It may be, for example, preferable to treat \emph{life satisfaction} and \emph{meaning} as separate latent variables rather than as indicators of a single latent. To save space, we do not model that in this paper. Rather we merely note model problems highlighted with \texttt{flexplavaan} to demonstrate how one might use these sorts of visuals for model refinement.
+As many of the \texttt{flexplavaan} visualizations showed outlying points that were inconsistent with the model-implied relationships, we use the \texttt{fitinfluence()} function in the \texttt{influence.SEM} package (Pastore \& Altoe', 2018) to identify cases with the greatest influence on the hypothesized model's \(\chi^2\) test. The 10 cases with the greatest influence on model fit are plotted in Figure \ref{fig:influence}. Notice there are cases whose removal would improve model fit and others whose removal would worsen fit. The removal of the case with the largest influence on the model fit (highlighted in green) would result in a reduction (improvement) in the \(\chi^2\) value of 2.34. This participant had an unusual pattern of values on the measured variables, scoring 1.58 \emph{SD}s above the sample mean on the \emph{meaning} composite despite scoring 1.70 \emph{SD}s below average on \emph{life satisfaction} and well above the sample means on \emph{loneliness} (+2.70 \emph{SD}s) and \emph{sadness} (+1.90 \emph{SD}s). Importantly, these unusual combinations are theoretically plausible. One could, for example, maintain high levels of meaning despite having poor life satisfaction and high levels of sadness and loneliness. A big discrepancy in \emph{meaning-satisfaction} and \emph{loneliness-sadness} composite scores was common among participants for whom the model performed poorly. This is an indication that we may need to further refine our theory and model. It may be, for example, preferable to treat \emph{life satisfaction} and \emph{meaning} as separate latent variables rather than as indicators of a single latent. To save space, we do not model that in this paper. Rather we merely note model problems highlighted with \texttt{flexplavaan} to demonstrate how one might use these sorts of visuals for model refinement.
 
 \begin{figure}
 
@@ -770,7 +758,7 @@ As many of the \texttt{flexplavaan} visualizations showed outlying points that w
 \caption{Influence plot for the hypothesized model.}\label{fig:influence}
 \end{figure}
 
-This example demonstrates how \texttt{flexplavaan}'s visualization functions can facilitate deeper evaluation of LVMs than numeric fit indices alone. Hopper plots overlaying the residual covariances from our hypothesized and alternative models showed plainly that our hypothesized model consistently better reproduced bivariate associations than the alternative model. Additionally, the Hopper plot showed whether discrepancies were due to over- vs.~under-estimation of associations. Trail, disturbance dependence, and measurement plots alerted us to potentially problematic distributional properties (i.e., floor and ceiling effects) and high-leverage outliers. These suggest possible modifications to the model, including nonlinear indicator effects, nonlinear latent effects, and/or disaggregating indicators. This example is instructive as it utilized data from real-world instruments with unwieldy distributions common in psychology applications. When used in conjunction with the \texttt{influence.SEM} package (Gianmarco Altoe', 2018), we identified cases for which the model performed poorly, giving us hypotheses about potential modifications to our theory and model.
+This example demonstrates how \texttt{flexplavaan}'s visualization functions can facilitate deeper evaluation of LVMs than numeric fit indices alone. Hopper plots overlaying the residual covariances from our hypothesized and alternative models showed plainly that our hypothesized model consistently better reproduced bivariate associations than the alternative model. Additionally, the Hopper plot showed whether discrepancies were due to over- vs.~under-estimation of associations. Trail, disturbance dependence, and measurement plots alerted us to potentially problematic distributional properties (i.e., floor and ceiling effects) and high-leverage outliers. These suggest possible modifications to the model, including nonlinear indicator effects, nonlinear latent effects, and/or disaggregating indicators. This example is instructive as it utilized data from real-world instruments with unwieldy distributions common in psychology applications. When used in conjunction with the \texttt{influence.SEM} package (Pastore \& Altoe', 2018), we identified cases for which the model performed poorly, giving us hypotheses about potential modifications to our theory and model.
 
 \hypertarget{discussion}{%
 \section{Discussion}\label{discussion}}
@@ -789,78 +777,75 @@ Hopefully, throughout this paper, we have convinced the reader that existing met
 \section{References}\label{references}}
 
 \hypertarget{refs}{}
-\begin{CSLReferences}{1}{0}
+\begin{cslreferences}
 \leavevmode\hypertarget{ref-asparouhov2014using}{}%
-Asparouhov, T., \& Muthén, B. (2014). {Using Mplus Individual Residual Plots for Diagnostic and Model Evaluation in SEM}. \emph{Mplus Web Notes}, (20).
+Asparouhov, T., \& Muthén, B. (2014). Using Mplus Individual Residual Plots for Diagnostic and Model Evaluation in SEM. \emph{Mplus Web Notes}, (20).
 
 \leavevmode\hypertarget{ref-barrett2007structural}{}%
 Barrett, P. (2007). Structural equation modelling: Adjudging model fit. \emph{Personality and Individual Differences}, \emph{42}(5), 815--824.
 
 \leavevmode\hypertarget{ref-Bauer2005}{}%
-Bauer, D. J. (2005). {The role of nonlinear factor-to-indicator relationships in tests of measurement equivalence}. \emph{Psychological Methods}, \emph{10}(3), 305--316. \url{https://doi.org/10.1037/1082-989X.10.3.305}
+Bauer, D. J. (2005). The role of nonlinear factor-to-indicator relationships in tests of measurement equivalence. \emph{Psychological Methods}, \emph{10}(3), 305--316. \url{https://doi.org/10.1037/1082-989X.10.3.305}
 
 \leavevmode\hypertarget{ref-bollen_structural_1989}{}%
-Bollen, K. A. (1989). \emph{{Structural equations with latent variables.}} John Wiley {\&} Sons.
+Bollen, K. A. (1989). \emph{Structural equations with latent variables.} John Wiley \& Sons.
 
 \leavevmode\hypertarget{ref-bollen2019model}{}%
-Bollen, K. A. (2019). Model implied instrumental variables ({MIIVs}): An alternative orientation to structural equation modeling. \emph{Multivariate Behavioral Research}, \emph{54}(1), 31--46.
+Bollen, K. A. (2019). Model implied instrumental variables (MIIVs): An alternative orientation to structural equation modeling. \emph{Multivariate Behavioral Research}, \emph{54}(1), 31--46.
 
 \leavevmode\hypertarget{ref-bollen1991observational}{}%
 Bollen, K. A., \& Arminger, G. (1991). Observational residuals in factor analysis and structural equation models. \emph{Sociological Methodology}, 235--262.
 
 \leavevmode\hypertarget{ref-Browne2002}{}%
-Browne, M. W., MacCallum, R. C., Kim, C.-T., Andersen, B. L., \& Glaser, R. (2002). {When fit indices and residuals are incompatible}. \emph{Psychological Methods}, \emph{7}(4), 403--421. \url{https://doi.org/10.1037//1082-989x.7.4.403}
+Browne, M. W., MacCallum, R. C., Kim, C.-T., Andersen, B. L., \& Glaser, R. (2002). When fit indices and residuals are incompatible. \emph{Psychological Methods}, \emph{7}(4), 403--421. \url{https://doi.org/10.1037//1082-989x.7.4.403}
 
 \leavevmode\hypertarget{ref-Camerer2018}{}%
-Camerer, C. F., Dreber, A., Holzmeister, F., Ho, T. H., Huber, J., Johannesson, M., \ldots{} Wu, H. (2018). {Evaluating the replicability of social science experiments in Nature and Science between 2010 and 2015}. \url{https://doi.org/10.1038/s41562-018-0399-z}
+Camerer, C. F., Dreber, A., Holzmeister, F., Ho, T. H., Huber, J., Johannesson, M., \ldots{} Wu, H. (2018). Evaluating the replicability of social science experiments in Nature and Science between 2010 and 2015. \url{https://doi.org/10.1038/s41562-018-0399-z}
 
 \leavevmode\hypertarget{ref-faoutlier}{}%
 Chalmers, R. P., \& Flora, D. B. (2015). Faoutlier: An r package for detecting influential cases in exploratory and confirmatory factor analysis. \emph{Applied Psychological Measurement}, \emph{39}(7), 573--574. \url{https://doi.org/10.1177/0146621615597894}
 
 \leavevmode\hypertarget{ref-Chen2008}{}%
-Chen, F., Curran, P. J., Bollen, K. A., Kirby, J., \& Paxton, P. (2008). {An empirical evaluation of the use of fixed cutoff points in RMSEA test statistic in structural equation models}. \emph{Sociological Methods and Research}, \emph{36}(4), 462--494. \url{https://doi.org/10.1177/0049124108314720}
+Chen, F., Curran, P. J., Bollen, K. A., Kirby, J., \& Paxton, P. (2008). An empirical evaluation of the use of fixed cutoff points in RMSEA test statistic in structural equation models. \emph{Sociological Methods and Research}, \emph{36}(4), 462--494. \url{https://doi.org/10.1177/0049124108314720}
 
 \leavevmode\hypertarget{ref-Correll2015}{}%
-Correll, M. A. (2015). \emph{{Visual Statistics}} (Doctoral Dissertation). University of Wisconsin-Madison.
+Correll, M. A. (2015). \emph{Visual Statistics} (Doctoral Dissertation). University of Wisconsin-Madison.
 
 \leavevmode\hypertarget{ref-cyranowski2013assessing}{}%
-Cyranowski, J. M., Zill, N., Bode, R., Butt, Z., Kelly, M. A., Pilkonis, P. A., \ldots{} Cella, D. (2013). Assessing social support, companionship, and distress: National institute of health (NIH) toolbox adult social relationship scales. \emph{Health Psychology}, \emph{32}(3), 293.
+Cyranowski, J. M., Zill, N., Bode, R., Butt, Z., Kelly, M. A., Pilkonis, P. A., \ldots{} Cella, D. (2013). Assessing social support, companionship, and distress: National institute of health (nih) toolbox adult social relationship scales. \emph{Health Psychology}, \emph{32}(3), 293.
 
 \leavevmode\hypertarget{ref-egger1997bias}{}%
 Egger, M., Smith, G. D., Schneider, M., \& Minder, C. (1997). Bias in meta-analysis detected by a simple, graphical test. \emph{Bmj}, \emph{315}(7109), 629--634.
 
 \leavevmode\hypertarget{ref-Fife2019c}{}%
-Fife, D. A. (in press). {Flexplot: Graphical-Based Data Analysis}. \emph{Psychological Methods}. \url{https://doi.org/10.31234/osf.io/kh9c3}
+Fife, D. A. (2020a). Flexplot: Graphical-Based Data Analysis. \emph{PsyArxiv}. \url{https://doi.org/10.31234/osf.io/kh9c3}
 
 \leavevmode\hypertarget{ref-Fife2019e}{}%
-Fife, D. A. (2020). {The Eight Steps of Data Analysis: A Graphical Framework to Promote Sound Statistical Analysis}. \emph{Perspectives on Psychological Science}, \emph{15}(4), 1054--1075. \url{https://doi.org/10.1177/1745691620917333}
+Fife, D. A. (2020b). The Eight Steps of Data Analysis: A Graphical Framework to Promote Sound Statistical Analysis. \emph{Perspectives on Psychological Science}, \emph{15}(4), 1054--1075. \url{https://doi.org/10.1177/1745691620917333}
 
 \leavevmode\hypertarget{ref-Fifemapping}{}%
 Fife, D. A., Longo, G., Correll, M., \& Tremoulet, P. D. (2021). A graph for every analysis: Mapping visuals onto common analyses using flexplot. \emph{Behavioral Research Methods}. \url{https://doi.org/10.3758/s13428-020-01520-2}
 
 \leavevmode\hypertarget{ref-Fife2019a}{}%
-Fife, D. A., \& Rodgers, J. L. (in press). {Understanding the Exploratory/Confirmatory Data Analysis Continuum: Moving Beyond the "Replication Crisis"}. \emph{American Psychologist}. Retrieved from \url{https://psyarxiv.com/5vfq6/}
+Fife, D. A., \& Rodgers, J. L. (in press). Understanding the Exploratory/Confirmatory Data Analysis Continuum: Moving Beyond the "Replication Crisis". \emph{American Psychologist}. Retrieved from \url{https://psyarxiv.com/5vfq6/}
 
 \leavevmode\hypertarget{ref-flora2012old}{}%
 Flora, D. B., LaBrish, C., \& Chalmers, R. P. (2012). Old and new ideas for data screening and assumption testing for exploratory and confirmatory factor analysis. \emph{Frontiers in Psychology}, \emph{3}, 55.
 
 \leavevmode\hypertarget{ref-toolboxData}{}%
-Gershon, R. (2016). \emph{{NIH Toolbox Norming Study}} (Version V4) {[}Data set{]}. Harvard Dataverse. \url{https://doi.org/10.7910/DVN/FF4DI7}
-
-\leavevmode\hypertarget{ref-influenceSEM}{}%
-Gianmarco Altoe', M. P. \&. (2018). \emph{Influence.SEM: Case influence in structural equation models}. Retrieved from \url{https://CRAN.R-project.org/package=influence.SEM}
+Gershon, R. (2016). \emph{NIH Toolbox Norming Study} (Version V4) {[}Data set{]}. Harvard Dataverse. \url{https://doi.org/10.7910/DVN/FF4DI7}
 
 \leavevmode\hypertarget{ref-Goodboy2017}{}%
-Goodboy, A. K., \& Kline, R. B. (2017). {Statistical and Practical Concerns With Published Communication Research Featuring Structural Equation Modeling}. \emph{Communication Research Reports}, \emph{34}(1), 68--77. \url{https://doi.org/10.1080/08824096.2016.1214121}
+Goodboy, A. K., \& Kline, R. B. (2017). Statistical and Practical Concerns With Published Communication Research Featuring Structural Equation Modeling. \emph{Communication Research Reports}, \emph{34}(1), 68--77. \url{https://doi.org/10.1080/08824096.2016.1214121}
 
 \leavevmode\hypertarget{ref-grice2001computing}{}%
 Grice, J. W. (2001). Computing and evaluating factor scores. \emph{Psychological Methods}, \emph{6}(4), 430.
 
 \leavevmode\hypertarget{ref-Hallgren2019a}{}%
-Hallgren, K. A., McCabe, C. J., King, K. M., \& Atkins, D. C. (2019). {Beyond path diagrams: Enhancing applied structural equation modeling research through data visualization}. \emph{Addictive Behaviors}, \emph{94}(March 2018), 74--82. \url{https://doi.org/10.1016/j.addbeh.2018.08.030}
+Hallgren, K. A., McCabe, C. J., King, K. M., \& Atkins, D. C. (2019). Beyond path diagrams: Enhancing applied structural equation modeling research through data visualization. \emph{Addictive Behaviors}, \emph{94}(March 2018), 74--82. \url{https://doi.org/10.1016/j.addbeh.2018.08.030}
 
 \leavevmode\hypertarget{ref-Hayduk2014}{}%
-Hayduk, L. A. (2014). {Seeing Perfectly Fitting Factor Models That Are Causally Misspecified: Understanding That Close-Fitting Models Can Be Worse}. \emph{Educational and Psychological Measurement}, \emph{74}(6), 905--926. \url{https://doi.org/10.1177/0013164414527449}
+Hayduk, L. A. (2014). Seeing Perfectly Fitting Factor Models That Are Causally Misspecified: Understanding That Close-Fitting Models Can Be Worse. \emph{Educational and Psychological Measurement}, \emph{74}(6), 905--926. \url{https://doi.org/10.1177/0013164414527449}
 
 \leavevmode\hypertarget{ref-hayduk2018review}{}%
 Hayduk, L. A. (2018). Review essay on rex b. Kline's principles and practice of structural equation modeling: Encouraging a fifth edition. \emph{Canadian Studies in Population}, \emph{45}(3-4), 154--178.
@@ -869,28 +854,28 @@ Hayduk, L. A. (2018). Review essay on rex b. Kline's principles and practice of 
 Hayduk, L. A., \& Littvay, L. (2012). Should researchers use single indicators, best indicators, or multiple indicators in structural equation models? \emph{BMC Medical Research Methodology}, \emph{12}(1), 1--17.
 
 \leavevmode\hypertarget{ref-Healy2014a}{}%
-Healy, K., \& Moody, J. (2014). {Data Visualization in Sociology}. \emph{Annual Review of Sociology}, \emph{40}(1), 105--128. \url{https://doi.org/10.1146/ANNUREV-SOC-071312-145551}
+Healy, K., \& Moody, J. (2014). Data Visualization in Sociology. \emph{Annual Review of Sociology}, \emph{40}(1), 105--128. \url{https://doi.org/10.1146/ANNUREV-SOC-071312-145551}
 
 \leavevmode\hypertarget{ref-hipp2003model}{}%
 Hipp, J. R., \& Bollen, K. A. (2003). Model fit in structural equation models with censored, ordinal, and dichotomous variables: Testing vanishing tetrads. \emph{Sociological Methodology}, \emph{33}(1), 267--305.
 
 \leavevmode\hypertarget{ref-hu1998fit}{}%
-Hu, L., \& Bentler, P. M. (1998). Fit indices in covariance structure modeling: Sensitivity to underparameterized model misspecification. \emph{Psychological Methods}, \emph{3}(4), 424.
+Hu, L.-t., \& Bentler, P. M. (1998). Fit indices in covariance structure modeling: Sensitivity to underparameterized model misspecification. \emph{Psychological Methods}, \emph{3}(4), 424.
 
 \leavevmode\hypertarget{ref-Ioannidis2005}{}%
-Ioannidis, J. P. A. (2005). {Why Most Published Research Findings Are False}. \emph{PLoS Medicine}, \emph{2}(8), e124. \url{https://doi.org/10.1371/journal.pmed.0020124}
+Ioannidis, J. P. A. (2005). Why Most Published Research Findings Are False. \emph{PLoS Medicine}, \emph{2}(8), e124. \url{https://doi.org/10.1371/journal.pmed.0020124}
 
 \leavevmode\hypertarget{ref-jackson2009reporting}{}%
 Jackson, D. L., Gillaspy, J. A., \& Purc-Stephenson, R. (2009). Reporting practices in confirmatory factor analysis: An overview and some recommendations. \emph{Psychological Methods}, \emph{14}(1), 6.
 
 \leavevmode\hypertarget{ref-semtools}{}%
-Jorgensen, T. D., Pornprasertmanit, S., Schoemann, A. M., \& Rosseel, Y. (2020). \emph{\texttt{semTools}: {U}seful tools for structural equation modeling}. Retrieved from \url{https://CRAN.R-project.org/package=semTools}
+Jorgensen, T. D., Pornprasertmanit, S., Schoemann, A. M., \& Rosseel, Y. (2020). \emph{\texttt{semTools}: Useful tools for structural equation modeling}. Retrieved from \url{https://CRAN.R-project.org/package=semTools}
 
 \leavevmode\hypertarget{ref-Kline2004}{}%
-Kline, R. B. (2004). \emph{{Beyond Significance Testing: Reforming Data Analysis Methods in Behavioral Research}} (p. 325). Washington D.C.: American Psychological Association.
+Kline, R. B. (2004). \emph{Beyond Significance Testing: Reforming Data Analysis Methods in Behavioral Research} (p. 325). Washington D.C.: American Psychological Association.
 
 \leavevmode\hypertarget{ref-lai2016problem}{}%
-Lai, K., \& Green, S. B. (2016). The problem with having two watches: Assessment of fit when {RMSEA} and {CFI} disagree. \emph{Multivariate Behavioral Research}, \emph{51}(2-3), 220--239.
+Lai, K., \& Green, S. B. (2016). The problem with having two watches: Assessment of fit when rmsea and cfi disagree. \emph{Multivariate Behavioral Research}, \emph{51}(2-3), 220--239.
 
 \leavevmode\hypertarget{ref-Lee90}{}%
 Lee, S., \& Hershberger, S. (1990). A simple rule for generating equivalent models in covariance structure modeling. \emph{Multivariate Behavioral Research}, \emph{25}(3), 313--334.
@@ -899,7 +884,7 @@ Lee, S., \& Hershberger, S. (1990). A simple rule for generating equivalent mode
 Lee, T., \& MacCallum, R. C. (2015). Parameter influence in structural equation modeling. \emph{Structural Equation Modeling: A Multidisciplinary Journal}, \emph{22}(1), 102--114.
 
 \leavevmode\hypertarget{ref-Levine2018}{}%
-Levine, S. S. (2018). {Show us your data: Connect the dots, improve science}. \emph{Management and Organization Review}, \emph{14}(2), 433--437. \url{https://doi.org/10.1017/mor.2018.19}
+Levine, S. S. (2018). Show us your data: Connect the dots, improve science. \emph{Management and Organization Review}, \emph{14}(2), 433--437. \url{https://doi.org/10.1017/mor.2018.19}
 
 \leavevmode\hypertarget{ref-little2006merits}{}%
 Little, T. D., Bovaird, J. A., \& Widaman, K. F. (2006). On the merits of orthogonalizing powered and product terms: Implications for modeling interactions among latent variables. \emph{Structural Equation Modeling}, \emph{13}(4), 497--519.
@@ -911,16 +896,19 @@ MacCallum, R. C., Wegener, D. T., Uchino, B. N., \& Fabrigar, L. R. (1993). The 
 McDonald, R. P. (2013). \emph{Test theory: A unified treatment}. psychology press.
 
 \leavevmode\hypertarget{ref-McIntosh2007}{}%
-McIntosh, C. N. (2007). {Rethinking fit assessment in structural equation modelling: A commentary and elaboration on Barrett (2007)}. \emph{Personality and Individual Differences}, \emph{42}(5), 859--867. \url{https://doi.org/10.1016/j.paid.2006.09.020}
+McIntosh, C. N. (2007). Rethinking fit assessment in structural equation modelling: A commentary and elaboration on Barrett (2007). \emph{Personality and Individual Differences}, \emph{42}(5), 859--867. \url{https://doi.org/10.1016/j.paid.2006.09.020}
 
 \leavevmode\hypertarget{ref-blavaan}{}%
-Merkle, E. C., \& Rosseel, Y. (2018). {blavaan}: Bayesian structural equation models via parameter expansion. \emph{Journal of Statistical Software}, \emph{85}(4), 1--30. \url{https://doi.org/10.18637/jss.v085.i04}
+Merkle, E. C., \& Rosseel, Y. (2018). blavaan: Bayesian structural equation models via parameter expansion. \emph{Journal of Statistical Software}, \emph{85}(4), 1--30. \url{https://doi.org/10.18637/jss.v085.i04}
 
 \leavevmode\hypertarget{ref-Nosek2018}{}%
-Nosek, B. A., Ebersole, C. R., DeHaven, A. C., \& Mellor, D. T. (2018). {The preregistration revolution}. \emph{Proceedings of the National Academy of Sciences}. \url{https://doi.org/10.1073/pnas.1708274114}
+Nosek, B. A., Ebersole, C. R., DeHaven, A. C., \& Mellor, D. T. (2018). The preregistration revolution. \emph{Proceedings of the National Academy of Sciences}. \url{https://doi.org/10.1073/pnas.1708274114}
 
 \leavevmode\hypertarget{ref-Pashler2012a}{}%
-Pashler, H., \& Wagenmakers, E.-J. (2012). {Editors' Introduction to the Special Section on Replicability in Psychological Science}. \emph{Perspectives on Psychological Science}, \emph{7}(6), 528--530. \url{https://doi.org/10.1177/1745691612465253}
+Pashler, H., \& Wagenmakers, E.-J. (2012). Editors' Introduction to the Special Section on Replicability in Psychological Science. \emph{Perspectives on Psychological Science}, \emph{7}(6), 528--530. \url{https://doi.org/10.1177/1745691612465253}
+
+\leavevmode\hypertarget{ref-influenceSEM}{}%
+Pastore, M., \& Altoe', G. (2018). \emph{Influence.SEM: Case influence in structural equation models}. Retrieved from \url{https://CRAN.R-project.org/package=influence.SEM}
 
 \leavevmode\hypertarget{ref-pek2011sensitivity}{}%
 Pek, J., \& MacCallum, R. C. (2011). Sensitivity analysis in structural equation models: Cases and their influence. \emph{Multivariate Behavioral Research}, \emph{46}(2), 202--228.
@@ -932,28 +920,28 @@ Raykov, T., \& Penev, S. (2014). Latent growth curve model selection: The potent
 Rigdon, E. E., Becker, J.-M., \& Sarstedt, M. (2019). Factor indeterminacy as metrological uncertainty: Implications for advancing psychological measurement. \emph{Multivariate Behavioral Research}, \emph{54}(3), 429--443.
 
 \leavevmode\hypertarget{ref-rodgers_epistemology_2010}{}%
-Rodgers, J. L. (2010). {The epistemology of mathematical and statistical modeling: a quiet methodological revolution}. \emph{The American Psychologist}, \emph{65}(1), 1--12. \url{https://doi.org/10.1037/a0018326}
+Rodgers, J. L. (2010). The epistemology of mathematical and statistical modeling: a quiet methodological revolution. \emph{The American Psychologist}, \emph{65}(1), 1--12. \url{https://doi.org/10.1037/a0018326}
 
 \leavevmode\hypertarget{ref-lavaan}{}%
-Rosseel, Y. (2012). {lavaan}: An {R} package for structural equation modeling. \emph{Journal of Statistical Software}, \emph{48}(2), 1--36. Retrieved from \url{http://www.jstatsoft.org/v48/i02/}
+Rosseel, Y. (2012). lavaan: An R package for structural equation modeling. \emph{Journal of Statistical Software}, \emph{48}(2), 1--36. Retrieved from \url{http://www.jstatsoft.org/v48/i02/}
 
 \leavevmode\hypertarget{ref-salsman2013emotion}{}%
-Salsman, J. M., Butt, Z., Pilkonis, P. A., Cyranowski, J. M., Zill, N., Hendrie, H. C., \ldots{} others. (2013). Emotion assessment using the {NIH} toolbox. \emph{Neurology}, \emph{80}(11 Supplement 3), S76--S86.
+Salsman, J. M., Butt, Z., Pilkonis, P. A., Cyranowski, J. M., Zill, N., Hendrie, H. C., \ldots{} others. (2013). Emotion assessment using the NIH toolbox. \emph{Neurology}, \emph{80}(11 Supplement 3), S76--S86.
 
 \leavevmode\hypertarget{ref-shi2020effect}{}%
-Shi, D., \& Maydeu-Olivares, A. (2020). The effect of estimation methods on {SEM} fit indices. \emph{Educational and Psychological Measurement}, \emph{80}(3), 421--445.
+Shi, D., \& Maydeu-Olivares, A. (2020). The effect of estimation methods on SEM fit indices. \emph{Educational and Psychological Measurement}, \emph{80}(3), 421--445.
 
 \leavevmode\hypertarget{ref-smith2001primer}{}%
 Smith, T. D., \& McMillan, B. F. (2001). A primer of model fit indices in structural equation modeling.
 
 \leavevmode\hypertarget{ref-steiger1996dispelling}{}%
-Steiger, James H. (1996). Dispelling some myths about factor indeterminancy. \emph{Multivariate Behavioral Research}, \emph{31}(4), 539--550.
+Steiger, J. H. (1996). Dispelling some myths about factor indeterminancy. \emph{Multivariate Behavioral Research}, \emph{31}(4), 539--550.
 
 \leavevmode\hypertarget{ref-Steiger2007}{}%
-Steiger, James H. (2007). {Understanding the limitations of global fit assessment in structural equation modeling}. \emph{Personality and Individual Differences}, \emph{42}(5), 893--898. \url{https://doi.org/10.1016/j.paid.2006.09.017}
+Steiger, J. H. (2007). Understanding the limitations of global fit assessment in structural equation modeling. \emph{Personality and Individual Differences}, \emph{42}(5), 893--898. \url{https://doi.org/10.1016/j.paid.2006.09.017}
 
 \leavevmode\hypertarget{ref-Tay2016a}{}%
-Tay, L., Parrigon, S., Huang, Q., \& LeBreton, J. M. (2016). {Graphical Descriptives: A Way to Improve Data Transparency and Methodological Rigor in Psychology}. \emph{Perspectives on Psychological Science}, \emph{11}(5), 692--701. \url{https://doi.org/10.1177/1745691616663875}
+Tay, L., Parrigon, S., Huang, Q., \& LeBreton, J. M. (2016). Graphical Descriptives: A Way to Improve Data Transparency and Methodological Rigor in Psychology. \emph{Perspectives on Psychological Science}, \emph{11}(5), 692--701. \url{https://doi.org/10.1177/1745691616663875}
 
 \leavevmode\hypertarget{ref-thoemmes2018local}{}%
 Thoemmes, F., Rosseel, Y., \& Textor, J. (2018). Local fit evaluation of structural equation models using graphical criteria. \emph{Psychological Methods}, \emph{23}(1), 27.
@@ -962,18 +950,17 @@ Thoemmes, F., Rosseel, Y., \& Textor, J. (2018). Local fit evaluation of structu
 Tomarken, A. J., \& Waller, N. G. (2003). Potential problems with" well fitting" models. \emph{Journal of Abnormal Psychology}, \emph{112}(4), 578.
 
 \leavevmode\hypertarget{ref-Tomarken2005}{}%
-Tomarken, A. J., \& Waller, N. G. (2005). {Structural Equation Modeling: Strengths, Limitations, and Misconceptions}. \emph{Annual Review of Clinical Psychology}, \emph{1}(1), 31--65. \url{https://doi.org/10.1146/annurev.clinpsy.1.102803.144239}
+Tomarken, A. J., \& Waller, N. G. (2005). Structural Equation Modeling: Strengths, Limitations, and Misconceptions. \emph{Annual Review of Clinical Psychology}, \emph{1}(1), 31--65. \url{https://doi.org/10.1146/annurev.clinpsy.1.102803.144239}
 
 \leavevmode\hypertarget{ref-wang2005residual}{}%
 Wang, C.-P., Hendricks Brown, C., \& Bandeen-Roche, K. (2005). Residual diagnostics for growth mixture models: Examining the impact of a preventive intervention on multiple trajectories of aggressive behavior. \emph{Journal of the American Statistical Association}, \emph{100}(471), 1054--1076.
 
 \leavevmode\hypertarget{ref-Wilkinson1999a}{}%
-Wilkinson, L., \& Task Force on Statistical Inference. (1999). {Statistical Methods in Psychology Journals: Guidelines and Explanations}. \emph{American Psychologist}, \emph{54}(8), 594--601.
+Wilkinson, L., \& Task Force on Statistical Inference. (1999). Statistical Methods in Psychology Journals: Guidelines and Explanations. \emph{American Psychologist}, \emph{54}(8), 594--601.
 
 \leavevmode\hypertarget{ref-yuan2010fitting}{}%
 Yuan, K.-H., \& Hayashi, K. (2010). Fitting data to model: Structural equation modeling diagnosis using two scatter plots. \emph{Psychological Methods}, \emph{15}(4), 335.
-
-\end{CSLReferences}
+\end{cslreferences}
 
 \pagebreak
 
@@ -987,7 +974,7 @@ Yuan, K.-H., \& Hayashi, K. (2010). Fitting data to model: Structural equation m
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{install.packages}\NormalTok{(}\StringTok{"devtools"}\NormalTok{)}
+\KeywordTok{install.packages}\NormalTok{(}\StringTok{"devtools"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -995,8 +982,8 @@ Then, using the devtools package, users must install both \texttt{flexplot} and 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{devtools}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"dustinfife/lavaan"}\NormalTok{)}
-\NormalTok{devtools}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"dustinfife/flexplavaan"}\NormalTok{)}
+\NormalTok{devtools}\OperatorTok{::}\KeywordTok{install\_github}\NormalTok{(}\StringTok{"dustinfife/lavaan"}\NormalTok{)}
+\NormalTok{devtools}\OperatorTok{::}\KeywordTok{install\_github}\NormalTok{(}\StringTok{"dustinfife/flexplavaan"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1004,17 +991,17 @@ Then, using the devtools package, users must install both \texttt{flexplot} and 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{require}\NormalTok{(flexplavaan)}
-\FunctionTok{require}\NormalTok{(lavaan)}
+\KeywordTok{require}\NormalTok{(flexplavaan)}
+\KeywordTok{require}\NormalTok{(lavaan)}
 
-\NormalTok{model }\OtherTok{=} \StringTok{"}
+\NormalTok{model =}\StringTok{ "}
 \StringTok{Force =\textasciitilde{} fitness + saber + midichlorian + force\_history}
 \StringTok{Jedi =\textasciitilde{} exam\_one + exam\_two + exam\_three}
 \StringTok{Jedi \textasciitilde{} Force}
 \StringTok{"}
 
 \CommentTok{\# Fit the models {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
-\NormalTok{force\_fit }\OtherTok{=} \FunctionTok{sem}\NormalTok{(model, jedi\_jedi)}
+\NormalTok{force\_fit =}\StringTok{ }\KeywordTok{sem}\NormalTok{(model, jedi\_jedi)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1024,19 +1011,19 @@ Once the user has the fitted \texttt{lavaan} object, they may use visuals in \te
 \begin{Highlighting}[]
 \CommentTok{\# show the hopper plots, only including those variables }
 \CommentTok{\# that have a residual larger than 0.01}
-\FunctionTok{residual\_plots}\NormalTok{(force\_fit, }\AttributeTok{max\_val =}\NormalTok{ .}\DecValTok{01}\NormalTok{)}
+\KeywordTok{residual\_plots}\NormalTok{(force\_fit, }\DataTypeTok{max\_val =} \FloatTok{.01}\NormalTok{)}
 
 \CommentTok{\# trail/ddp of the first 4 variables}
-\FunctionTok{visualize}\NormalTok{(force\_fit, }\AttributeTok{subset=}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{)}
+\KeywordTok{visualize}\NormalTok{(force\_fit, }\DataTypeTok{subset=}\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{)}
 
 \CommentTok{\# alternatively, specify which variables should be plotted}
-\FunctionTok{visualize}\NormalTok{(force\_fit, }\AttributeTok{subset=}\FunctionTok{c}\NormalTok{(}\StringTok{"fitness"}\NormalTok{, }\StringTok{"midichlorian"}\NormalTok{, }\StringTok{"exam\_one"}\NormalTok{))}
+\KeywordTok{visualize}\NormalTok{(force\_fit, }\DataTypeTok{subset=}\KeywordTok{c}\NormalTok{(}\StringTok{"fitness"}\NormalTok{, }\StringTok{"midichlorian"}\NormalTok{, }\StringTok{"exam\_one"}\NormalTok{))}
 
 \CommentTok{\# show the measurement plot for the Force latent variable}
-\FunctionTok{implied\_measurement}\NormalTok{(force\_fit, }\AttributeTok{latent=}\StringTok{"Force"}\NormalTok{)}
+\KeywordTok{implied\_measurement}\NormalTok{(force\_fit, }\DataTypeTok{latent=}\StringTok{"Force"}\NormalTok{)}
 
 \CommentTok{\# show the structural plot, with Force on the Y axis. }
-\FunctionTok{visualize}\NormalTok{(force\_fit, }\AttributeTok{plot=}\StringTok{"latent"}\NormalTok{, }\AttributeTok{formula =}\NormalTok{ Force}\SpecialCharTok{\textasciitilde{}}\NormalTok{Jedi)}
+\KeywordTok{visualize}\NormalTok{(force\_fit, }\DataTypeTok{plot=}\StringTok{"latent"}\NormalTok{, }\DataTypeTok{formula =}\NormalTok{ Force}\OperatorTok{\textasciitilde{}}\NormalTok{Jedi)}
 \end{Highlighting}
 \end{Shaded}
 
