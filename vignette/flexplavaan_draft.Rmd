@@ -9,7 +9,7 @@ author:
     address       : "201 Mullica Hill Road
                     Glassboro, NJ 08028"
     email         : "fife.dustin@gmail.com"
-  - name      : "Steven Brunwasser"
+  - name      : "Steven M. Brunwasser"
     affiliation   : "1"
   - name          : "Edgar C. Merkle"
     affiliation   : "2"  
@@ -19,6 +19,10 @@ affiliation:
     institution   : "Rowan University"
   - id            : "2"
     institution   : "University of Missouri"
+
+authornote: |
+  Some of the ideas and datasets contained within this article have been disseminated elsewhere. The basics of the flexplavaan package was presented at a national conference and the first author has utilized some of the datasets in pedagogical videos found on his YouTube channel. Also, the paper in its entirety has been published on the PsyArxiv and been publicized on Twitter.  
+
 
 abstract: 
   "Latent variable models (LVMs) are incredibly flexible tools that allow users to address research questions they might otherwise never be able to answer [@mcdonald2013test]. However, one major limitation of LVMs is evaluating model fit. There is no universal consensus about how to evaluate model fit, either globally or locally. Part of the reason evaluating these models is difficult is because fit is typically reduced to a handful of statistics that may or may not reflect the model's adequacy and/or assumptions. In this paper we argue that proper evaluation of model fit *must* include visualizing both the raw data and the model-implied fit. Visuals reveal, at a glance, the fit of the model and whether the model's assumptions have been met. Unfortunately, tools for visualizing LVMs have historically been limited. In this paper, we introduce new plots and reframe existing plots that provide necessary resources for evaluating LVMs. These plots are available in a new open-source R package called `flexplavaan`, which combines the model plotting capabilities of `flexplot` with the latent variable modeling capabilities of `lavaan`."
@@ -32,6 +36,7 @@ header-includes:
 - \usepackage{amsmath}
 - \usepackage{tikz}
 - \usetikzlibrary{shapes.geometric,arrows, positioning}
+
 ---
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE, note=FALSE}
