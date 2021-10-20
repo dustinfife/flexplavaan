@@ -44,7 +44,7 @@ require(lavaan)
 # Introduction
 It is currently an unprecedented time in the social sciences; multiple scientific disciplines are reeling from a "replication crisis" [@Camerer2018; @Ioannidis2005; @Pashler2012a], new norms for credibility are becoming more prevalent (Nelson, Simmons, & Simonsohn, 2018; Nosek, Ebersole, DeHaven, & Mellor, 2018), and the push for open science is accelerating at a rapid pace [@Nosek2018]. Amidst this push for open science practices, some have called for greater use of visualization techniques [@Fife2019a; @Fife2019e; @Fifemapping; @Tay2016a]. As noted by Tay, et al. (2016), "[visualizations]...can strengthen the quality of research by further increasing the transparency of data..." (p. 694). In other words, one of the best, and most efficient ways of making data analysis open and transparent is to display each and every data point through visualization techniques. This is particularly important in research applications where participant-level data cannot be shared.
 
-Not only do visualizations adhere to the principles of openness and transparency, but they offer several additional advantages; they vastly improve encoding of information [@Correll2015], they highlight model misfit [@Healy2014a], and they are an essential component in evaluating model assumptions [@Levine2018; @Tay2016a]. As such, we [as well as others, e.g., @Fife2019b; @Fife2019e; @Fifemapping; @Wilkinson1999a] recommend every statistical model ought to be accompanied by a graphic. 
+Not only do visualizations adhere to the principles of openness and transparency, but they offer several additional advantages; they vastly improve encoding of information [@Correll2015], they highlight model misfit [@Healy2014a], and they are an essential component in evaluating model assumptions [@Levine2018; @Tay2016a]. As such, we [as well as others, e.g., @Fife2019e; @Fifemapping; @Wilkinson1999a] recommend a graphic accompany every statistical model.
 
 Unfortunately, this suggestion is easier said than done. While visualizing some statistical models is trivial (e.g., regressions, $t$-tests, ANOVAs, multiple regression), visualizing others is not. One particularly troublesome class of models to visualize is latent variable models (LVMs). While researchers routinely visualize LVMs with conceptual models (e.g., via path diagrams), visualizing the fits of statistical models is not so easy. The former visualizations are common, while the latter are not [@Hallgren2019a]. The reason statistical visualizations of LVM are not intuitive is because they rely on unobserved variables [@bollen_structural_1989]. If the variables of interest are unobserved, how can we possibly visualize them? 
 
@@ -122,7 +122,7 @@ A second problem with plots of correlation/covariance residuals is they are extr
 \draw[<->] (x22) edge[out=270, in=270,<->, below] node {$r_1$} (x32)  ;
 \draw[<->] (x12) edge[out=270, in=270,<->, below] node {$r_2$} (x32.south east)  ;
 \end{tikzpicture}
-\caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. These two models make very different theoretical statements, but have the same implied correlation between the variables. Visualizing the raw data from these models can help identify structural problems for the model on the left.}
+\caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. In this figure, $a_1/2, b_1/2,$ and $c_1$ represent standardized factor loadings and $r_1/2$ represent correlations. These two models make very different theoretical statements, but have the same implied correlation between the variables. Visualizing the raw data from these models can help identify structural problems for the model on the left.}
 \label{fig:implied}
 \end{center}
 \end{figure}
@@ -144,7 +144,7 @@ Our approach will introduce five different plots: hopper plots for visualizing r
 
 ## Example Data
 
-To motivate our discussion/explanation of visualizing LVMs, we begin with a simulated dataset. Suppose the Jedi Council is attempting to identify Padawans who will make good Jedi Knights. To do so, they develop seven indicators (light saber score, fitness score, midichlorian levels, and a Jedi history exam, as well as three written exams completed at the end of Jedi training). Unbeknownst to the Jedi, these indicators measure two latent factors (force and Jedi), according to the relationships specified in Figure \@ref(fig:force). Notice that one variable (history) has cross loadings on both factors. Also notice the path from force to Jedi is represented by a curved *one*-headed arrow. This is to indicate there is a curvilinear relationship between the two variables. (Specifically, the relationship between Jedi and force was simulated to be a quadratic). 
+To motivate our discussion/explanation of visualizing LVMs, we begin with a simulated dataset. (Later in the paper, we will utilize `flexplavaan`'s tools on an actual dataset.) Suppose the Jedi Council is attempting to identify Padawans who will make good Jedi Knights. To do so, they develop seven indicators (light saber score, fitness score, midichlorian levels, and a Jedi history exam, as well as three written exams completed at the end of Jedi training). Unbeknownst to the Jedi, these indicators measure two latent factors (force and Jedi), according to the relationships specified in Figure \@ref(fig:force). Notice that one variable (history) has cross loadings on both factors. Also notice the path from force to Jedi is represented by a curved *one*-headed arrow. This is to indicate there is a curvilinear relationship between the two variables. (Specifically, the relationship between Jedi and force was simulated to be a quadratic). 
 
 
 <br>
@@ -246,6 +246,7 @@ Likewise, visualizing LVMs might follow similar conventions; the dots should rep
 How then does one identify the slope/intercept of the LVM’s model-implied fit? It is quite easy to do so when standard linear LVMs are used. Recall how our force factor has four indicators (e.g., saber, fitness, midichlorians, and history). To visualize the bivariate relationship between saber and fitness, for example, we can simply utilize the model-implied variance/covariance matrix. Recall the relationship between a covariance and a slope:
 
 $$\beta_{y|x} = \frac{\sigma(x,y)}{\sigma^2_x}$$
+\noindent Here, $\sigma(x,y)$ represents the covariance between $X$ and $Y$, and $\sigma_x^2$ represents the variance of $X$. 
 
 For our example, 
 
@@ -254,6 +255,8 @@ $$b_{\text{S}|\text{F}} = \frac{\hat{\sigma}_{\text{S},\text{F}}}{\hat{\sigma}^2
 \noindent where $S$ and $F$ represent "saber" and "fitness," respectively, and ${\hat{\sigma}^2_F}$ represents the *residual* variance of fitness. (Put differently, this is the expected slope between saber and fitness, unadjusted for unreliability). With the slope, one can then estimate the intercept using basic algebra:
 
 $$b_0=\overline{S}-\beta_{\text{S}|\text{F}}\times \overline{\text{F}}$$
+
+\noindent Here, $\bar{S}$ represents the mean of saber, $\beta_{S|F}$ represents the slope predicting saber from fitness, and $\bar{F}$ represents the mean of fitness.  
 
 Figure \@ref(fig:trail1) shows the LVM model-implied fit in red with a regression line in blue. Because the regression line minimizes the sum of squared errors, we would hope the LVM fitted line (red) closely approximates the regression line (blue). In this case, the two are very similar, though it may suggest the model (red line) possibly underestimates the relationship between the two variables. 
 
@@ -398,7 +401,7 @@ For illustration purposes, we're going to fit a second model that attempts to ad
 \end{center}
 \end{figure}
 
-Figure \@ref(fig:hopperModcomp) shows the residual plots, for all pairwise relationships. The new model seems to have reduced the largest residuals (though it has, in some instances, slightly increased the size of some residuals). 
+Figure \@ref(fig:hopperModcomp) shows the hopper plots, for all pairwise relationships. The new model seems to have reduced the largest residuals (though it has, in some instances, slightly increased the size of some residuals). 
 
 ```{r hopperModcomp, fig.cap="A hopper plot, but this time two models are being compared. The red line shows the residuals for the original model, while the blue lines show the residuals for the nonlinear model.", fig.width=7.5, fig.height=4, fig.align="center", out.width="60%"}
 residual_plots(force_fit, nonlinear)
@@ -463,20 +466,20 @@ While we do not necessarily recommend routinely fitting just/under-identified mo
 
 # Applied Example: Social Distress & Wellbeing
 
-To demonstrate the utility of `flexplavaan` with real-world data, we use publicly-accessible data from the NIH Toolbox Norming Study [@toolboxData]. Our primary aim is to estimate the effect of social distress on emotional well-being. We use scale scores to represent overall levels of constructs measured using multi-item questionnaires from the *Emotion Domain* [@salsman2013emotion]. For the purposes of this demonstration, we limit our sample to adults, defined as age 18 or older (*N* = 1,629). Our hypothesized model is depicted in Figure \@ref(fig:toolbox1):
+To demonstrate the utility of `flexplavaan` with real-world data, we use publicly-accessible data from the NIH Toolbox Norming Study [@toolboxData]. Our primary aim is to estimate the effect of social distress on emotional well-being. We use scale scores to represent overall levels of constructs measured using multi-item questionnaires from the *Emotion Domain* [@salsman2013emotion]. For the purposes of this demonstration, we limit our sample to adults, defined as age 18 or older (*N* = 1,629). Our hypothesized model is depicted in Figure \@ref(fig:toolbox1).
 
 ```{r toolbox1, fig.align='center',out.width='80%', fig.cap="Hypothesized Model of the Effect of Social Distress on Emotional Well-Being with the NIH Toolbox Norming Data Set. In this model, Perceived Rejection and Perceived Hostility are treated as causal indicators of the Social Distress latent factor. Estimated parameters have red labels."}
 knitr::include_graphics("toolboxDiagramPrimary.png")
 ```
 The model freely estimates 15 parameters labeled with red Greek letters. The primary response variable, $\eta_{2}$, measures emotional well-being as a latent factor with two reflective indicators: _life satisfaction_ ($y_3$) and _meaning_ ($y_4$). The primary exposure variable is social distress ($\eta_{1}$), measured with two reflective indicators: _loneliness_ ($y_1$) and _sadness_ ($y_2$). Social distress also has two causal indicators, _perceived hostility_ and _rejection_. Rather than assuming these two causal indicators are perfectly measured, we use reliability estimates reported in @cyranowski2013assessing to form single-indicator latent variables ($\xi_1$ and $\xi_2$) with error variances equal to $(1-\alpha_i)\times \sigma(\xi_i)$, where $\alpha_i$ is the estimate of reliability for measured variable $i$ [@hayduk2012should]. We allow the _sadness_ reflective indicator to have a direct causal effect on well-being, indicating the hypothesis that the association between sadness and well-being is not merely due to the having social distress as a common cause. 
 
-It is sometimes difficult to distinguish between causal and effect indicators for latent factors [@bollen2011three], and modelers may differ in how they conceptualize the same indicators. Figure \@ref(fig:toolbox2) presents an alternative model in which _perceived hostility_ and _perceived rejection_ are treated as reflective indicators of the _social distress_ factor, rather than causal indicators. In our hypothesized model, changes in perceived hostility and rejection lead to corresponding changes in levels of the social distress latent factor and its effect indicators; however, changes in social distress do not lead to changes in perceived hostility and rejection. In the alternative model, changes in the social distress factor lead to changes in perceived rejection and hostility. This difference between models has important clinical implications. In the hypothesized model, interventions reducing perceived rejection and hostility would lead to improvements in both social distress and well-being. The same is not true in the alternative model where rejection and hostility exert no causal influence on social distress or well-being. The alternative model estimates one fewer parameter than the hypothesized model (14 vs. 15) and, consequently, has one additional $df$. 
+Figure \@ref(fig:toolbox2) presents an alternative model in which _perceived hostility_ and _perceived rejection_ are treated as reflective indicators of the _social distress_ factor, rather than causal indicators. In this model, changes in the social distress factor lead to changes in perceived rejection and hostility (rather than changes in perceived hostility/rejection leading to changes in social distress). This difference between models has important clinical implications. In the hypothesized model, interventions reducing perceived rejection and hostility would lead to improvements in both social distress and well-being. The same is not true in the alternative model where rejection and hostility exert no causal influence on social distress or well-being. The alternative model estimates one fewer parameter than the hypothesized model (14 vs. 15) and, consequently, has one additional $df$. 
 
 ```{r toolbox2, fig.align='center',out.width='90%', fig.cap="Alternative Model of the Effect of Social Distress on Emotional Well-Being with the NIH Toolbox Norming Data Set. In this model, Perceived Rejection and Perceived Hostility are treated as reflective indicators of the Social Distress latent factor rather than causal indicators. Estimated parameters have red labels."}
 knitr::include_graphics("toolboxDiagramAlternative.png")
 ```
 
-We use `flexplavaan` to evaluate the tenability of these two models. All measured variables are treated as continuous. Preliminary graphical analyses showed evidence of floor and ceiling effects causing considerable skewness and kurtosis for several variables, so we used the [MLR estimator](https://lavaan.ugent.be/tutorial/est.html) in `lavaan` which provides robust standard errors and a scaled $\chi^2$ test statistic.  
+Preliminary graphical analyses showed evidence of floor and ceiling effects causing considerable skewness and kurtosis for several variables, so we used the [MLR estimator](https://lavaan.ugent.be/tutorial/est.html) in `lavaan` which provides robust standard errors and a scaled $\chi^2$ test statistic.  
 
 
 
@@ -524,16 +527,16 @@ papaja::apa_table(fitcomp[,-2], row.names=F,
 
 ```
 
-We evaluate the global fit of the competing models using the scaled $\chi^2$ fit test and three approximate fit indices: the RMSEA with a 90% confidence interval, the TLI, and the square root mean residual (SRMR). (See Table \@ref(tab:fitapplied)). The scaled $\chi^2$ tests for both models indicate that there are model-data discrepancies that exceed the conventional threshold (*p*=.05) used to distinguish chance vs. non-chance expectation, though the $\chi^2$ test statistic is considerably smaller in the hypothesized model. The approximate fit indices favor the hypothesized model. However, as we soon show, these fit statistics paint an overly simplified picture of the model. 
+We begin by evaluating the global fit of the competing models using the scaled $\chi^2$ fit test and three approximate fit indices: the RMSEA with a 90% confidence interval, the TLI, and the square root mean residual (SRMR). (See Table \@ref(tab:fitapplied)). The scaled $\chi^2$ tests for both models indicate that there are model-data discrepancies that exceed the conventional threshold (*p*=.05), though the $\chi^2$ test statistic is considerably smaller in the hypothesized model. The approximate fit indices favor the hypothesized model. However, as we soon show, these fit statistics paint an overly simplified picture of the model. 
 
 ```{r hopperreal, message=F, warning=F, fig.cap="Hopper plot of the hypothesized and alternative models.", fig.width=8, fig.height=4, fig.align="center", out.width="70%"}
 residual_plots( alternatefit, hypothfit) +
   theme_bw(base_size=10)
 ```
 
-We begin by generating hopper plots to visualize which bivariate correlations are most poorly approximated by the model. (See Figure \@ref(fig:hopperreal)). The hypothesized model yields smaller residual correlations for nearly all variable pairs, with the absolute value of all residual correlations < .03. The alternate model does a relatively poor job reproducing the bivariate associations among the indicators of *social distress*. For example, when including *hostility* and *rejection* as reflective indicators, the alternative model underestimates the *lonely-sad* and *reject-hostility* correlations, whereas the hypothesized model reproduces these relationships nearly perfectly. The hypothesized model also generally does better reproducing correlations between the *social distress* indicators and the *well-being* indicators. The alternative model most notably overestimates the *loneliness-meaning* correlation.
+We begin by generating hopper plots to visualize which bivariate correlations are most poorly approximated by the model (see Figure \@ref(fig:hopperreal)). The hypothesized model yields smaller residual correlations for nearly all variable pairs, with the absolute value of all residual correlations < .03. The alternate model does a relatively poor job reproducing the bivariate associations among the indicators of *social distress*. For example, the alternative model underestimates the *lonely-sad* and *reject-hostility* correlations, whereas the hypothesized model reproduces these relationships nearly perfectly. The hypothesized model also generally does better reproducing correlations between the *social distress* indicators and the *well-being* indicators. The alternative model most notably overestimates the *loneliness-meaning* correlation.
 
-At this point, we expect that many SEM users might end their critique of the hypothesized model. Most reviewers in applied journals would accept that the model provides a "close fit" to the data as all approximate fit indices are within conventional thresholds. With *N* > 1000, the significant $\chi^2$ test might be dismissed as overly sensitive, likely detecting negligible discrepancies between the model and data. However, we will pursue visual inspection of the model using `flexplavaan` and see what other insights we might glean from visual analysis.
+At this point, most scholars in applied journals would accept that the model provides a "close fit" to the data as all approximate fit indices are within conventional thresholds. With *N* > 1000, the significant $\chi^2$ test might be dismissed as overly sensitive, likely detecting negligible discrepancies between the model and data. However, we will pursue visual inspection of the model using `flexplavaan` and see what other insights we might glean from visual analysis.
 
 ```{r trailreal, fig.cap="Trail/DDPs of the hypothesized model for the indicators of the social distress latent factor.", out.width="90%", fig.align="center"}
 visualize(hypothfit, subset=c('PercHostility18_85','PercRejection18_85','Loneliness18_85','Sad18_85'))
@@ -545,13 +548,13 @@ First, we generate trail and disturbance dependence plots for our hypothesized m
 visualize(hypothfit, subset=c('PercHostility18_85','PercRejection18_85','Meaning18_85','LifeSatisfaction18_85'))
 ```
 
-Similar patterns can be seen when visualizing relationships between the social distress causal indicators (*rejection* and *hostility*) and the well-being reflective indicators (*meaning* and *satisfaction*) in Figure \@ref(fig:trailreal2). There are departures from the model-implied linear effects, seemingly driven by clusters of aberrant cases (e.g., participants reporting high levels of rejection *and* high levels of meaning). Once again, we have evidence our indicators may not share the same common factor. We can also view how the hypothesized and alternative models differ in their implications by including both models in the same trail and disturbance dependence plots, as in Figure \@ref(fig:tralboth).
+Similar patterns can be seen when visualizing relationships between the social distress causal indicators (*rejection* and *hostility*) and the well-being reflective indicators (*meaning* and *satisfaction*) in Figure \@ref(fig:trailreal2). There are departures from the model-implied linear effects, seemingly driven by clusters of aberrant cases (e.g., participants reporting high levels of rejection *and* high levels of meaning). Once again, we have evidence our indicators may not share the same common factor. 
 
 ```{r tralboth, fig.cap="Trail/DDPs for both the hypothesized and altnerative model for the distress latent factor."}
 visualize(hypothfit, alternatefit, subset=c('PercHostility18_85','PercRejection18_85','Loneliness18_85','Sad18_85'))
 ```
 
-The models produce generally similar trail and disturbance dependence plots. However, a close evaluation of the trail plots reveal how the models differ in their implications. The implied correlations between the hypothesized causal indicators and reflective indicators of the *social distress* factor are consistently stronger in the alternative model, where all four indicators are treated as reflective indicators. In contrast, the implied correlations between the two hypothesized causal indicators (*hostility* and *rejection*) and between the two hypothesized reflective indicators (*sadness* and *loneliness*) are stronger in the hypothesized model.  
+We can also view how the hypothesized and alternative models differ in their implications by including both models in the same trail and disturbance dependence plots, as in Figure \@ref(fig:tralboth). The models produce generally similar trail and disturbance dependence plots. However, a close evaluation of the trail plots reveal how the models differ in their implications. The implied correlations between the hypothesized causal indicators and reflective indicators of the *social distress* factor are consistently stronger in the alternative model, where all four indicators are treated as reflective indicators. In contrast, the implied correlations between the two hypothesized causal indicators (*hostility* and *rejection*) and between the two hypothesized reflective indicators (*sadness* and *loneliness*) are stronger in the hypothesized model.  
 
 
 Figure \@ref(fig:measurementrealdistress) plots measurement plots for the hypothesized model for the distress latent variable. These figures generally show that the model-implied relationships between latent/observed variables are consistent with the observed relationships between factor score estimates and the observed variables. However, there is some evidence of curvilinearity. This is particularly notable for the hostility, meaning, and life-satisfaction indicators. This could be for multiple reasons: it may be that the distress to well-being latent variable relationship is nonlinear. Or it may be that relationships from the indicators to the latent variables are curvilinear. Or, perhaps, this may be at least partly an artifact of the floor effect for the hostility variable, resulting in an underestimate of the effect of hostility on the social distress factor. There also appear to be a cluster of outliers -- individuals reporting low levels of meaning *and* low levels of distress -- pulling the loess line for the plot of distress against meaning away from the implied linear relationship.  
@@ -580,9 +583,6 @@ infplot
 ```
 
 This example demonstrates how `flexplavaan`'s visualization functions can facilitate deeper evaluation of LVMs than numeric fit indices alone. Hopper plots overlaying the residual covariances from our hypothesized and alternative models showed plainly that our hypothesized model consistently better reproduced bivariate associations than the alternative model. Additionally, the Hopper plot showed whether discrepancies were due to over- vs. under-estimation of associations. Trail, disturbance dependence, and measurement plots alerted us to potentially problematic distributional properties (i.e., floor and ceiling effects) and high-leverage outliers. These suggest possible modifications to the model, including nonlinear indicator effects, nonlinear latent effects, and/or disaggregating indicators. This example is instructive as it utilized data from real-world instruments with unwieldy distributions common in psychology applications. When used in conjunction with the `influence.SEM` package [@influenceSEM], we identified cases for which the model performed poorly, giving us hypotheses about potential modifications to our theory and model. 
-
-Modelers relying exclusively on conventional cutoffs on the approximate fit indices -- all of which had values indicative of a well-fitting model by conventional standards -- would be unlikely to appreciate the potential shortcomings of the hypothesized model. Importantly, `fleplavaan` could be helpful in identifying problems in models even when the $\chi^2$ test is not significant, such as when one is modeling just-identified models, or even models with smaller sample sizes. 
-
 
 
 ```{r echo=F}
@@ -625,9 +625,10 @@ Hopefully, throughout this paper, we have convinced the reader that existing met
 install.packages("devtools")
 ```
 
-Then, using the devtools package, the `flexplavaan` package can be installed from github:
+Then, using the devtools package, users must install both `flexplot` and `flexplavaan` using github: 
 
 ```{r, echo=TRUE, eval=FALSE}
+devtools::install_github("dustinfife/lavaan")
 devtools::install_github("dustinfife/flexplavaan")
 ```
 
@@ -635,6 +636,7 @@ devtools::install_github("dustinfife/flexplavaan")
 
 ```{r, echo=TRUE, eval=FALSE}
 require(flexplavaan)
+require(lavaan)
 
 model = "
 Force =~ fitness + saber + midichlorian + force_history

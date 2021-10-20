@@ -104,6 +104,7 @@ visualize.lavaan = function(object, object2=NULL,
                                            alpha = .2, plot="trace", label_names=nms, ...)),
             diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, 
                                           alpha = .2, plot="histogram", label_names=nms, ...)))     
+    p = p + labs(title="Trail Plots", subtitle="Red=Implied, Blue=Observed")
     return(p)
     
   }

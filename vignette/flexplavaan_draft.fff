@@ -30,7 +30,7 @@
 \draw[<->] (x22) edge[out=270, in=270,<->, below] node {$r_1$} (x32)  ;
 \draw[<->] (x12) edge[out=270, in=270,<->, below] node {$r_2$} (x32.south east)  ;
 \end{tikzpicture}
-\caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. These two models make very different theoretical statements, but have the same implied correlation between the variables. Visualizing the raw data from these models can help identify structural problems for the model on the left.}
+\caption{The model on the left is the user-specified model, while the model on the right is the data-generating model. In this figure, $a_1/2, b_1/2,$ and $c_1$ represent standardized factor loadings and $r_1/2$ represent correlations. These two models make very different theoretical statements, but have the same implied correlation between the variables. Visualizing the raw data from these models can help identify structural problems for the model on the left.}
 \label{fig:implied}
 \end{center}
 \end{figure*}
