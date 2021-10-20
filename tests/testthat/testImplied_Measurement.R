@@ -8,7 +8,9 @@ test_that("implied_measurement works", {
   vdiffr::expect_doppelganger("implied_measurement plot works", implied_measurement(fit_bollen, latent="Eta1")[[1]])
   vdiffr::expect_doppelganger("implied_measurement with diff limit works", implied_measurement(fit_bollen, latent="Eta1", limit=3)[[1]])
   vdiffr::expect_doppelganger("implied_measurement for two models", 
-                      implied_measurement(force_fit, force_cross, "jedi_score")[[1]])
+                      implied_measurement(flexplavaan_to_lavaan(force_fit), 
+                                          flexplavaan_to_lavaan(force_cross), "Force")[[1]])
+  lavNames(flexplavaan_to_lavaan(force_cross), type = "lv")
   vdiffr::expect_doppelganger("implied_measurement for two non-nested", 
                       implied_measurement(force_fit, force_exp, "jedi_score")[[1]])
 })

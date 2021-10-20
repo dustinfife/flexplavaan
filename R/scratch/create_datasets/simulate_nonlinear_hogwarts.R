@@ -40,4 +40,9 @@ hogwarts_survival = data.frame(potions = potions, history=history, herbology = h
 
 summary(hogwarts_survival)
 usethis::use_data(hogwarts_survival, overwrite = TRUE)
-
+hogwarts_survival = data.frame(lapply(hogwarts_survival, function(x) if (mean(x)>10) round(x,0) else (round(x,2))))
+hogwarts_survival$survived = factor(hogwarts_survival$survived,
+                                    levels=c(0,1), labels=c("no", "yes"))
+head(hogwarts_survival)
+write.csv(hogwarts_survival, file="~/Downloads/hogwarts.csv", row.names=F)
+head(hogwarts_survival)

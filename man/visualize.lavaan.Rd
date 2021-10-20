@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualize.R
 \name{visualize.lavaan}
 \alias{visualize.lavaan}
-\alias{visualize.flexplavaan}
+\alias{visualize}
 \title{Visualize a linear lavaan model}
 \usage{
 \method{visualize}{lavaan}(
@@ -12,6 +12,7 @@
   plot = c("all", "disturbance", "model", "measurement", "latent"),
   formula = NULL,
   sort_plots = TRUE,
+  model_names = NULL,
   ...
 )
 }
@@ -32,6 +33,8 @@ Option is ignored for the other plots}
 
 \item{sort_plots}{Should the axes be sorted according to the size of the residuals? Setting to 
 TRUE (default) will plot the variables with the largest residuals first}
+
+\item{model_names}{What should the legend be named for the two lines? Defaults to NULL.}
 
 \item{...}{Other arguments passed to flexplot}
 }

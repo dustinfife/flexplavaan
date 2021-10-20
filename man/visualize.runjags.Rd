@@ -2,6 +2,7 @@
 % Please edit documentation in R/visualize.R
 \name{visualize.runjags}
 \alias{visualize.runjags}
+\alias{visualize}
 \title{Visualize a runjags model}
 \usage{
 \method{visualize}{runjags}(
