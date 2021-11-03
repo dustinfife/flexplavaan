@@ -151,7 +151,7 @@ measurement_plot = function(fitted, latent_vars=NULL, ...) {
   plot_list = latent_index %>% purrr::map(function(.x, ...) { suppressMessages(apply_measurement_plot(.x, fitted, ...))}, ...)
   names(plot_list) = lavNames(fitted, type="lv")[latent_index]
   msg = paste0("There are ", length(latent_index), " measurement plots. I'm going to list the names of them below so you know how to access them. \n")
-  cat(msg)
+  message(msg)
   return(plot_list)
 }
 

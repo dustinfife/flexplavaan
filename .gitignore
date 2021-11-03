@@ -2,4 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
+*.svg
 data/custom_bayes_fit_linear.rds

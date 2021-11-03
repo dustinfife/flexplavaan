@@ -49,3 +49,4 @@ test_that("get_names works", {
   expect_true(get_names(flexplavaan_to_lavaan(fit_bollen))[[1]][1] == "y1")
   expect_true(get_names(flexplavaan_to_lavaan(fit_bollen))[[2]][1] == "Eta1")
 })
+

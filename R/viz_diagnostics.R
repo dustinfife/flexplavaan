@@ -142,7 +142,7 @@ viz_diagnostics <- function(data, mapping,
         
         
         n = new_data %>% 
-          tidyr::gather(key="Model", value=y, c(!!y,y2_name)) %>% 
+          tidyr::gather(key="Model", value=y, all_of(c(!!y,y2_name))) %>% 
           dplyr::mutate(Model = factor(Model, levels=c(!!y, y2_name), labels=label_names))
         
         p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, suppress_smooth = T, ...) + 
@@ -156,7 +156,8 @@ viz_diagnostics <- function(data, mapping,
     } else if (plot=="disturbance") {
       ### convert data to long format to make dots different
       if (!is.null(fit.lavaan2)){
-        data2 = data[,c(x,"residuals", resid_name)] %>% tidyr::gather("model", "residuals", c("residuals", resid_name)) %>% setNames(c(x,"model","residuals"))
+        
+        data2 = data[,c(x,"residuals", resid_name)] %>% tidyr::gather("model", "residuals", c("residuals", all_of(resid_name))) %>% setNames(c(x,"model","residuals"))
         data2$model = factor(data2$model, levels=c("residuals",resid_name), labels=label_names)
         f = make.formula("residuals", c(x, "model"))
         p = flexplot::flexplot(f, data=data2, alpha = .2,...) + geom_hline(yintercept = 0) 
