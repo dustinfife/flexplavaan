@@ -21,7 +21,7 @@ return_residual_dataset = function(fitted, max_val = 0.01) {
 }
 
 combine_residual_datasets = function(fitted, fitted2=NULL, max_val=.01) {
-  #browser()
+  
   if (is.null(fitted2)) return(return_residual_dataset(fitted, max_val))
 
   # get the first dataset, but set maxval to zero

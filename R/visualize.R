@@ -31,7 +31,7 @@
 #'   visualize(fit.lavaan)
 visualize.lavaan = function(object, object2=NULL, 
                             subset = NULL, 
-                            plot=c("all", "disturbance", "model", "measurement", "latent"), 
+                            plot=c("all", "disturbance", "model", "measurement", "latent", "residual"), 
                             formula = NULL,
                             sort_plots = TRUE,
                             model_names = NULL,...){
@@ -39,7 +39,7 @@ visualize.lavaan = function(object, object2=NULL,
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
   
-  plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent"))
+  plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent", "residual"))
   observed = lavNames(object_l)
   d = data.frame(lavInspect(object_l, "data"))
   names(d) = observed
@@ -85,7 +85,7 @@ visualize.lavaan = function(object, object2=NULL,
   }  
   
   if (plot == "measurement"){
-    p = measurement_plot(object_l, subset, ...)  
+    p = implied_measurement(object_l, object2_l, ...)  
     return(p)
   }
   
@@ -107,6 +107,10 @@ visualize.lavaan = function(object, object2=NULL,
     p = p + labs(title="Trail Plots", subtitle="Red=Implied, Blue=Observed")
     return(p)
     
+  }
+  
+  if (plot == "residuals") {
+    p = residual_plots(object_l, object2_l)
   }
   
   
