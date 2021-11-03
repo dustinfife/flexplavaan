@@ -76,6 +76,7 @@ latent_plot_only = function(f, data, se_data, fitted, method="lm",...) {
   
   
   ## see if alpha is set
+  list(...)
   alpha_default = return_alpha(...)
 
   # get fit implied by the model
@@ -84,7 +85,7 @@ latent_plot_only = function(f, data, se_data, fitted, method="lm",...) {
     dv = f_vars[1]; iv = f_vars[-1]
     f = flexplot:::make_flexplot_formula(c(iv, "model"), dv, data, ...)
   }
-  p = flexplot(f, data, se=F, ghost.line="red", alpha=0, method=method,...) + 
+  p = flexplot(f, data, se=F, ghost.line="red", sample=0, method=method,...) + 
     geom_point() +
     alpha_default[1] +
     alpha_default[2]
