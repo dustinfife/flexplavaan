@@ -40,6 +40,10 @@ visualize.lavaan = function(object, object2=NULL,
   object2_l = flexplavaan_to_lavaan(object2)
   
   plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent", "residual"))
+  
+  if (plot == "all") {
+    
+  }
   observed = lavNames(object_l)
   d = data.frame(lavInspect(object_l, "data"))
   names(d) = observed
@@ -63,14 +67,7 @@ visualize.lavaan = function(object, object2=NULL,
   nms = get_and_check_names(model_names, object, object2)
 
   if (plot=="all"){
-    p = ggpairs(d[,observed], legend=legend,
-            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms,...)),
-            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="trace", label_names=nms, ...)),
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram", label_names=nms, ...)))
-    if (is.null(object2)) {
-      p = p + labs(title="Trail/DDP Plots", subtitle="Red=Implied, Blue=Observed")
-    }  
-    return(p)
+
   } 
   
   if (plot == "disturbance"){
@@ -111,11 +108,64 @@ visualize.lavaan = function(object, object2=NULL,
   
   if (plot == "residuals") {
     p = residual_plots(object_l, object2_l)
+    return(p)
   }
-  
-  
-  
+
 } 
+
+
+# this function sorts the DATA according to how the user specifies (for scatterplot matrix)
+sort_dataset = function(object, sort_plots, plot) {
+  variable_order = sort_variables(object, sort_plots, plot, observed)
+  d = get_lav_data(object) %>% dplyr::select(all_of(variable_order))
+  return(d)
+}
+
+# this function sorts the *observed vector* according to how the user specifies (for scatterplot matrix)
+sort_vector = function(observed, object, sort_plots, plot) {
+  variable_order = sort_variables(object, sort_plots, plot, observed)
+  d = get_lav_data(object) %>% dplyr::select(all_of(variable_order))
+  return(d)
+}
+
+sort_variables = function(object, sort_plots, plot, observed) {
+  condition = sort_plots & plot %in% c("all", "disturbance", "model")
+  variable_order = ifelse(rep(condition, times=length(observed)), block_model_residuals(object), 1:length(observed))
+  return(variable_order)
+}
+
+get_lav_data = function(object) {
+  observed = lavNames(object_l)
+  d = data.frame(lavInspect(object_l, "data"))
+  names(d) = observed
+  return(d)
+}
+
+get_legend = function(object2) {
+  if (is.null(object2)) return(TRUE) else return(c(1,2))
+}
+
+plot_scatter_matrix = function(object_l, object2_l, subset) {
+
+  # specify subsets
+  observed = lavNames(object_l) %>% get_subset(subset)
+  observed = sort_vector(observed, object_l, sort_plots=TRUE, plot="all")
+  
+  # get legend
+  legend = get_legend(object2_l)
+  
+  ## get names
+  nms = get_and_check_names(model_names, object, object2)
+  
+  p = ggpairs(d[,observed], legend=legend,
+              lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms,...)),
+              upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="trace", label_names=nms, ...)),
+              diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram", label_names=nms, ...)))
+  if (is.null(object2)) {
+    p = p + labs(title="Trail/DDP Plots", subtitle="Red=Implied, Blue=Observed")
+  }  
+  return(p)
+}
 
 #' Visualize a flexplavaan model
 #'
