@@ -46,7 +46,7 @@ get_standard_errors = function(fitted) {
   latent_predicted = data.frame(lavPredict(fitted))
   
   # estimate standard errors
-  cat("Estimating Standard Errors...\n")
+  #cat("Estimating Standard Errors...\n")
   se_data = 1:length(latent_names) %>% 
     purrr::map(~estimate_standard_errors(.x,fitted)$sd_imp) %>%  # returns list of se for each latent var
     data.frame

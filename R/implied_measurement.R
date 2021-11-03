@@ -62,7 +62,7 @@ prepare_measurement_data = function(model) {
   
   # convert from wide to long format
   lav_data_std = lav_data %>% 
-    pivot_longer(cols=obs_names, names_to="Variable", values_to="Observed") %>% 
+    pivot_longer(cols=all_of(obs_names), names_to="Variable", values_to="Observed") %>% 
     data.frame %>% 
     purrr::set_names(c(latent_names, "Variable", "Observed"))
   

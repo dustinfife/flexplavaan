@@ -124,12 +124,15 @@ visualize.lavaan = function(object, object2=NULL,
 #' @export
 visualize.flexplavaan = function(object, object2=NULL, 
                                  subset = NULL, 
-                                 plot=c("all", "disturbance", "model", "measurement", "latent"), 
+                                 plot = "all", 
                                  formula = NULL,
                                  sort_plots = TRUE,
                                  model_names = NULL,...){
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
+
+  plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent", "residual"))
+
   model_names = get_and_check_names(model_names, object, object2)
   visualize.lavaan(object, object2, subset, plot, formula, sort_plots, model_names = model_names,...)
 }  

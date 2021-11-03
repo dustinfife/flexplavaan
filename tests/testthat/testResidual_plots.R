@@ -1,7 +1,7 @@
 
 context("Residual plots function")
 set.seed(2323)
-
+options(warn=-1)
 require(lavaan)
 
 test_that("name_vechs works", {
@@ -26,3 +26,4 @@ test_that("residual_plots works", {
   vdiffr::expect_doppelganger("multiple residual_plots",
                               residual_plots(fit_twofactor, fit_twofactor_2))
 })  
+options(warn=0)
