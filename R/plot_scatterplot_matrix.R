@@ -18,7 +18,7 @@ plot_scatter_matrix = function(object1, object2=NULL, subset=NULL, model_names=N
   nms = get_and_check_names(model_names, object1_l, object2_l)
   
   ## set the class
-  x = set_model_class(object1_l, object2_l, names, legend, d, nms, plot=plot)
+  x = set_model_class(object1_l=object1_l, object2_l=object2_l, names=names, legend=legend, d=d, nms=nms, plot=plot)
   matrix_plot(x, ...)
 
 }
