@@ -10,11 +10,11 @@ test_that("check_models works", {
 })
 
 test_that("get_subset works", {
-  expect_true(length(get_subset(NULL, letters[1:10]))==10)
-  expect_error(get_subset(11, letters[1:10]))
-  expect_true(get_subset(3, letters[1:10])=="c")
-  expect_error(get_subset("q", letters[1:10]))
-  expect_true(length(get_subset(c("a", "b"), letters[1:10]))==2)
+  expect_true(length(get_subset(letters[1:10], NULL))==10)
+  expect_error(get_subset(letters[1:10], 11))
+  expect_true(get_subset(letters[1:10], 3)=="c")
+  expect_error(get_subset(letters[1:10], "q"))
+  expect_true(length(get_subset(letters[1:10], c("a", "b")))==2)
 })
 
 test_that("find_latents_for_observed works", {
