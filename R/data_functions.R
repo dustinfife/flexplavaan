@@ -1,14 +1,14 @@
 # this function sorts the DATA according to how the user specifies (for scatterplot matrix)
-sort_dataset = function(object, sort_plots, plot) {
-  variable_order = sort_variables(object, sort_plots, plot)
+sort_dataset = function(object, sort_plots) {
+  variable_order = sort_variables(object, sort_plots)
   d = get_lav_data(object) %>% dplyr::select(all_of(variable_order))
   return(d)
 }
 
 # this function sorts the *observed vector* according to how the user specifies (for scatterplot matrix)
-sort_vector = function(object, sort_plots, plot) {
+sort_vector = function(object, sort_plots) {
   observed = lavNames(object, type="ov")
-  variable_order = sort_variables(object, sort_plots, plot, observed)
+  variable_order = sort_variables(object, sort_plots, observed)
   d = get_lav_data(object) %>% dplyr::select(all_of(variable_order))
   return(d)
 }
@@ -28,11 +28,10 @@ get_subset = function(varnames, subset) {
   return(varnames[varnames %in% subset])
 }
 
-sort_variables = function(object, sort_plots, plot) {
+sort_variables = function(object, sort_plots) {
   
-  plot_type = plot %in% c("all", "disturbance", "model")
-  repeated_condition = rep(sort_plots & plot_type, times=length(lavNames(object)))
-  variable_order = ifelse(repeated_condition, 
+  vector_of_booleans = rep(sort_plots, times=length(lavNames(object)))
+  variable_order = ifelse(vector_of_booleans, 
                           block_model_residuals(object), 
                           1:length(lavNames(object)))
   return(variable_order)
