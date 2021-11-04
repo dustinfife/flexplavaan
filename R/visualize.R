@@ -114,62 +114,17 @@ visualize.lavaan = function(object, object2=NULL,
 } 
 
 
-# this function sorts the DATA according to how the user specifies (for scatterplot matrix)
-sort_dataset = function(object, sort_plots, plot) {
-  variable_order = sort_variables(object, sort_plots, plot, observed)
-  d = get_lav_data(object) %>% dplyr::select(all_of(variable_order))
-  return(d)
-}
-
-# this function sorts the *observed vector* according to how the user specifies (for scatterplot matrix)
-sort_vector = function(observed, object, sort_plots, plot) {
-  variable_order = sort_variables(object, sort_plots, plot, observed)
-  d = get_lav_data(object) %>% dplyr::select(all_of(variable_order))
-  return(d)
-}
-
-sort_variables = function(object, sort_plots, plot, observed) {
-  condition = sort_plots & plot %in% c("all", "disturbance", "model")
-  variable_order = ifelse(rep(condition, times=length(observed)), block_model_residuals(object), 1:length(observed))
-  return(variable_order)
-}
-
-get_lav_data = function(object) {
-  observed = lavNames(object_l)
-  d = data.frame(lavInspect(object_l, "data"))
-  names(d) = observed
-  return(d)
-}
-
-get_legend = function(object2) {
-  if (is.null(object2)) return(NULL) else return(c(1,2))
-}
 
 
-#plot_scatter_matrix(fit_bollen$lavaan)
-#plot_scatter_matrix(fit_twofactor$lavaan, fit_twofactor_2$lavaan, subset=c("x1", "x2", "x3"))
-plot_scatter_matrix = function(object_l, object2_l=NULL, subset=NULL, model_names=NULL) {
 
-  # specify subsets
-  d = lavNames(object_l) %>% get_subset(subset) %>% sort_vector(object_l, sort_plots=TRUE, plot="all")
-  
-  # include a check for all names in both datasets, based on subset
-  browser()
-  
-  # get legend
-  legend = get_legend(object2_l)
-  
-  ## get names
-  nms = get_and_check_names(model_names, object_l, object2_l)
 
-  p = ggpairs(d, legend=legend,
-              lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms)),
-              upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="trace", label_names=nms)),
-              diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram", label_names=nms)))
-  if (!is.null(object2_l)) return(p)
-  return(p + labs(title="Trail/DDP Plots", subtitle="Red=Implied, Blue=Observed"))
-  
-}
+
+
+
+
+
+
+
 
 #' Visualize a flexplavaan model
 #'

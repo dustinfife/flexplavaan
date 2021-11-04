@@ -1,7 +1,4 @@
-flexplavaan_to_lavaan = function(fitted) {
-  if (class(fitted)=="flexplavaan") return(fitted$lavaan)
-  return(fitted)
-}
+
 get_names = function(model) {
   obs_names = lavNames(model)
   latent_names = lavNames(model, type="lv")
@@ -126,14 +123,7 @@ random_var_name = function(size=5) {
 }
 
 
-get_subset = function(varnames, subset) {
-  
-  if (is.null(subset)) return(varnames)
-  if (is.numeric(subset) & any(subset>max(length(varnames)))) stop("You're trying to index a varname using a number larger than the length of varname")
-  if (!all(subset %in% varnames) & !is.numeric(subset)) stop("One or more of the variables you supplied in subset is not in varnames.")
-  if (is.numeric(subset)) return(varnames[subset])
-  return(varnames[varnames %in% subset])
-}
+
 
 random_var_name_check = function(varnames) {
   newname = random_var_name(5)
