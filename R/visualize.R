@@ -147,20 +147,21 @@ get_legend = function(object2) {
 
 
 #plot_scatter_matrix(fit_bollen$lavaan)
+#plot_scatter_matrix(fit_twofactor$lavaan, fit_twofactor_2$lavaan, subset=c("x1", "x2", "x3"))
 plot_scatter_matrix = function(object_l, object2_l=NULL, subset=NULL, model_names=NULL) {
 
   # specify subsets
   d = lavNames(object_l) %>% get_subset(subset) %>% sort_vector(object_l, sort_plots=TRUE, plot="all")
+  
+  # include a check for all names in both datasets, based on subset
+  browser()
   
   # get legend
   legend = get_legend(object2_l)
   
   ## get names
   nms = get_and_check_names(model_names, object_l, object2_l)
-  
-  ## get dataset
-  d = get_lav_data(object_l)
-  
+
   p = ggpairs(d, legend=legend,
               lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms)),
               upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="trace", label_names=nms)),
