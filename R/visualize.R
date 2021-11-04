@@ -55,7 +55,7 @@ visualize.lavaan = function(object, object2=NULL,
   observed = observed[variable_order]
   
   # specify subsets
-  observed = get_subset(subset, observed)
+  observed = get_subset(observed, subset)
   if (!is.null(object2)) {
     legend=c(1,2)
   } else {
@@ -66,21 +66,10 @@ visualize.lavaan = function(object, object2=NULL,
   ## get names
   nms = get_and_check_names(model_names, object, object2)
 
-  if (plot=="all"){
-
+  if (plot %in% c("all", "trail", "ddp")){
+    return(plot_scatter_matrix(object_l, object2_l, subset, model_names, plot))
   } 
-  
-  if (plot == "disturbance"){
-    p = ggpairs(d[,observed], legend=legend,
-            lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms, ...)),
-            upper = NULL,
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram", label_names=nms, ...)))    
-    if (is.null(object2_l)) {
-      p = p + labs(title="DD Plots", subtitle="Red=Implied, Blue=Observed")
-    }  
-    return(p)
-  }  
-  
+
   if (plot == "measurement"){
     p = implied_measurement(object_l, object2_l, ...)  
     return(p)
@@ -94,35 +83,12 @@ visualize.lavaan = function(object, object2=NULL,
     return(p)
   }  
 
-  if (plot == "model") {
-    p = ggpairs(d[,observed], legend=legend,
-            lower = NULL,
-            upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, 
-                                           alpha = .2, plot="trace", label_names=nms, ...)),
-            diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, 
-                                          alpha = .2, plot="histogram", label_names=nms, ...)))     
-    p = p + labs(title="Trail Plots", subtitle="Red=Implied, Blue=Observed")
-    return(p)
-    
-  }
-  
   if (plot == "residuals") {
     p = residual_plots(object_l, object2_l)
     return(p)
   }
 
 } 
-
-
-
-
-
-
-
-
-
-
-
 
 
 
