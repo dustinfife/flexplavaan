@@ -142,29 +142,32 @@ get_lav_data = function(object) {
 }
 
 get_legend = function(object2) {
-  if (is.null(object2)) return(TRUE) else return(c(1,2))
+  if (is.null(object2)) return(NULL) else return(c(1,2))
 }
 
-plot_scatter_matrix = function(object_l, object2_l, subset) {
+
+#plot_scatter_matrix(fit_bollen$lavaan)
+plot_scatter_matrix = function(object_l, object2_l=NULL, subset=NULL, model_names=NULL) {
 
   # specify subsets
-  observed = lavNames(object_l) %>% get_subset(subset)
-  observed = sort_vector(observed, object_l, sort_plots=TRUE, plot="all")
+  d = lavNames(object_l) %>% get_subset(subset) %>% sort_vector(object_l, sort_plots=TRUE, plot="all")
   
   # get legend
   legend = get_legend(object2_l)
   
   ## get names
-  nms = get_and_check_names(model_names, object, object2)
+  nms = get_and_check_names(model_names, object_l, object2_l)
   
-  p = ggpairs(d[,observed], legend=legend,
-              lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms,...)),
-              upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="trace", label_names=nms, ...)),
-              diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram", label_names=nms, ...)))
-  if (is.null(object2)) {
-    p = p + labs(title="Trail/DDP Plots", subtitle="Red=Implied, Blue=Observed")
-  }  
-  return(p)
+  ## get dataset
+  d = get_lav_data(object_l)
+  
+  p = ggpairs(d, legend=legend,
+              lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2,invert.map=TRUE, plot="disturbance", label_names=nms)),
+              upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="trace", label_names=nms)),
+              diag = list(continuous = wrap(viz_diagnostics,fit.lavaan = object_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram", label_names=nms)))
+  if (!is.null(object2_l)) return(p)
+  return(p + labs(title="Trail/DDP Plots", subtitle="Red=Implied, Blue=Observed"))
+  
 }
 
 #' Visualize a flexplavaan model
