@@ -1,7 +1,7 @@
 #fitted = fit_twofactor
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
-latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, method="loess", model_names,...) {
+latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, method="loess", ...) {
 
   
   fitted_l = flexplavaan_to_lavaan(fitted)
@@ -14,6 +14,8 @@ latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, me
 
   # compute standard errors 
   se_data = check_for_sd_true(estimate_se, fitted, latent_names)
+  
+  model_names = get_and_check_names(fitted, fitted2)
 
   # add second dataset
   if (!is.null(fitted2_l)) {
