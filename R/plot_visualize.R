@@ -10,8 +10,6 @@
 #' "trail", "residuals", "measurement", or "latent"
 #' @param formula For latent plots, the user can specify a \link[flexplot]{flexplot} formula. 
 #' Option is ignored for the other plots
-#' @param sort_plots Should the axes be sorted according to the size of the residuals? Setting to 
-#' TRUE (default) will plot the variables with the largest residuals first
 #' @param ... Other arguments passed to flexplot
 #' @import GGally
 #' @export
@@ -30,13 +28,12 @@
 visualize.lavaan = function(object, object2=NULL, 
                             subset = NULL, 
                             plot = "all", 
-                            formula = NULL,
-                            sort_plots = TRUE,...){
+                            formula = NULL,...){
 
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
   
-  plot = match.arg(plot, c("all", "ddp", "trail", "disturbance", "residuals", "measurement", "trail"))
+  plot = match.arg(plot, c("all", "ddp", "trail", "disturbance", "residuals", "measurement", "latent"))
  
   if (plot %in% c("all", "trail", "ddp")){
     return(plot_scatter_matrix(object_l, object2_l, subset, plot))#%>% modify_model_names(get_and_check_names(NULL, object, object2)))
