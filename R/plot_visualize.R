@@ -6,8 +6,8 @@
 #' the fit of two different models. 
 #' @param subset Either a vector of numbers or variable names indicating which variables
 #' should be plotted. Defaults to NULL
-#' @param plot what should be plotted? User can specify "all" (default), "disturbance", 
-#' "model", "measurement", "latent", or "residual"
+#' @param plot what should be plotted? User can specify "all" (default), "ddp", 
+#' "trail", "residuals", "measurement", or "latent"
 #' @param formula For latent plots, the user can specify a \link[flexplot]{flexplot} formula. 
 #' Option is ignored for the other plots
 #' @param sort_plots Should the axes be sorted according to the size of the residuals? Setting to 
@@ -36,7 +36,7 @@ visualize.lavaan = function(object, object2=NULL,
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
   
-  plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent", "residuals", "ddp", "trail"))
+  plot = match.arg(plot, c("all", "ddp", "trail", "disturbance", "residuals", "measurement", "trail"))
  
   if (plot %in% c("all", "trail", "ddp")){
     return(plot_scatter_matrix(object_l, object2_l, subset, plot))#%>% modify_model_names(get_and_check_names(NULL, object, object2)))

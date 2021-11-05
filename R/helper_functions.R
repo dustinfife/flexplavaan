@@ -1,3 +1,4 @@
+# this identifies whether a second object is there. if not, it returns a NULL legend
 get_legend = function(object2) {
   if (is.null(object2)) return(NULL) else return(c(1,2))
 }
@@ -39,47 +40,10 @@ block_model_residuals = function(fitted) {
   return(column_order)
 }
 
-reverse_rank = function(x) {
-  rank(x*-1 )
-}
-
-# taken from OpenMx
-vechs = function(x) {
-  return(x[lower.tri(x, diag=FALSE)])
-}
-
-# taken from OpenMx
-vech2full = function (x) 
-{
-  if (is.matrix(x)) {
-    if (nrow(x) > 1 && ncol(x) > 1) {
-      stop("Input to the full vech2full must be a (1 x n) or (n x 1) matrix.")
-    }
-    dimension <- max(dim(x))
-  }
-  else if (is.vector(x)) {
-    dimension <- length(x)
-  }
-  else {
-    stop("Input to the function vech2full must be either a matrix or a vector.")
-  }
-  k <- sqrt(2 * dimension + 0.25) - 0.5
-  ret <- matrix(0, nrow = k, ncol = k)
-  if (nrow(ret) != k) {
-    stop("Incorrect number of elements in vector to construct a matrix from a half-vectorization.")
-  }
-  ret[lower.tri(ret, diag = TRUE)] <- as.vector(x)
-  ret[upper.tri(ret)] <- t(ret)[upper.tri(ret)]
-  return(ret)
-}
-
 #varnames = letters[1:5]
 random_var_name = function(size=5) {
   letters[1:26] %>% sample(size=size, replace=T) %>% paste0(collapse="")
 }
-
-
-
 
 random_var_name_check = function(varnames) {
   newname = random_var_name(5)
@@ -87,21 +51,6 @@ random_var_name_check = function(varnames) {
     newname = random_var_name(5)
   }
   newname
-}
-
-residualize.lowess = function(x,y, data, return.fitted){
-  f = flexplot::make.formula(y, x)
-  lfit = loess(f, newdata, degree=2)
-  
-  # create a functional version of the lowess fit
-  lfun = approxfun(lfit)
-  fitted = lfun(x)
-  resid = y-fitted
-  if(return.fitted) {
-    return(fitted)
-  } else {
-    return(resid)
-  }
 }
 
 extract_xy_mapping = function(mapping, invert.map, data, observed, latent=NULL){
@@ -156,44 +105,13 @@ joint_bin = function(i,xbin,ybin,latent){
   }  
 }
 
-ss = function(x){
-  sum((x-mean(x))^2)
-}
 
-logistic = function(x, mx, x0, x1, y0, y1, rxx, ryy){
-  x[x>mx] = mx-.1 
-  slope = -1*(y1/x1)*sqrt(rxx*ryy)
-  mx/(1 + exp(slope*(x-x0) - y1*y0))
-}
 
 # get the factors associated with this i variable
 find_latents_for_observed = function(i, fitted) {
   row = fitted@Model@GLIST$lambda[i,]
   latent = lavNames(fitted, type="lv")[round(row, digits=4)!=0]
   return(latent)
-}
-
-inv.logistic = function(x, mx, x0, x1, y0, y1, rxx, ryy){
-  x[x>mx] = mx-.1 
-  slope = (y1/x1)*sqrt(rxx*ryy)
-  y0 - slope*(log((mx/x)-1) + x0*y1)
-}
-
-linear = function(x, x0, x1, y0, y1, rxx, ryy, mx=NULL){
-  y0 + (y1/x1)*sqrt(rxx*ryy)*(x-x0)
-}
-
-empirical_reliability = function(latent, observed, loess=FALSE){
-  if (loess) {
-    predicted = cbind(latent,observed) %>% 
-      data.frame %>% setNames(c("latent", "observed"))  
-    predicted = loess(formula = observed~latent, data=predicted, degree=2)$fitted
-    ss_reg = sum((predicted - mean(unlist(observed)))^2)
-    ss_tot = sum((observed-mean(unlist(observed)))^2)
-    return(ss_reg/ss_tot)
-  } else {
-    return(cor(latent, observed)^2)
-  }
 }
 
 
@@ -226,85 +144,7 @@ set_model_class = function(..., plot) {
 }
 
 
-estimate_linear_fit = function(fit.lavaan, x, y, data){
-  
-  if (class(fit.lavaan)=="matrix"){
-    data(nonlinear)
-    data = nonlinear
-    fit.lavaan = results
-    x = "V3"; y = "V2"
-    rel.x = var(nonlinear$V3)-fit.lavaan["theta[1,1,1]","Mean"]^2
-    rel.y = 1- (fit.lavaan["theta[2,2,1]","Mean"]^2/var(nonlinear$V2))
-    
-    lvs = startsWith(dimnames(fit.lavaan)[[1]], "eta")
-    lvs = fit.lavaan[lvs,"Mean"] #%>% as.data.frame 
-    data$f2 = lvs
-    
-    flexplot::flexplot(f2~latent, data=data)
-    
-    newdata = cbind(data, lvs) %>% 
-      data.frame %>% 
-      mutate(!!"f" := rescale(f, mean(!!(as.name(y))), sd(!!(as.name(y)))))
-    
-    x_new = quantile(newdata[,x], probs = seq(from=0, to=1, length.out=80)) %>% as.numeric
-    y_new = quantile(newdata[,"f"], probs = seq(from=0, to=1, length.out=80)) %>% as.numeric
-    y_new = mean(y_new) + sqrt(rel.x*rel.y) * (y_new-mean(y_new))
-    y_new = y_new - 3
-    # transform f to reduce it's slope by reliability
-    fnew = newdata[["f"]]
-    newdata[["f"]] = mean(fnew) + sqrt(rel.x*rel.y) * (fnew-mean(fnew))    
-    residuals = newdata[[y]] - newdata[["f"]]
-    
-    flexplot(V3~V2, data=data) +
-      geom_line(data=data.frame(x_new=x_new, y_new=y_new), aes(x_new, y_new), col="red")
-    
-  }  
-  
-  
-  
-  if (class(fit.lavaan)=="blavaan"){
-    
-    lambda = inspect(fit.lavaan,what="std")$lambda
-    rel.x = sum(lambda[x,])^2  ### DO YOU SUM FACTOR LOADINGS TO GET RELIABILITY?
-    rel.y = sum(lambda[y,])^2
-    factors = names(which(abs(lambda[y,])>0))
-    
-    lvs = data.frame(blavInspect(fit.lavaan, 'lvmeans')) %>% 
-      setNames(dimnames(lambda)[[2]]) %>% 
-      mutate(!!"f" := !!(as.name(factors))) %>%
-      select("f")
-    
-    newdata = cbind(data, lvs) %>% 
-      data.frame %>% 
-      mutate(!!"f" := rescale(f, mean(!!(as.name(y))), sd(!!(as.name(y)))))
-    
-    x_new = quantile(newdata[,x], probs = seq(from=0, to=1, length.out=30)) %>% as.numeric
-    y_new = quantile(newdata[,"f"], probs = seq(from=0, to=1, length.out=30)) %>% as.numeric
-    y_new = mean(y_new) + sqrt(rel.x*rel.y) * (y_new-mean(y_new))
-    
-    # transform f to reduce it's slope by reliability
-    fnew = newdata[["f"]]
-    newdata[["f"]] = mean(fnew) + sqrt(rel.x*rel.y) * (fnew-mean(fnew))    
-    residuals = newdata[[y]] - newdata[["f"]]
-  } else {
-    
-    ### compute model-implied slope between the two
-    implied.cor = lavInspect(fit.lavaan, what="cor.ov")
-    implied.cov = lavInspect(fit.lavaan, what="cov.ov")
-    stdev_ov = sqrt(diag(implied.cov))
-    estimated.slope = implied.cor[x,y]*(stdev_ov[y]/stdev_ov[x])
-    ### slope = sd(y)/sd(x) = maximum possible slope between the two, but multiply by f(reliability)
-    corrected.slope = estimated.slope
-    corrected.intercept = mean(data[,y]) - corrected.slope * mean(data[,x])
-    ### maximum possible value * sqrt(reliability product)
-    
-    x_new = seq(from=min(data[,x]), to=max(data[,x]), length.out=20)
-    y_new = corrected.intercept + corrected.slope*x_new
-    residuals = data[,y] - (corrected.intercept + corrected.slope*data[,x])
-  }
-  
-  list(x_new = x_new, y_new = y_new, residuals = residuals)
-}
+
 
 
 # x = "flying"
