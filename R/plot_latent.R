@@ -3,8 +3,11 @@
 # latent_plot(fit_bollen)
 latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, method="loess", model_names,...) {
 
+  
   fitted_l = flexplavaan_to_lavaan(fitted)
   fitted2_l = flexplavaan_to_lavaan(fitted2)
+  
+  if (length(get_endogenous_names(fitted_l))<2) stop("You cannot do a latent plot when there's less than two endogenous variables.")
   
   latent_names = lavaan::lavNames(fitted_l, type="lv")
   latent_predicted = data.frame(lavPredict(fitted_l))

@@ -200,3 +200,23 @@ viz_diagnostics_mcmc <- function(data, mapping, latents, which.latent,
     visualize_nonlinear(x = x.vals, y=y.vals, latent=latents[,latents.to.show], plot = plot, ...)
   }
 }
+
+visualize_nonlinear = function(x,y,latent, plot){
+  
+  x.names = names(x)
+  y.names = names(y)
+  data = data.frame(x,y)
+  names(data) = c(x.names, y.names)
+  newpred = nonlinear_prediction(x, y, latent) 
+  newpred = data.frame(newpred)
+  form = flexplot::make.formula(y.names, x.names)
+  if (plot=="trace"){
+    flexplot(form, data=data) +
+      geom_line(data=newpred, aes(x, y), col="red", size=1.5)    
+  } else if (plot == "disturbance"){
+    data$residuals = unlist(y - newpred$y)
+    flexplot(flexplot::make.formula("residuals",x.names), data=data) +
+      geom_hline(yintercept = 0, col="red", size=1.5)
+  }
+  
+}

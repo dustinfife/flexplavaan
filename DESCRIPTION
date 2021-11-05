@@ -11,7 +11,6 @@ Description: `flexplavaan` is a package designed to visualize  latent variable m
   with raw data. Basic functionality includes disturbance dependence plots, trail plots,
   model-implied plots, and the ability to compare fits between two latent variable models. 
 License: GPL-2
-Collate: 
 Encoding: UTF-8
 LazyData: true
 Imports: 
@@ -34,4 +33,5 @@ Suggests:
     vdiffr
 RoxygenNote: 7.1.1
 Depends: 
-    R (>= 2.10)
+    R (>= 2.10), 
+    flexplot

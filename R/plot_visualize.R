@@ -15,7 +15,6 @@
 #' @param model_names What should the legend be named for the two lines? Defaults to NULL. 
 #' @param ... Other arguments passed to flexplot
 #' @import GGally
-#' @importFrom flexplot visualize
 #' @export
 #' @aliases visualize visualize.lavaan
 #' @examples
@@ -31,7 +30,7 @@
 #'   visualize(fit.lavaan)
 visualize.lavaan = function(object, object2=NULL, 
                             subset = NULL, 
-                            plot=c("all", "disturbance", "model", "measurement", "latent", "residual"), 
+                            plot = "all", 
                             formula = NULL,
                             sort_plots = TRUE,
                             model_names = NULL,...){
@@ -39,53 +38,22 @@ visualize.lavaan = function(object, object2=NULL,
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
   
-  plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent", "residual"))
-  
-  if (plot == "all") {
-    
-  }
-  observed = lavNames(object_l)
-  d = data.frame(lavInspect(object_l, "data"))
-  names(d) = observed
-  
-  ## sort the axes
-  condition = sort_plots & plot %in% c("all", "disturbance", "model")
-  variable_order = ifelse(rep(condition, times=length(observed)), block_model_residuals(object_l), 1:length(observed))
-  d = d[,variable_order]
-  observed = observed[variable_order]
-  
-  # specify subsets
-  observed = get_subset(observed, subset)
-  if (!is.null(object2)) {
-    legend=c(1,2)
-  } else {
-    legend = NULL
-  }
-
-
-  ## get names
-  nms = get_and_check_names(model_names, object, object2)
-
+  plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent", "residuals", "ddp", "trail"))
+ 
   if (plot %in% c("all", "trail", "ddp")){
     return(plot_scatter_matrix(object_l, object2_l, subset, model_names, plot))
   } 
 
   if (plot == "measurement"){
-    p = implied_measurement(object_l, object2_l, ...)  
-    return(p)
+    return(implied_measurement(object_l, object2_l, ...))
   }
   
   if (plot == "latent"){
-    
-    # get length of endogenous variables to make sure we can do it
-    if (length(get_endogenous_names(object_l))<2) stop("You cannot do a latent plot when there's less than two endogenous variables.")
-    p = latent_plot(object, object2, formula, model_names=model_names, ...)  
-    return(p)
+    return(latent_plot(object, object2, formula, model_names=model_names, ...))
   }  
 
   if (plot == "residuals") {
-    p = residual_plots(object_l, object2_l)
-    return(p)
+    return(residual_plots(object_l, object2_l))
   }
 
 } 
