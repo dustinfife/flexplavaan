@@ -45,7 +45,7 @@ visualize.lavaan = function(object, object2=NULL,
   
   if (plot == "latent"){
     
-    p = latent_plot(object, object2, formula, ...) 
+    p = latent_plot(object, object2, ...) 
     return(p)
   }  
 

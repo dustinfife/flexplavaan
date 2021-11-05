@@ -1,7 +1,7 @@
 #fitted = fit_twofactor
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
-latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, method="loess", ...) {
+latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ...) {
 
   
   fitted_l = flexplavaan_to_lavaan(fitted)
@@ -38,17 +38,11 @@ latent_plot = function(fitted, fitted2 = NULL, formula = NULL, estimate_se=T, me
     se_data = full_join(se_data, se_data_2, by=names(se_data))
   }
 
-  ### get flexplot formulae
-  if (is.null(formula)) { 
-    formula = beta_to_flexplot(fitted_l, latent_predicted)
-    if (formula[[1]]=="~") return(latent_plot_only(formula, latent_predicted, se_data, fitted_l, ...))
-    plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data, fitted_l, ...))
-    return(plot_list)
-  }
-  
-  plot = latent_plot_only(formula, latent_predicted, se_data, fitted_l, method=method,...)
-  return(plot)
-
+  ### give them a formula (can be changed with modify_formula)
+  formula = beta_to_flexplot(fitted_l, latent_predicted)
+  if (formula[[1]]=="~") return(latent_plot_only(formula, latent_predicted, se_data, fitted_l, ...))
+  plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data, fitted_l, ...))
+  return(plot_list)
 }
 
 
