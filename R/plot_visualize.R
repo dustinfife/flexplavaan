@@ -12,7 +12,6 @@
 #' Option is ignored for the other plots
 #' @param sort_plots Should the axes be sorted according to the size of the residuals? Setting to 
 #' TRUE (default) will plot the variables with the largest residuals first
-#' @param model_names What should the legend be named for the two lines? Defaults to NULL. 
 #' @param ... Other arguments passed to flexplot
 #' @import GGally
 #' @export
@@ -32,8 +31,7 @@ visualize.lavaan = function(object, object2=NULL,
                             subset = NULL, 
                             plot = "all", 
                             formula = NULL,
-                            sort_plots = TRUE,
-                            model_names = NULL,...){
+                            sort_plots = TRUE,...){
 
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
@@ -41,7 +39,7 @@ visualize.lavaan = function(object, object2=NULL,
   plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent", "residuals", "ddp", "trail"))
  
   if (plot %in% c("all", "trail", "ddp")){
-    return(plot_scatter_matrix(object_l, object2_l, subset, model_names, plot))
+    return(plot_scatter_matrix(object_l, object2_l, subset, plot))#%>% modify_model_names(get_and_check_names(NULL, object, object2)))
   } 
 
   if (plot == "measurement"){
@@ -49,7 +47,9 @@ visualize.lavaan = function(object, object2=NULL,
   }
   
   if (plot == "latent"){
-    return(latent_plot(object, object2, formula, model_names=model_names, ...))
+    
+    p = latent_plot(object, object2, formula, ...) 
+    return(p)
   }  
 
   if (plot == "residuals") {

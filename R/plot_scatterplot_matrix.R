@@ -1,7 +1,7 @@
 #plot_scatter_matrix(fit_bollen$lavaan, subset=1:3)
 #plot_scatter_matrix(fit_twofactor$lavaan, fit_twofactor_2$lavaan, subset=c("x1", "x2", "x3"), model_names=c("a", "b"))
 # get rid of model_names argument by making it an attribute??
-plot_scatter_matrix = function(object1, object2=NULL, subset=NULL, model_names=NULL, plot="model", ...) {
+plot_scatter_matrix = function(object1, object2=NULL, subset=NULL, plot="all", ...) {
   
   object1_l = flexplavaan_to_lavaan(object1)
   object2_l = flexplavaan_to_lavaan(object2)
@@ -15,7 +15,8 @@ plot_scatter_matrix = function(object1, object2=NULL, subset=NULL, model_names=N
   legend = get_legend(object2_l)
   
   ## get names
-  nms = get_and_check_names(model_names, object1_l, object2_l)
+
+  nms = get_and_check_names(model_names=NULL, object1, object2)
   
   ## set the class
   x = set_model_class(object1_l=object1_l, object2_l=object2_l, names=names, legend=legend, d=d, nms=nms, plot=plot)
