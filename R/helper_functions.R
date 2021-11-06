@@ -60,12 +60,14 @@ get_legend = function(object2) {
   if (is.null(object2)) return(NULL) else return(c(1,2))
 }
 
+# this returns the latent/observed variable names of a lav object
 get_names = function(model) {
   obs_names = lavNames(model)
   latent_names = lavNames(model, type="lv")
   list(obs_names, latent_names)
 }
 
+# this checks whether both models have the same observed/latent variables
 check_models = function(model, model2=NULL){
   if (is.null(model2)) return(NULL)
   # make sure all variables in MODEL 1 are in model 2 (no need to do vice versa)
@@ -74,8 +76,8 @@ check_models = function(model, model2=NULL){
   return(NULL)
 }
 
+# this returns different object names (for labeling scatterplot matrices)
 get_and_check_names = function(model_names=NULL, object, object2) {
-  
   if (!is.null(model_names)) return(model_names)
   if (is.null(model_names) & is.null(object2)) return(c("Model-Implied", "Data-Implied"))
   a = deparse(substitute(object,sys.frame(sys.nframe()-3)))

@@ -1,21 +1,9 @@
 context("Test hidden functions")
 require(testthat)
 
-test_that("check_models works", {
-  expect_null(check_models(flexplavaan_to_lavaan(force_fit), flexplavaan_to_lavaan(force_cross)))
-  expect_error(check_models(flexplavaan_to_lavaan(fit_twofactor), flexplavaan_to_lavaan(fit_bollen)))
-  expect_null(check_models(fit_twofactor))
-  expect_error(check_models(flexplavaan_to_lavaan(force_fit), flexplavaan_to_lavaan(force_exp)))
-  expect_error(check_models(flexplavaan_to_lavaan(force_exp), flexplavaan_to_lavaan(force_fit)))
-})
 
-test_that("get_subset works", {
-  expect_true(length(get_subset(letters[1:10], NULL))==10)
-  expect_error(get_subset(letters[1:10], 11))
-  expect_true(get_subset(letters[1:10], 3)=="c")
-  expect_error(get_subset(letters[1:10], "q"))
-  expect_true(length(get_subset(letters[1:10], c("a", "b")))==2)
-})
+
+
 
 test_that("find_latents_for_observed works", {
   expect_true(find_latents_for_observed(1, flexplavaan_to_lavaan(fit_bollen))=="Eta1")
@@ -42,8 +30,4 @@ test_that("random variable naming works", {
   expect_true(random_var_name_check(varnames=letters[1:5])=="dlzoi")
 })
 
-test_that("get_names works", {
-  expect_true(get_names(flexplavaan_to_lavaan(fit_bollen))[[1]][1] == "y1")
-  expect_true(get_names(flexplavaan_to_lavaan(fit_bollen))[[2]][1] == "Eta1")
-})
 
