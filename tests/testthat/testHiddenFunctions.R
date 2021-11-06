@@ -22,10 +22,7 @@ test_that("find_latents_for_observed works", {
   expect_true(length(find_latents_for_observed(3, flexplavaan_to_lavaan(fit_twofactor_2)))==2)
 })
 
-test_that("residual_from_latents works", {
-  expect_equal(as.numeric(residual_from_latents(3, flexplavaan_to_lavaan(fit_twofactor_2))[1]), -8.617, tolerance=0.01)
-  expect_equal(as.numeric(residual_from_latents(1, flexplavaan_to_lavaan(fit_twofactor_2))[1]), 2.18, tolerance=0.01)
-})
+
 
 
 test_that("block_model_residuals works", {
