@@ -1,7 +1,7 @@
 context("helper_functions tests")
 
 test_that("sort_variables works", {
-  expect_true(sort_variables(fit_bollen$lavaan, T)[1] == 8)
+  expect_true(sort_variables(fit_bollen$lavaan, T)[1] == 11)
 })
 
 test_that("get_subset works", {
@@ -18,7 +18,7 @@ test_that("residual_from_latents works", {
 })
 
 test_that("flexplavaan_to_lavaan works", {
-  expect_true(class(flexplavaan_to_lavaan(fit_bollen))[1], "lavaan")
+  expect_true(class(flexplavaan_to_lavaan(fit_bollen))[1]=="lavaan")
 })
 
 test_that("check_formula_in_data works", {
@@ -51,4 +51,9 @@ test_that("get_subset works", {
   expect_true(get_subset(letters[1:10], 3)=="c")
   expect_error(get_subset(letters[1:10], "q"))
   expect_true(length(get_subset(letters[1:10], c("a", "b")))==2)
+})
+
+
+test_that("block_model_residuals works", {
+  expect_true(block_model_residuals(flexplavaan_to_lavaan(fit_bollen))[1]==11)
 })

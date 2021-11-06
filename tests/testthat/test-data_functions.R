@@ -1,7 +1,7 @@
 context("data_functions tests")
 
 test_that("sort_dataset works", {
-  expect_true(names(sort_dataset(fit_bollen$lavaan, T))[1] == "y8")
+  expect_true(names(sort_dataset(fit_bollen$lavaan, T))[1] == "x3")
 })
 
 test_that("get_lav_data works", {

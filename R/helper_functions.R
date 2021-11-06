@@ -85,17 +85,26 @@ get_and_check_names = function(model_names=NULL, object, object2) {
   if (!is.null(object2) & is.null(model_names)) return(c(a,b))
   return(model_names)
 }
-
+  
+# this sorts the variabls by the rank of the residuals, then returns a vector of numbers for the order
 block_model_residuals = function(fitted) {
   
   obs_names = lavNames(fitted)
   residual_correlations = residuals(fitted, type="cor")$cov 
   
-  #Cluster based on structural equivalence
-  eq<-sna::equiv.clust(residual_correlations, equiv.fun = sna::sedist)
-  block = sna::blockmodel(residual_correlations, eq, k = length(obs_names), 
-                          mode="graph")
-  column_order = as.numeric(sapply(block$plabels, function(x) which(obs_names==x)))
+  #Cluster based on average size
+  c = return_residual_dataset(fitted, 0) 
+  c$var1 = strsplit(as.character(c$Correlation), ":") %>% map(purrr::pluck(1)) %>% unlist
+  c$var2 = strsplit(as.character(c$Correlation), ":") %>% map(purrr::pluck(2)) %>% unlist
+  c$rank = 1:nrow(c)
+  
+  column_order = c %>% pivot_longer(var1:var2, names_to="variable", values_to="cor") %>% 
+    group_by(cor) %>% 
+    summarize(mean=mean(abs(rank))) %>% 
+    arrange(mean) %>% 
+    select(cor) %>% 
+    purrr::pluck("cor") %>% 
+    purrr::map_int(function(x) which(obs_names == x))
   return(column_order)
 }
 
