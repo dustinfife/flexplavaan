@@ -23,7 +23,6 @@ Imports:
     dplyr,
     semTools, 
     tidyr,
-    sna, 
     tibble, 
     ggforce
 Suggests: 
