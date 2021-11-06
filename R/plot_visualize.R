@@ -40,12 +40,13 @@ visualize.lavaan = function(object, object2=NULL,
   } 
 
   if (plot == "measurement"){
-    return(implied_measurement(object_l, object2_l, ...))
+
+    p = implied_measurement(model = object_l, model2 = object2_l, ...)
+    return(p)
   }
   
   if (plot == "latent"){
-    
-    p = latent_plot(object, object2, ...) 
+    p = latent_plot(fitted = object_l, fitted2 = object2_l, ...) 
     return(p)
   }  
 
@@ -65,16 +66,14 @@ visualize.lavaan = function(object, object2=NULL,
 visualize.flexplavaan = function(object, object2=NULL, 
                                  subset = NULL, 
                                  plot = "all", 
-                                 formula = NULL,
-                                 sort_plots = TRUE,
-                                 model_names = NULL,...){
+                                 formula = NULL,...){
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
 
   plot = match.arg(plot, c("all", "disturbance", "model", "measurement", "latent", "residual"))
 
-  model_names = get_and_check_names(model_names, object, object2)
-  visualize.lavaan(object, object2, subset, plot, formula, sort_plots, model_names = model_names,...)
+  model_names = get_and_check_names(NULL, object, object2)
+  visualize.lavaan(object_l, object2_l, subset, plot, formula,...)
 }  
 
 #' Visualize a runjags model 
