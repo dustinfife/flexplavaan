@@ -1,5 +1,5 @@
 # this function takes a lav object/boolean and returns a vector of ordered variables
-# sorting is based on blockmodeling algorithm
+# sorting according to residual
 sort_variables = function(object, sort_plots) {
   vector_of_booleans = rep(sort_plots, times=length(lavNames(object)))
   variable_order = ifelse(vector_of_booleans, 
@@ -113,6 +113,13 @@ random_var_name = function(size=5) {
   letters[1:26] %>% sample(size=size, replace=T) %>% paste0(collapse="")
 }
 
+# get the factors associated with this i variable
+find_latents_for_observed = function(i, fitted) {
+  row = fitted@Model@GLIST$lambda[i,]
+  latent = lavNames(fitted, type="lv")[round(row, digits=4)!=0]
+  return(latent)
+}
+
 random_var_name_check = function(varnames) {
   newname = random_var_name(5)
   while ((newname %in% varnames)){
@@ -175,12 +182,7 @@ joint_bin = function(i,xbin,ybin,latent){
 
 
 
-# get the factors associated with this i variable
-find_latents_for_observed = function(i, fitted) {
-  row = fitted@Model@GLIST$lambda[i,]
-  latent = lavNames(fitted, type="lv")[round(row, digits=4)!=0]
-  return(latent)
-}
+
 
 
 nonlinear_prediction = function(x,y,latent){

@@ -1,11 +1,15 @@
-reverse_rank = function(x) {
-  rank(x*-1 )
-}
 
 # taken from OpenMx
 vechs = function(x) {
   return(x[lower.tri(x, diag=FALSE)])
 }
+
+
+reverse_rank = function(x) {
+  rank(x*-1 )
+}
+
+
 
 ss = function(x){
   sum((x-mean(x))^2)
