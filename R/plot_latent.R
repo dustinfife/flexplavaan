@@ -41,8 +41,9 @@ latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ..
   ### give them a formula (can be changed with modify_formula)
   formula = beta_to_flexplot(fitted_l, latent_predicted)
   if (formula[[1]]=="~") return(latent_plot_only(formula, latent_predicted, se_data, fitted_l, ...))
-  plot_list = formula %>% purrr::map(~latent_plot_only(.x, latent_predicted, se_data, fitted_l, ...))
-  return(plot_list)
+  
+  # only return one plot
+  return(latent_plot_only(formula[[1]], latent_predicted, se_data, fitted_l, ...))
 }
 
 
@@ -61,18 +62,14 @@ check_for_sd_true = function(estimate_se, fitted, latent_names) {
 # i=1
 # formula = forms
 # data=latent_predicted
-latent_plot_only = function(f, data, se_data, fitted, method="lm",...) {
+latent_plot_only = function(f, data, se_data, fitted, ...) {
 
   xvar = all.vars(f)[-1]
   yvar = all.vars(f)[1]
   data = check_data_has_observed(cbind(data, se_data), xvar, yvar, fitted)
 
   ### create limits of CI
-  data[["lower_pi_xvar"]] = data[[xvar[1]]] - data[[paste0("se_", xvar[1])]]
-  data[["lower_pi_yvar"]] = data[[yvar[1]]] - data[[paste0("se_", yvar[1])]]
-  data[["upper_pi_xvar"]] = data[[xvar[1]]] + data[[paste0("se_", xvar[1])]]
-  data[["upper_pi_yvar"]] = data[[yvar[1]]] + data[[paste0("se_", yvar[1])]]
-  
+  data = create_ci_limits(data, f)
   
   ## see if alpha is set
   list(...)
@@ -84,7 +81,24 @@ latent_plot_only = function(f, data, se_data, fitted, method="lm",...) {
     dv = f_vars[1]; iv = f_vars[-1]
     f = flexplot:::make_flexplot_formula(c(iv, "model"), dv, data, ...)
   }
-  p = flexplot(f, data, se=F, ghost.line="red", sample=0, method=method,...) + 
+
+  plot_crosshair_plot(data, f, alpha_default)
+}
+
+create_ci_limits = function(data, formula) {
+  xvar = all.vars(formula)[-1]
+  yvar = all.vars(formula)[1]
+
+  ### create limits of CI
+  data[["lower_pi_xvar"]] = data[[xvar[1]]] - data[[paste0("se_", xvar[1])]]
+  data[["lower_pi_yvar"]] = data[[yvar[1]]] - data[[paste0("se_", yvar[1])]]
+  data[["upper_pi_xvar"]] = data[[xvar[1]]] + data[[paste0("se_", xvar[1])]]
+  data[["upper_pi_yvar"]] = data[[yvar[1]]] + data[[paste0("se_", yvar[1])]]
+  return(data)
+}
+
+plot_crosshair_plot = function(data, f, alpha_default, ...) {
+  p = flexplot(f, data, se=F, ghost.line="red", sample=0, ...) + 
     geom_point() +
     alpha_default[1] +
     alpha_default[2]
