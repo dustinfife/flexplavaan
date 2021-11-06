@@ -14,7 +14,7 @@ test_that("regular lavaan works", {
   vdiffr::expect_doppelganger("simple lavaan graph",visualize(flexplavaan_to_lavaan(fit_twofactor), subset=1:3))
   vdiffr::expect_doppelganger("simple lavaan graph without sorting",visualize(flexplavaan_to_lavaan(fit_twofactor), subset=1:3, sort_plots = F))
   vdiffr::expect_doppelganger("lavaan graph ddp",visualize(flexplavaan_to_lavaan(fit_twofactor), subset=1:3, plot="disturbance"))
-  vdiffr::expect_doppelganger("lavaan graph model only",visualize(flexplavaan_to_lavaan(fit_twofactor), subset=1:3, plot="model"))
+  vdiffr::expect_doppelganger("lavaan graph model only",visualize(flexplavaan_to_lavaan(fit_twofactor), subset=1:3, plot="trail"))
   vdiffr::expect_doppelganger("two lavaan models",
                               visualize(fit_twofactor, 
                                         fit.lavaan_2, subset=1:3))
@@ -23,11 +23,11 @@ test_that("regular lavaan works", {
 })
 
 test_that("measurement works in visualize", {
-  vdiffr::expect_doppelganger("measurement plot in visualize",visualize(fit_twofactor, subset=1, plot="measurement")[[1]])
+  vdiffr::expect_doppelganger("measurement plot in visualize",visualize(fit_twofactor, plot="measurement")[[1]])
 })
 
 test_that("latent variables work in visualize", {
-  vdiffr::expect_doppelganger("latent in visualize",visualize(fit_twofactor, plot="latent")[[1]])
+  vdiffr::expect_doppelganger("latent in visualize",visualize(fit_twofactor, plot="latent"))
   expect_error(visualize(stats_jedi_fit, plot="latent"))
 })
 options(warn=0)

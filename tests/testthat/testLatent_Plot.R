@@ -4,17 +4,7 @@ options(warn=-1)
 require(lavaan)
 
 
-test_that("latent_plot works", {
-  vdiffr::expect_doppelganger("simple latent_plot",latent_plot(fit_bollen, formula = Eta2 ~ Eta1))
-  vdiffr::expect_doppelganger("multiple latent_plots",suppressMessages(latent_plot(fit_bollen)[[2]]))
-})  
 
-test_that("return_alpha works", {
-  vdiffr::expect_doppelganger("alpha adjustment latent_plot",
-                              latent_plot(fit_bollen, formula = Eta2 ~ Eta1, alpha = .6))
-  vdiffr::expect_doppelganger("color adjustment latent_plot",
-                              latent_plot(fit_bollen, formula = Eta2 ~ Eta1, color = "blue"))  
-})  
 
 test_that("check_for_sd_true works", {
   expect_true(sum(check_for_sd_true(F, flexplavaan_to_lavaan(fit_bollen), "Eta1"))==0)
