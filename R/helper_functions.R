@@ -1,3 +1,51 @@
+# this function takes a lav object/boolean and returns a vector of ordered variables
+# sorting is based on blockmodeling algorithm
+sort_variables = function(object, sort_plots) {
+  vector_of_booleans = rep(sort_plots, times=length(lavNames(object)))
+  variable_order = ifelse(vector_of_booleans, 
+                          block_model_residuals(object), 
+                          1:length(lavNames(object)))
+  return(variable_order)
+}
+#testthat::snapshot_review()
+
+# this function returns a subset of variable names
+get_subset = function(varnames, subset) {
+  if (is.null(subset)) return(varnames)
+  if (is.numeric(subset) & any(subset>max(length(varnames)))) stop("You're trying to index a varname using a number larger than the length of varname")
+  if (!all(subset %in% varnames) & !is.numeric(subset)) stop("One or more of the variables you supplied in subset is not in varnames.")
+  if (is.numeric(subset)) return(varnames[subset])
+  return(varnames[varnames %in% subset])
+}
+
+#return a vector of residuals from predicting observed from latent
+residual_from_latents = function(i, fitted) {
+  
+  # get names
+  observed = lavNames(fitted)[i]
+  variable_name = find_latents_for_observed(i, fitted)
+  
+  # if there are no latens associated with this variable, just return the variable
+  if (is.na(variable_name[1])) return(fitted@Data@X[[1]][,i])
+  # create dataset
+  variable_scores = lavPredict(fitted, type = "lv")[,variable_name]
+  dataset = data.frame(cbind(variable_scores, fitted@Data@X[[1]][,i]))
+  names(dataset) = c(variable_name, observed)
+  
+  # formula/residuals
+  formula_residual = flexplot::make.formula(observed, variable_name)
+  residuals = residuals(lm(formula_residual, dataset))
+  return(residuals)
+}
+
+# returns the lavaan object embedded in the flexplavaan object
+flexplavaan_to_lavaan = function(fitted) {
+  if (is.null(fitted)) return(NULL)
+  if (class(fitted)=="flexplavaan") return(fitted$lavaan)
+  return(fitted)
+}
+
+
 # this function takes the input from a formula and ensures all
 # elements in the formula are in the dataset
 check_formula_in_data = function(data, formula) {
