@@ -13,9 +13,6 @@ test_that("find_latents_for_observed works", {
 
 
 
-test_that("block_model_residuals works", {
-  expect_true(block_model_residuals(flexplavaan_to_lavaan(fit_bollen))[1]==8)
-})
 
 test_that("vechs works", {
   m = matrix(1:9, nrow=3)

@@ -11,8 +11,6 @@
   subset = NULL,
   plot = "all",
   formula = NULL,
-  sort_plots = TRUE,
-  model_names = NULL,
   ...
 )
 }
