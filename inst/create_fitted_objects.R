@@ -1,3 +1,37 @@
+# create a small model for tests
+require(tidyverse)
+set.seed(2323)
+n = 50
+f1 = rnorm(n)
+f2 = .4*f1 + rnorm(n, 0, sqrt(1-.4^2))
+z = .3*f1 + .4*f2 + rnorm(n, 0, .3)
+f = function(x, f1) return(x = x*f1 + rnorm(length(f1), 0, sqrt(1-x^2)))
+x = c(.6,.7,.8) %>% 
+  purrr::map_dfc(f, f1) %>%
+  set_names(paste0("x", 1:3))
+y = c(.6,.7,.8) %>% 
+  purrr::map_dfc(f, f2) %>%
+  set_names(paste0("y", 1:3))
+d = cbind(x, y, z)
+head(d)
+
+small = '
+f1 =~ x1 + x2 + x3
+f2 =~ y1 + y2 + y3
+z ~ f1 + f2
+'
+small_mis = 
+'
+f1 =~ x1 + x2 
+f2 =~ y1 + y2 + y3 + x3
+z ~ f1 + f2
+'
+
+small = lavaan::sem(small, d)
+small_mis = lavaan::sem(small_mis, d)
+usethis::use_data(small, overwrite=T)
+usethis::use_data(small_mis, overwrite=T)
+
 # simulate data according to Figure 2 in paper
 set.seed(12121)
 f1 = rnorm(1000)
