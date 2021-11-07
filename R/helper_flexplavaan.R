@@ -27,7 +27,7 @@ flexplavaan = function(model = NULL, data = NULL, ...) {
 }
   
 
-flexplavaan_check_errors = function(model, data) {
+flexplavaan_check_errors = function(model, data=NULL) {
   if (is.null(data)) stop("Flexplavaan requires raw data. Please provide a dataset.")
   return(NULL)
 }
