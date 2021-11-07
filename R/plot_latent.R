@@ -52,9 +52,8 @@ latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ..
 # data=latent_predicted
 latent_plot_only = function(f, data, se_data, fitted, ...) {
 
-  xvar = all.vars(f)[-1]
-  yvar = all.vars(f)[1]
-  data = check_data_has_observed(cbind(data, se_data), xvar, yvar, fitted)
+  # make a "se" column for endogenous variables
+  data = create_se_for_endogenous(cbind(data, se_data), f, fitted)
 
   ### create limits of CI
   data = create_ci_limits(data, f)
