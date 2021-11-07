@@ -23,15 +23,12 @@ flexplavaan = function(model = NULL, data = NULL, ...) {
   
   structure(list(lavaan = fitted, data = data, standard_errors = se_data),
             class = "flexplavaan")
-  
 }
-  
 
 flexplavaan_check_errors = function(model, data=NULL) {
   if (is.null(data)) stop("Flexplavaan requires raw data. Please provide a dataset.")
   return(NULL)
 }
-
 
 check_for_standard_errors = function(fitted) {
   if (class(fitted)=="flexplavaan") return(fitted$standard_errors)
@@ -41,6 +38,7 @@ check_for_standard_errors = function(fitted) {
 }
 
 get_standard_errors = function(fitted) {
+
   # get names of variables
   latent_names = lavaan::lavNames(fitted, type="lv")
   latent_predicted = data.frame(lavPredict(fitted))
