@@ -71,105 +71,107 @@
 #' viz_diagnostics(data = mugglevwizard, mapping = aes(potions, darkarts), fit.lavaan = mod, plot="disturbance")
 viz_diagnostics <- function(data, mapping, 
                             fit.lavaan, fit.lavaan2 = NULL, 
-                            invert.map=FALSE, alpha=.5, plot=c("trace", "disturbance", "histogram"), label_names, ...) {
+                            plot=c("trace", "disturbance", "histogram"), ...) {
 
   plot = match.arg(plot, c("trace", "disturbance", "histogram"))
-  ### extract name of latent variables
-  observed = lavNames(fit.lavaan)
-  latent.names = lavNames(fit.lavaan, type="lv")
   
-  ### plot ggplot object so I can extract the elements
-  if (dplyr::as_label(mapping$y) == "NULL" | plot=="histogram"){
-    #browser()
-    # output residuals
-    i = which(observed == as_label(mapping$x))
-    d = data.frame(residual_from_latents(i, fit.lavaan))
-    names(d) = as_label(mapping$x)
+  ### extract name of latent/observed variables
+  variables = invert_aes_mapping(mapping, invert.map = F)
+
+  # check for errors
+  viz_diagnostics_error_check(variables, fit.lavaan)
+  
+  # return histogram
+  if (dplyr::as_label(mapping$y) == "NULL" | plot=="histogram") {
+    return(diagnostics_histogram(fit.lavaan, mapping, ...))
+  }  
     
-    flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
-    flexplot::flexplot(flexplot_form, data=d,...)
-  } else {
-    
-    variables = c(dplyr::as_label(mapping$x), dplyr::as_label(mapping$y))
-    
-    ### extract name of variable in aes
-    if (invert.map){
-      x = variables[2]
-      y = variables[1]   
-    } else {
-      y = variables[2]
-      x = variables[1]
-    }
-    
-    if (!all(variables %in% names(data))){
-      problem.vars = which(!(variables %in% names(data)))
-      var = ifelse(length(problem.vars>1), 
-                   paste0("variables ", variables[problem.vars], " are"), 
-                   paste0("variable ", variables[problem.vars], " is")) 
-      msg = paste0("The ", var, " not in your actual dataset.")
-      stop(msg)
-    }
-    
-    if (!all(variables %in% observed)){
-      problem.vars = which(!(variables %in% observed))
-      var = ifelse(length(problem.vars>1), 
-                   paste0("variables ", variables[problem.vars], " are"), 
-                   paste0("variable ", variables[problem.vars], " is"))
-      msg = paste0("The ", var, " not in your actual dataset.")
-      stop(msg)
-    }  
-    
-    
-    estimated_fits = estimate_linear_fit(fit.lavaan, x=x, y=y, data)
-    new_data = data.frame(x=estimated_fits$x_new, y=estimated_fits$y_new)
-    names(new_data) = c(x, y)
-    data[,"residuals"] = estimated_fits$residuals
-    #browser()
-    if (!is.null(fit.lavaan2)){
-      estimated_fits = estimate_linear_fit(fit.lavaan2, x, y, data)
-      # come up with fake name for second variable
-      y2_name = random_var_name_check(names(new_data))
-      resid_name = random_var_name_check(names(new_data))
-      new_data[[y2_name]] = estimated_fits$y_new
-      data[[resid_name]] = estimated_fits$residuals      
-    }
-    
-    ### now add to ggplot object
-    if (plot=="trace"){
-      flexplot_form = flexplot::make.formula(y, x)
-      
-      if (!is.null(fit.lavaan2)){
-        
-        
-        n = new_data %>% 
-          tidyr::gather(key="Model", value=y, all_of(c(!!y,y2_name))) %>% 
-          dplyr::mutate(Model = factor(Model, levels=c(!!y, y2_name), labels=label_names))
-        
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, suppress_smooth = T, ...) + 
-          geom_line(data=n, aes_string(x,"y", col="Model"))
-        
-      } else {
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, se=F, ...) + 
-          geom_line(data=new_data, aes_string(x,y), col="red") + labs(title="Trace Plot")
-      }
-      return(p)
-    } else if (plot=="disturbance") {
-      ### convert data to long format to make dots different
-      if (!is.null(fit.lavaan2)){
-        
-        data2 = data[,c(x,"residuals", resid_name)] %>% tidyr::gather("model", "residuals", c("residuals", all_of(resid_name))) %>% setNames(c(x,"model","residuals"))
-        data2$model = factor(data2$model, levels=c("residuals",resid_name), labels=label_names)
-        f = make.formula("residuals", c(x, "model"))
-        p = flexplot::flexplot(f, data=data2, alpha = .2,...) + geom_hline(yintercept = 0) 
-      } else {
-        flexplot_form = flexplot::make.formula("residuals", x)
-        p = flexplot::flexplot(flexplot_form, data=data, alpha=alpha, ...) + labs(y=paste0(y, " | latent")) + geom_hline(yintercept=0, col="red")
-      }
-      return(p)
-    } 
-  }
+  if (plot=="trace"){
+    return(diagnostics_trace(fit.lavaan, fit.lavaan2, mapping, ...))
+  } 
+  
+  else if (plot=="disturbance") {
+    return(diagnostics_disturbance(fit.lavaan, fit.lavaan2, mapping, ...))
+  } 
 }
 
+diagnostics_disturbance = function(fit.lavaan, fit.lavaan2=NULL, mapping, ...) {
+  
+  # get variable strings
+  variables = invert_aes_mapping(mapping, invert.map = T)
+  x = variables[1]
+  y = variables[2]
+  flexplot_form = flexplot::make.formula(y, x)
+  
+  # get necessary data (maybe split this up?)
+  d          = viz_diagnostics_get_data(fit.lavaan, fit.lavaan2, variables) 
+  data       = d$data       # scatterplot data
+  new_data   = d$new_data   # the fitted line
+  y2_name    = d$y2_name    # the randomly chosen name for the fit of the second line
+  resid_name = d$resid_name # the randomly chosen name for the fit in the ddps
+  
+  ### convert data to long format to make dots different
+  if (!is.null(fit.lavaan2)){
+    # gather scatterplot data so I can plot two lines
+    data2 = data[,c(x,"residuals", resid_name)] %>% 
+      tidyr::gather("model", "residuals", c("residuals", all_of(resid_name))) %>% 
+      setNames(c(x,"model","residuals"))
+    data2$model = factor(data2$model, levels=c("residuals",resid_name), labels=c("Model 1", "Model 2"))
+    f = make.formula("residuals", c(x, "model"))
+    p = flexplot::flexplot(f, data=data2,...) + geom_hline(yintercept = 0) 
+    return(p)
+  } 
+  
+  flexplot_form = flexplot::make.formula("residuals", x)
+  p = flexplot::flexplot(flexplot_form, data=data, ...) + 
+    labs(y=paste0(y, " | latent")) + 
+    geom_hline(yintercept=0, col="red")
+  return(p)
+}
+
+diagnostics_trace = function(fit.lavaan, fit.lavaan2=NULL, mapping, ...) {
+  
+  # get variable strings
+  variables = invert_aes_mapping(mapping, invert.map = F)
+  x = variables[1]
+  y = variables[2]
+  flexplot_form = flexplot::make.formula(y, x)
+
+  # get necessary data (maybe split this up?)
+  d      = viz_diagnostics_get_data(fit.lavaan, fit.lavaan2, variables) 
+  data     = d$data     # scatterplot data
+  new_data = d$new_data # the fitted line
+  y2_name  = d$y2_name  # the randomly chosen name for the fit of the second line
+
+  if (!is.null(fit.lavaan2)){
+    # convert to long format so I can plot two lines
+    n = new_data %>% 
+      tidyr::gather(key="Model", value=y, all_of(c(!!y,y2_name))) %>% 
+      dplyr::mutate(Model = factor(Model, levels=c(!!y, y2_name), labels=c("Model 1", "Model2")))
+    p = flexplot::flexplot(flexplot_form, data=data, se=F, suppress_smooth = T, ...) + 
+      geom_line(data=n, aes_string(x,"y", col="Model"))
+    return(p)
+  } 
+  
+  # second line is just the fit of the model
+  p = flexplot::flexplot(flexplot_form, data=data, se=F, ...) + 
+      geom_line(data=new_data, aes_string(x,y), col="red") + labs(title="Trace Plot")
+
+  return(p)
+}
+
+
+### plot ggplot object so I can extract the elements
+diagnostics_histogram = function(fit.lavaan, mapping, ...){
+  observed = lavNames(fit.lavaan)
+  # output residuals
+  i = which(observed == as_label(mapping$x))
+  d = data.frame(residual_from_latents(i, fit.lavaan))
+  names(d) = as_label(mapping$x)
+  
+  flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
+  return(flexplot::flexplot(flexplot_form, data=d,...))
+}
 
 
 
@@ -220,3 +222,4 @@ visualize_nonlinear = function(x,y,latent, plot){
   }
   
 }
+
