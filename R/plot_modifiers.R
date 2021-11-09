@@ -43,10 +43,55 @@ modify_latent = function(p, latent, ...) {
 
 #p %>% modify_smooth(method="quadratic")
 modify_smooth = function(p, method="lm", se=F,...) {
+  
+  if(class(p)[2] == "ggmatrix") {
+    str(p)
+  }
+  
+  # get a list of all plots
+  n_of_plots = length(p$plots)
+  for (i in 1:n_of_plots){
+    attr(p$plots[[i]]$fn, "params")$fit.lavaan = fit_bollen
+    #attr(p$plots[[i]]$fn, "params")$method = "quadratic"
+  }
+  p[1,2]
+  p + add_to_ggmatrix(p, geom_smooth(method="lm"), location="upper")
+  p$plots[[i]]$fn$fit.lavaan
+  attr(p$plots[[i]]$fn, "params")$method
+  p$plots[[1]]
+  attributes(p$plots[[1]]$fn)
+  attr(p$plots[[1]]$fn, "params")$method = "quadratic"
+ attr(p$plots[[1]], "fn")
   # delete existing smoothing layers
   p = remove_geom(p, "GeomAbline")
   method_call = smooth_method_check(method="quadratic")
   p + suppressMessages(eval(parse(text=method_call)))
+}
+#p + remove_and_add_gg_element(p, geom_smooth(method="lm"), location="upper")
+remove_and_add_gg_element = function (e1, e2, location = NULL, rows = NULL, cols = NULL) 
+{
+  # if (!is.ggmatrix(e1)) 
+  #   stop("e1 should be a ggmatrix.")
+  # if (!is.ggproto(e2)) 
+  #   stop("e2 should be a ggproto object.")
+  pm <- e1
+  gg <- e2
+  loc <- GGally::ggmatrix_location(pm, location = location, rows = rows, 
+                                             cols = cols)
+
+    row_vals <- loc$row
+  col_vals <- loc$col
+  for (i in seq_along(row_vals)) {
+    row <- row_vals[i]
+    col <- col_vals[i]
+    try({
+      pm[row, col] <- remove_geom(pm[row, col], "GeomAbline")
+      pm[row, col] <- remove_geom(pm[row, col], "GeomSmooth")
+      pm[row, col] <- remove_geom(pm[row, col], "GeomLine")
+      q = pm[row, col]
+    })
+  }
+  pm
 }
 
 smooth_method_check = function(method) {
