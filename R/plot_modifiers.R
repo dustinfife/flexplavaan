@@ -29,3 +29,14 @@ modify_formula = function(p, formula, ...) {
   p = plot_crosshair_plot(data, formula, alpha_default, ...)
   return(p)
 }
+
+#p = implied_measurement(small, small_mis)
+modify_latent = function(p, latent, ...) {
+  data = p$data
+  
+  # check for name of latent in dataset
+  if (!(latent %in% names(data))) stop("The latent variable you're asking for doesn't exist.")
+  
+  # return the plot
+  latent_flexplot(data, latent, ...)
+}

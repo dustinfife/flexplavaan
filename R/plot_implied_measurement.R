@@ -23,19 +23,14 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
   model_l = flexplavaan_to_lavaan(model)
   model2_l = flexplavaan_to_lavaan(model2)
   
-  # check for name of latent
-  check_for_latent(model_l, latent)
-
   # check models
   check_models(model_l, model2_l)
   
-  
-  if (is.null(latent)) latent = get_names(model_l)[[2]]
+  if (is.null(latent)) latent = get_names(model_l)[[2]][[1]]
   
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model_l, model2_l)
-  plots = latent %>% purrr::map(function(x) 
-    latent_flexplot(flex_data, x, limit=limit, sort_slopes=sort_slopes, method,...))
+  plots = latent_flexplot(flex_data, latent, limit=limit, sort_slopes=sort_slopes, method,...)
   return(plots)
 }
 
