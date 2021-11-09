@@ -24,7 +24,7 @@ test_that("regular lavaan works", {
 })
 
 test_that("measurement works in visualize", {
-  p = visualize(fit_twofactor, plot="measurement")[[1]]
+  p = visualize(fit_twofactor, plot="measurement")
   vdiffr::expect_doppelganger("measurement plot in visualize",p)
 })
 
