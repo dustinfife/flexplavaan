@@ -18,7 +18,7 @@
 #'
 #' @return Either a ggplot2 plot, or a list of ggplot2 plots
 #' @export
-implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_slopes=T, method="default", ...) {
+implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_slopes=T, ...) {
   
   model_l = flexplavaan_to_lavaan(model)
   model2_l = flexplavaan_to_lavaan(model2)
@@ -30,13 +30,13 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
   
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model_l, model2_l)
-  plots = latent_flexplot(flex_data, latent, limit=limit, sort_slopes=sort_slopes, method,...)
+  plots = latent_flexplot(flex_data, latent, limit=limit, sort_slopes=sort_slopes, ...)
   return(plots)
 }
 
 
 
-latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, method="lm",...) {
+latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, ...) {
 
   # name the abline parameters
   intercept_name = paste0("intercept_", latent)
@@ -53,13 +53,13 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, method="lm
   if ("model" %in% names(flex_data)) {
     p = ggplot(flex_data, 
                aes_string(x = "Observed", y = latent, group = "model", colour="model", shape="model", linetype="model"), ...) 
-    if (method=="default") smooth = geom_blank() else smooth = geom_smooth(method=method, formula = y~x, colour="lightgray")
+    smooth = geom_blank() 
     abline = geom_abline(aes_string(intercept=intercept_name, slope=slope_name, colour="model", linetype="model"), lwd=1) 
     labels = geom_blank()
   } else {
     p = ggplot(flex_data, 
                aes_string(x = "Observed", y = latent, group = "1"), ...) 
-    if (method=="default") smooth = geom_smooth(method="loess", formula = y~x, colour="blue") else smooth = geom_smooth(method=method, formula = y~x, colour="blue")
+    smooth = geom_smooth(method="loess", formula = y~x, colour="blue") 
     abline = geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="red", lwd=2) 
     labels = labs(x="Observed\n(Red = Implied, Blue:=Observed)")
   }

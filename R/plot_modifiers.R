@@ -40,3 +40,36 @@ modify_latent = function(p, latent, ...) {
   # return the plot
   latent_flexplot(data, latent, ...)
 }
+
+#p %>% modify_smooth(method="quadratic")
+modify_smooth = function(p, method="lm", se=F,...) {
+  # delete existing smoothing layers
+  p = remove_geom(p, "GeomAbline")
+  method_call = smooth_method_check(method="quadratic")
+  p + suppressMessages(eval(parse(text=method_call)))
+}
+
+smooth_method_check = function(method) {
+  if (method=="rlm") return('geom_smooth(method = "rlm", se = se, formula = y~x)')
+  if (method=="poisson" | method=="Gamma") return('geom_smooth(method = "glm", method.args = list(family = "poisson"), se = se, formula = y~x)')
+  if (method=="polynomial" | method == "quadratic") return('stat_smooth(method="lm", se=se, formula=y ~ poly(x, 2, raw=TRUE))')
+  if (method=="cubic") return('stat_smooth(method="lm", se=se, formula=y ~ poly(x, 3, raw=TRUE))')
+  if (method=="lm") return('stat_smooth(method="lm", se=se, formula = y~x)')
+  return('geom_smooth(method="loess", se=se, formula = y~x)')
+}
+
+remove_geom <- function(ggplot2_object, geom_type) {
+  # Delete layers that match the requested type.
+  
+  layers <- lapply(ggplot2_object$layers, function(x) {
+    if (class(x$geom)[1] == geom_type) {
+      NULL
+    } else {
+      x
+    }
+  })
+  # Delete the unwanted layers.
+  layers <- layers[!sapply(layers, is.null)]
+  ggplot2_object$layers <- layers
+  ggplot2_object
+}
