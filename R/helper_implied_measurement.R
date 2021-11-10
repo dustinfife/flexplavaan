@@ -28,7 +28,8 @@ prepare_measurement_data = function(model, model2=NULL) {
   flex_data_two = prepare_measurement_data(model2)
   flex_data_two$model = m2_name
   flex_data$model = m1_name
-  flex_data = full_join(flex_data, flex_data_two[,names(flex_data)], by=names(flex_data))
+  common_names = names(flex_data)[names(flex_data) %in% names(flex_data_two)]
+  flex_data = full_join(flex_data, flex_data_two[,common_names], by=common_names)
   return(flex_data)
   
 }
