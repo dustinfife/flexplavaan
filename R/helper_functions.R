@@ -72,6 +72,8 @@ get_names = function(model) {
 }
 
 # this checks whether both models have the same observed/latent variables
+# but this is too strict. So I changed to say check whether the latent variable 
+# is in both models
 check_models = function(model, model2=NULL){
   if (is.null(model2)) return(NULL)
   # make sure all variables in MODEL 1 are in model 2 (no need to do vice versa)

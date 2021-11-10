@@ -24,9 +24,9 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
   model2_l = flexplavaan_to_lavaan(model2)
   
   # check models
-  check_models(model_l, model2_l)
+  #check_models(model_l, model2_l)
   
-  if (is.null(latent)) latent = get_names(model_l)[[2]][[1]]
+  latent = find_common_latent(model1, model2, latent)
   
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model_l, model2_l)
@@ -65,7 +65,6 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
     theme_bw() +
     labels
 }
-
 
 
 
