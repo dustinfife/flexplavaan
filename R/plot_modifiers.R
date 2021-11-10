@@ -12,7 +12,7 @@ modify_model_names = function(p, model_names=c("a", "b")) {
 # this function modifies a plot to use a new flexplot formula
 # latent_plot(fit_bollen) %>% modify_formula(Eta2~Eta1)
 modify_formula = function(p, formula, ...) {
-  if(class(p)[1] != "gg")      stop("This function only takes a plot as input.")
+  if(class(p)[1] != "gg")            stop("This function only takes a plot as input.")
   if(class(formula)[1] != "formula") stop("This function requires a valid formula.")
   
   # check whether variables in formula are in dataset

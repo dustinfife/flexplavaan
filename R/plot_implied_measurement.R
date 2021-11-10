@@ -29,6 +29,14 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
 
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model_l, model2_l)
+  plots = latent_flexplot(flex_data, latent, limit=limit, sort_slopes=sort_slopes, ...)
+  return(plots)
+  
+}
+
+
+# this function NEEDS to be split up because I use it in plot_modifiers
+latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, ...) {
 
   # name the abline parameters
   intercept_name = paste0("intercept_", latent)
@@ -63,10 +71,7 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
     smooth + 
     theme_bw() +
     labels
+
 }
-
-
-
-
 
 
