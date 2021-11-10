@@ -36,6 +36,11 @@ visualize.lavaan = function(object, object2=NULL,
   plot = match.arg(plot, c("all", "ddp", "trail", "disturbance", "residuals", "measurement", "latent"))
  
   if (plot %in% c("all", "trail", "ddp")){
+    if (is.null(subset)) {
+      vars = lavNames(object_l, "ov")
+      max_plots = min(length(vars), 4)
+      subset = 1:max_plots
+    }
     return(plot_scatter_matrix(object_l, object2_l, subset, plot))#%>% modify_model_names(get_and_check_names(NULL, object, object2)))
   } 
 
