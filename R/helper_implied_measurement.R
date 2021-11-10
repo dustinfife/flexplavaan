@@ -143,4 +143,35 @@ latent_observed_implied = function(model) {
   return(inter_correlations)
 }
 
+find_common_latent = function(model1, model2, latent=NULL) {
+  # if user specifies latent, return latent
+  if (!is.null(latent)) return(latent)
+  
+  # return the latent variable if there's just one model
+  if (is.null(model2)) return(rank_worst_fitting_latents(model1)[1])
+  
+  # find latent variables common in both models
+  ranks_1 = rank_worst_fitting_latents(model1) %>% data.frame %>% mutate(rank = 1:n())
+  ranks_2 = rank_worst_fitting_latents(model2) %>% data.frame %>% mutate(rank = 1:n())
+  
+  matches = ranks_2$`.` %in% ranks_1$`.`
+  if (all(!(matches))) { stop("Sorry, there are no latent variables in common between your two models.")}
+  returned_variable = ranks_2$`.`[matches][1]
+  return(returned_variable)
+}
+
+rank_worst_fitting_latents = function(model) {
+  
+  latents = lavNames(model, "lv")
+  slope_name = paste0("slope_", latents)
+  
+  # compute the average slope descrepancy by latent variable
+  flex_data = prepare_measurement_data(model)
+  ranks_latents = flex_data %>% 
+    mutate(across(all_of(slope_name), ~ abs(.x - Observed))) %>% # computes difference between observed and implied slope
+    summarize(across(all_of(slope_name), mean))
+  return(names(suppressWarnings(sort(ranks_latents[1,]))) %>% gsub_piped("slope_", ""))
+}
+
+
 

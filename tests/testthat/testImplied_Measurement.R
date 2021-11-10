@@ -13,13 +13,7 @@ test_that("implied_measurement works", {
   #vdiffr::expect_doppelganger("implied_measurement for two non-nested", 
   #                    implied_measurement(force_fit, force_exp, "Jedi"))
 })
-
-test_that("prepare_measurement_data and latent_flexplot works", {
-  b_data = prepare_measurement_data(flexplavaan_to_lavaan(fit_bollen))
-  # make sure all variables are standardized
-  column_means = colMeans(b_data %>% select(-Variable)) %>% round(2)
-  vdiffr::expect_doppelganger("latent_flexplot works", latent_flexplot(b_data, "Eta1"))
-})
+lavNames(force_fit$lavaan)
 
 
 

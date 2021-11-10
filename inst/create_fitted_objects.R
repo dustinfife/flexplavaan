@@ -26,9 +26,18 @@ f1 =~ x1 + x2
 f2 =~ y1 + y2 + y3 + x3
 z ~ f1 + f2
 '
+
+small_diflat_syntax = 
+  '
+f1 =~ x1 + x2 
+F =~ y1 + y2 + y3 + x3
+z ~ f1 + F
+'
+
 small_data = d
 small = lavaan::sem(small_syntax, d)
 small_mis = lavaan::sem(small_mis_syntax, d)
+small_diflat = lavaan::sem(small_diflat_syntax, d)
 small_flexplavaan = flexplavaan(small_syntax, d)
 usethis::use_data(small, overwrite=T)
 usethis::use_data(small_mis, overwrite=T)
@@ -36,6 +45,7 @@ usethis::use_data(small_syntax, overwrite=T)
 usethis::use_data(small_mis_syntax, overwrite=T)
 usethis::use_data(small_data, overwrite=T)
 usethis::use_data(small_flexplavaan, overwrite=T)
+usethis::use_data(small_diflat, overwrite=T)
 
 # simulate data according to Figure 2 in paper
 set.seed(12121)
