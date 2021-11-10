@@ -9,8 +9,11 @@ test_that("prepare_measurement_data works", {
 })
 
 test_that("order_flexdata_by_slopes works", {
-  expect_equal(order_flexdata_by_slopes(plot_data, "f1", F), unique(plot_data$Variable))
-  expect_equal(order_flexdata_by_slopes(plot_data, "f1", T)$Variable[1], "x3")
+  a = order_flexdata_by_slopes(plot_data, "f1", F)
+  b = order_flexdata_by_slopes(plot_data, "f1", T)
+  expect_equal(a$Variable, unique(plot_data$Variable))
+  expect_equal(b$Variable[1], "x3")
+  expect_equal(sort(a$Variable), sort(b$Variable))
   expect_equal(order_flexdata_by_slopes(plot_data_2, "f1", T)$Diff[1], .833, tol=.001)
 })
 
