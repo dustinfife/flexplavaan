@@ -10,8 +10,8 @@ test_that("implied_measurement works", {
   vdiffr::expect_doppelganger("implied_measurement for two models", 
                       implied_measurement(force_fit, 
                                           force_cross, "Force"))
-  #vdiffr::expect_doppelganger("implied_measurement for two non-nested", 
-  #                    implied_measurement(force_fit, force_exp, "Jedi"))
+  vdiffr::expect_doppelganger("implied_measurement for two non-nested",
+                     implied_measurement(force_fit, force_exp, "Jedi"))
 })
 lavNames(force_fit$lavaan)
 

@@ -22,15 +22,14 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
   
   model_l = flexplavaan_to_lavaan(model)
   model2_l = flexplavaan_to_lavaan(model2)
-  
+
   # check models
   #check_models(model_l, model2_l)
-  
-  latent = find_common_latent(model1, model2, latent)
-  
+  latent = find_common_latent(model_l, model2_l, latent)
+
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model_l, model2_l)
-  
+
   # name the abline parameters
   intercept_name = paste0("intercept_", latent)
   slope_name = paste0("slope_", latent)

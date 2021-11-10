@@ -10,7 +10,10 @@ test_that("implied_measurement works", {
   vdiffr::expect_doppelganger("implied_measurement with diff limit works", implied_measurement(small, latent="f1", limit=3))
   vdiffr::expect_doppelganger("implied_measurement for two models", 
                               implied_measurement(small, 
-                                                  small_mis, "f1"))
+                                                  small_mis))
+  vdiffr::expect_doppelganger("implied_measurement for non-nested models", implied_measurement(small, small_diflat))  
+  vdiffr::expect_doppelganger("implied_measurement for non-nested models with no common data", 
+                              implied_measurement(force_fit, force_exp, "Jedi"))  
 })
 
 test_that("prepare_measurement_data and latent_flexplot works", {
