@@ -7,6 +7,10 @@ sort_variables = function(object, sort_plots) {
                           1:length(lavNames(object)))
   return(variable_order)
 }
+
+gsub_piped = function(x, pattern, replacement) {
+  gsub(pattern, replacement, x)
+}
 #testthat::snapshot_review()
 
 # this function returns a subset of variable names

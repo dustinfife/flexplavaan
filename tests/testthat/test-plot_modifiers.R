@@ -33,6 +33,5 @@ test_that("modify_latent works", {
 
 test_that("modify_smooth works", {
   vdiffr::expect_doppelganger("modify_smooth for implied measurement", p %>% modify_smooth(method="quadratic"))
-  visualize(small, plot="trail", subset=1:3) %>% modify_smooth(method="lm")
-                              
+  vdiffr::expect_doppelganger("modify_smooth for scatterplot matrix", visualize(small, plot="trail", subset=1:3) %>% modify_smooth(method="quadratic"))
 })
