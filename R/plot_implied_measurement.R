@@ -41,10 +41,10 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, ...) {
   # name the abline parameters
   intercept_name = paste0("intercept_", latent)
   slope_name = paste0("slope_", latent)
-  
+
   ordered_differences = order_flexdata_by_slopes(flex_data, latent, sort_slopes)
   flex_data$Variable = factor(flex_data$Variable, levels=ordered_differences$Variable, ordered=sort_slopes)  
-  
+
   # limit the number of plots
   only_plot_these = levels(flex_data$Variable)[1:min(limit, length(flex_data$Variable))]
   flex_data = flex_data %>% filter(Variable %in% only_plot_these)

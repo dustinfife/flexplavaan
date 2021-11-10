@@ -37,7 +37,9 @@ prepare_measurement_data = function(model, model2=NULL) {
 order_flexdata_by_slopes = function(flex_data, latent, sort_slopes) {
   
   if (!sort_slopes) {
-    return(unique(flex_data$Variable))
+    # this must be returned as a list so later when I call x$Variable it doesn't 
+    # screw things up
+    return(list(Variable = unique(flex_data$Variable)))
   }
   
   # compute actual slopes if they didn't provide a second model
