@@ -16,11 +16,11 @@ test_that("implied_measurement works", {
                               implied_measurement(force_fit, force_exp, "Jedi"))  
 })
 
-test_that("prepare_measurement_data and latent_flexplot works", {
-  b_data = prepare_measurement_data(flexplavaan_to_lavaan(fit_bollen))
-  # make sure all variables are standardized
-  column_means = colMeans(b_data %>% select(-Variable)) %>% round(2)
-  vdiffr::expect_doppelganger("latent_flexplot works", latent_flexplot(b_data, "Eta1"))
+test_that("latent_flexplot works", {
+  b_data = prepare_measurement_data(small)
+  vdiffr::expect_doppelganger("latent_flexplot works", latent_flexplot(b_data, "f1"))
+  b_data = prepare_measurement_data(small, small_mis)
+  vdiffr::expect_doppelganger("latent_flexplot (two models) works", latent_flexplot(b_data, "f2"))
 })
 
 
