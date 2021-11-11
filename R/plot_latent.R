@@ -15,7 +15,7 @@ latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ..
   # compute standard errors 
   se_data = check_for_sd_true(estimate_se, fitted, latent_names)
   
-  model_names = get_and_check_names(fitted, fitted2)
+  model_names = get_and_check_names(NULL,fitted, fitted2)
 
   # add second dataset
   if (!is.null(fitted2_l)) {
