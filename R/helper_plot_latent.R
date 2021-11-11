@@ -1,5 +1,4 @@
-#fitted = fit_bollen
-#beta_to_flexplot(fit_bollen, data.frame(lavPredict(fit_bollen)))
+# this will automatically create a flexplot function based on beta matrix
 beta_to_flexplot = function(fitted, return_dvs=FALSE) {
   
   data = get_lav_data(fitted)
@@ -48,6 +47,7 @@ beta_to_flexplot = function(fitted, return_dvs=FALSE) {
   return(model_formulas)
 }
 
+
 get_endogenous_names = function(fitted){
   # lavaan matrices are lambda, theta, psi, and beta.
   # beta specifies which variables are endogenous.
@@ -59,7 +59,7 @@ get_endogenous_names = function(fitted){
 }
 
 
-#get_dv_iv(2, beta_matrix)
+# this function identifies which variables are endogenous using a beta matrix
 get_dv_iv = function(i, beta_matrix){
   which(abs(beta_matrix[i,])>0)
 }

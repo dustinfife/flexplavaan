@@ -36,6 +36,7 @@ visualize.lavaan = function(object, object2=NULL,
   plot = match.arg(plot, c("all", "ddp", "trail", "disturbance", "residuals", "measurement", "latent"))
  
   if (plot %in% c("all", "trail", "ddp")){
+    
     if (is.null(subset)) {
       vars = lavNames(object_l, "ov")
       max_plots = min(length(vars), 4)
