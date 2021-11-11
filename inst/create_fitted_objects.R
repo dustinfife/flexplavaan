@@ -38,6 +38,10 @@ small_fa_syntax = '
 f1 =~ x1 + x2 + x3
 f2 =~ y1 + y2 + y3
 '
+
+small_uni = '
+f1 =~ x1 + x2 + x3
+'
   
 
 small_data = d
@@ -46,14 +50,18 @@ small_mis = lavaan::sem(small_mis_syntax, d)
 small_diflat = lavaan::sem(small_diflat_syntax, d)
 small_fa = lavaan::sem(small_fa_syntax, d)
 small_flexplavaan = flexplavaan(small_syntax, d)
+small_flexplavaan_mis = flexplavaan(small_mis_syntax, d)
+small_uni = flexplavaan(small_uni, d)
 usethis::use_data(small, overwrite=T)
 usethis::use_data(small_mis, overwrite=T)
 usethis::use_data(small_syntax, overwrite=T)
 usethis::use_data(small_mis_syntax, overwrite=T)
 usethis::use_data(small_data, overwrite=T)
 usethis::use_data(small_flexplavaan, overwrite=T)
+usethis::use_data(small_flexplavaan_mis, overwrite=T)
 usethis::use_data(small_diflat, overwrite=T)
 usethis::use_data(small_fa, overwrite=T)
+usethis::use_data(small_uni, overwrite=T)
 
 # simulate data according to Figure 2 in paper
 set.seed(12121)

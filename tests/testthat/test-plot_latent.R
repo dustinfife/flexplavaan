@@ -4,7 +4,9 @@ options(warn=-1)
 require(lavaan)
 
 test_that("latent_plot works", {
-  vdiffr::expect_doppelganger("simple latent_plot",latent_plot(small, small_mis))
+  vdiffr::expect_doppelganger("simple latent_plot",latent_plot(small_flexplavaan))
+  vdiffr::expect_doppelganger("two model latent_plot",latent_plot(small_flexplavaan, small_flexplavaan_mis))  
+  expect_error(latent_plot(small_uni))
 })  
 
 test_that("return_alpha works", {
