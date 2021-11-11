@@ -50,7 +50,7 @@ matrix_plot.trail = function(x, ...) {
 
 matrix_plot.ddp = function(x, ...) {
 
-  p = with(x, ggpairs(d, legend = rev(c(1,2)),
+  p = with(x, ggpairs(d, legend = legend,
               lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object1_l, fit.lavaan2 = object2_l, alpha = .2, plot="disturbance", label_names=nms, invert.map=TRUE)),
               upper = NULL,
               diag  = list(continuous = wrap(viz_diagnostics,fit.lavaan = object1_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram",   label_names=nms)))
