@@ -1,14 +1,15 @@
-context("Latent plots function")
+context("helper_plot_latent works")
 set.seed(2323)
 options(warn=-1)
 require(lavaan)
 
 
 test_that("beta_to_flexplot works", {
-  expect_true(paste(beta_to_flexplot(flexplavaan_to_lavaan(fit_bollen), data.frame(lavPredict(flexplavaan_to_lavaan(fit_bollen))))[[2]])[2] == "Eta2")
-  expect_true(beta_to_flexplot(flexplavaan_to_lavaan(fit_bollen), data.frame(lavPredict(flexplavaan_to_lavaan(fit_bollen))), return_dvs = T)[1] == 1)
-  #expect_true(paste(beta_to_flexplot(sem_a, data.frame(lavPredict(sem_a))))[2] == "latent_x")
-  #expect_true(beta_to_flexplot(sem_a, data.frame(lavPredict(sem_a)), return_dvs = T)[1] == 1)  
+  expect_equal(beta_to_flexplot(small)[[1]], formula(z~f1 | f2))
+  expect_equal(beta_to_flexplot(small, return_dvs = T), 3)
+  expect_equal(beta_to_flexplot(small_fa), formula(f1~f2))
+  expect_equal(beta_to_flexplot(small_fa, T), c(1,2))
+  
 })
 
 test_that("get_dv_iv works", {
