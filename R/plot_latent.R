@@ -39,7 +39,7 @@ latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ..
   }
 
   ### give them a formula (can be changed with modify_formula)
-  formula = beta_to_flexplot(fitted_l, latent_predicted)
+  formula = beta_to_flexplot(fitted_l)
   if (formula[[1]]=="~") return(latent_plot_only(formula, latent_predicted, se_data, fitted_l, ...))
   
   # only return one plot
