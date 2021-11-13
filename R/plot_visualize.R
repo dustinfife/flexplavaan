@@ -12,6 +12,10 @@
 #' Option is ignored for the other plots
 #' @param ... Other arguments passed to flexplot
 #' @import GGally
+#' @import dplyr
+#' @import tidyr
+#' @import lavaan
+#' @import purrr
 #' @export
 #' @aliases visualize visualize.lavaan
 #' @examples
