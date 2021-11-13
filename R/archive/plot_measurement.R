@@ -50,16 +50,7 @@ check_for_standard_errors = function(fitted) {
   return(get_standard_errors(fitted))
 }
 
-#' @importFrom semTools plausibleValues
-estimate_standard_errors = function(i,fitted) {
-  latent_name = sym(lavaan::lavNames(fitted, type="lv")[i])
-  se_posterior = semTools::plausibleValues(fitted)
-  se_posterior = se_posterior %>% tibble::tibble() %>% unnest(cols=c(.)) %>%
-    group_by(case.idx) %>%
-    dplyr::summarize(sd_imp = sd(!!latent_name)) %>% 
-    data.frame()
- se_posterior
-}
+
 
 
 #apply_measurement_plot(1, fit_twofactor)

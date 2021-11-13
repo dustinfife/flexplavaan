@@ -53,6 +53,11 @@ test_that("rank_worst_fitting_latent works", {
 })
 
 
+test_that("estimate_standard_errors works", {
+  set.seed(1223)
+  expect_equal(estimate_standard_errors(1, small)$sd_imp[50], .2334, tol=.01)
+})
+
 
 
 

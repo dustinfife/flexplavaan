@@ -174,5 +174,15 @@ rank_worst_fitting_latents = function(model) {
   return(names(suppressWarnings(sort(ranks_latents[1,]))) %>% gsub_piped("slope_", ""))
 }
 
+#' @importFrom semTools plausibleValues
+estimate_standard_errors = function(i,fitted) {
+  latent_name = sym(lavaan::lavNames(fitted, type="lv")[i])
+  se_posterior = semTools::plausibleValues(fitted)
+  se_posterior = se_posterior %>% tibble::tibble() %>% unnest(cols=c(.)) %>%
+    group_by(case.idx) %>%
+    dplyr::summarize(sd_imp = sd(!!latent_name)) %>% 
+    data.frame()
+  se_posterior
+}
 
 
