@@ -1,7 +1,3 @@
-
-
-
-
 #' Plot a "hopper" plot (or residual plot) for a latent variable model
 #'
 #' These plots show lines representing the absolute value (and negative absolute value)
@@ -17,7 +13,6 @@
 #' @examples
 #' hopper_plot(force_fit)
 residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
-  
   
   fitted_l = flexplavaan_to_lavaan(fitted)
   fitted2_l = flexplavaan_to_lavaan(fitted2)
@@ -60,8 +55,8 @@ residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
     geom_abline(slope=0, intercept=0) + 
     scale_x_discrete(limits = rev(levels(limits[["Correlation"]])))+
     theme_bw() +
-    annotate("text", x=max(res_d$Correlation), y=max(res_d$top), label="Model Underestimates", vjust="inward", hjust="inward") + 
-    annotate("text", x=max(res_d$Correlation), y=min(res_d$bottom), label="Model Overestimates", vjust="inward", hjust="inward") + 
+    annotate("text", x=max(res_d$Correlation), y=max(limits$top), label="Model Underestimates", vjust="inward", hjust="inward") + 
+    annotate("text", x=max(res_d$Correlation), y=min(limits$bottom), label="Model Overestimates", vjust="inward", hjust="inward") + 
     coord_flip()
   p
     
