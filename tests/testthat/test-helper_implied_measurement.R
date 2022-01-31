@@ -46,10 +46,13 @@ test_that("latent_observed_implied works", {
 test_that("find_common_latent works", {
   expect_equal(find_common_latent(small, small_diflat), "f1")
   expect_error(find_common_latent(force_fit$lavaan, force_exp$lavaan))
+  expect_equal(find_common_latent(small, NULL), "f2")
+  expect_equal(find_common_latent(small_uni, NULL), "f1")
 })
 
 test_that("rank_worst_fitting_latent works", {
   expect_equal(rank_worst_fitting_latents(small_mis)[1], "f1")
+  expect_equal(rank_worst_fitting_latents(small_uni)[1], "f1")
 })
 
 
