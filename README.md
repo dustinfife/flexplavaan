@@ -144,7 +144,7 @@ datapoints in a regression model.
 Obviously, the more latent variables one has, the more complex this plot
 could become. The `formula` argument allows users specificity in how
 latent variables are displayed. For more information on the syntax of
-formulas, see the [flexplot manual](http://https://psyarxiv.com/kh9c3/).
+formulas, see the [flexplot manual](https://psyarxiv.com/kh9c3/).
 
 For more information, see the [flexplavaan
-vignette](http://https://psyarxiv.com/qm7kj).
+vignette](https://psyarxiv.com/qm7kj).
