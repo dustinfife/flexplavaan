@@ -45,6 +45,10 @@ f1 =~ x1 + x2 + x3
   
 
 small_data = d
+small_missing = d;
+  small_missing[sample(1:nrow(d), 5), 1] = NA
+  small_missing[sample(1:nrow(d), 5), 2] = NA
+  small_missing[sample(1:nrow(d), 5), 3] = NA
 small = lavaan::sem(small_syntax, d)
 small_mis = lavaan::sem(small_mis_syntax, d)
 small_diflat = lavaan::sem(small_diflat_syntax, d)
@@ -62,6 +66,7 @@ usethis::use_data(small_flexplavaan_mis, overwrite=T)
 usethis::use_data(small_diflat, overwrite=T)
 usethis::use_data(small_fa, overwrite=T)
 usethis::use_data(small_uni, overwrite=T)
+usethis::use_data(small_missing, overwrite=T)
 
 # simulate data according to Figure 2 in paper
 set.seed(12121)
