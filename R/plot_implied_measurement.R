@@ -19,12 +19,15 @@
 #' @return Either a ggplot2 plot, or a list of ggplot2 plots
 #' @export
 implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_slopes=T, ...) {
-  
-  # make sure the second model is actually a model
-  if (class(model2) != "lavaan" | is.null(class(model2))) stop("Your second model needs to be a lavaan object.")
+
   
   model_l = flexplavaan_to_lavaan(model)
   model2_l = flexplavaan_to_lavaan(model2)
+  
+  
+  # make sure the models are actually a model
+  if (class(model_l) != "lavaan" ) stop("Your model needs to be a lavaan object.")
+  if (class(model2_l) != "lavaan" & class(model2_l) != "NULL") stop("Your second model needs to be a lavaan object.")
 
   # check models
   #check_models(model_l, model2_l)
