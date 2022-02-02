@@ -22,7 +22,7 @@ test_that("implied_measurement works", {
 
 test_that("implied_measurement with missing data", {
   fit = cfa(small_uni, data = small_data, missing="fiml")
-  implied_measurement(fit)
+  vdiffr::expect_doppelganger("implied_measurement with fiml", implied_measurement(fit))
 })
 
 test_that("latent_flexplot works", {
