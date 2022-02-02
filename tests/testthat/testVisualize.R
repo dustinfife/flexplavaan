@@ -20,6 +20,8 @@ test_that("regular lavaan works", {
                                         fit.lavaan_2, subset=1:3))
   vdiffr::expect_doppelganger("er:observed with no latents",visualize(health,subset=1:4))
   
+  fit = cfa(small_uni, small_missing, missing="fiml")
+  vdiffr::expect_doppelganger("visualize works with missing data", visualize(fit))
 })
 
 test_that("measurement works in visualize", {

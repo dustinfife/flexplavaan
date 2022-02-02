@@ -129,10 +129,10 @@ estimate_linear_fit = function(fit.lavaan, x, y, data){
     estimated.slope = implied.cor[x,y]*(stdev_ov[y]/stdev_ov[x])
     ### slope = sd(y)/sd(x) = maximum possible slope between the two, but multiply by f(reliability)
     corrected.slope = estimated.slope
-    corrected.intercept = mean(data[,y]) - corrected.slope * mean(data[,x])
+    corrected.intercept = mean(data[,y], na.rm=T) - corrected.slope * mean(data[,x], na.rm=T)
     ### maximum possible value * sqrt(reliability product)
     
-    x_new = seq(from=min(data[,x]), to=max(data[,x]), length.out=20)
+    x_new = seq(from=min(data[,x], na.rm=T), to=max(data[,x], na.rm=T), length.out=20)
     y_new = corrected.intercept + corrected.slope*x_new
     residuals = data[,y] - (corrected.intercept + corrected.slope*data[,x])
   }
