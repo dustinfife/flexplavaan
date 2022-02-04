@@ -16,3 +16,11 @@ test_that("viz_diagnostics_get_data works", {
                c("data", "new_data", "y2_name", "resid_name"))
   expect_equal(ncol(viz_diagnostics_get_data(small, variables = c("x1", "x2"))$new_data), 2)
 })
+
+test_that("extract_subset works", {
+  expect_error(extract_subset(small, 1:10))
+  expect_error(extract_subset(small, 810))
+  expect_equal(extract_subset(small, 1:3), c("x1", "x2", "x3"))
+  expect_equal(extract_subset(small, "x1"), c("x1"))  
+  expect_error(extract_subset(small, "xasdf1"))  
+})

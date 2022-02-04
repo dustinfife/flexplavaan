@@ -7,7 +7,7 @@ plot_scatter_matrix = function(object1, object2=NULL, subset=NULL, plot="all", .
   object2_l = flexplavaan_to_lavaan(object2)
  
   # specify subsets
-  names_ordered = lavNames(object1_l)[sort_variables(object1_l, T)][subset]
+  names_ordered = extract_subset(object1, subset)
   d = sort_dataset(object1_l, sort_plots = TRUE) %>% 
     dplyr::select(dplyr::all_of(names_ordered))
 
