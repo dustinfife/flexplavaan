@@ -22,6 +22,8 @@ test_that("regular lavaan works", {
   
   fit = cfa(small_uni, small_missing, missing="fiml")
   vdiffr::expect_doppelganger("visualize works with missing data", visualize(fit))
+  vdiffr::expect_doppelganger("visualize with named subset", visualize(small, subset=c("x1", "x2")))
+
 })
 
 test_that("measurement works in visualize", {

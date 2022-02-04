@@ -61,6 +61,28 @@ viz_diagnostics_get_data = function(fit.lavaan, fit.lavaan2=NULL, variables){
   return(list(data=data, new_data=new_data, y2_name=y2_name, resid_name = resid_name))
 }
 
+extract_subset = function(object, subset) {
+  names = lavNames(object)
+  
+  if (length(subset)>length(names)) stop("It looks like you're trying to extract more variables than you have.")
+  if (is.numeric(subset)) {
+    if ((max(subset) > length(names))) stop("It looks like you're trying to extract variables that don't exist.")
+    return(names[subset])
+  }
+  
+  if (!all(subset %in% names)) {
+    badvar = subset[!(subset %in% names)]
+    stop(paste0("One of the variables you're looking for (", paste0(badvar), ") is not in your model"))
+  }
+ 
+  names(names) = names
+  return(as.character(names[subset]))
+}
+
+variable_not_in_here = function(tocheck, available) {
+  
+}
+
 # viz_diagnostics_get_data = function(fit.lavaan, fit.lavaan2, variables){
 #   
 #   x = variables[1]
