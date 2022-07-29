@@ -36,6 +36,12 @@ residual_from_latents = function(i, fitted) {
   dataset = data.frame(cbind(variable_scores, fitted@Data@X[[1]][,i]))
   names(dataset) = c(variable_name, observed)
   
+  # when there are negative variances, the latent variables predict NA. Give an error msg. 
+  if (all(is.na(dataset[,variable_name]))) {
+    stop("It looks like your model has negative variances. That means you won't be able to 
+         plot this. Fix the model and try again.")
+  }
+  
   # formula/residuals
   formula_residual = flexplot::make.formula(observed, variable_name)
   residuals = residuals(lm(formula_residual, dataset))
