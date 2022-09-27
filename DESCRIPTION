@@ -1,12 +1,11 @@
 Package: flexplavaan
 Title: Visualizing Latent Variable Models Using Flexplot
-Version: 0.2.0
+Version: 0.2.4
 Authors@R: 
     person(given = "Dustin",
            family = "Fife",
            role = c("aut", "cre"),
-           email = "fife.dustin@gmail.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           email = "fife.dustin@gmail.com")
 Description: `flexplavaan` is a package designed to visualize  latent variable models
   with raw data. Basic functionality includes disturbance dependence plots, trail plots,
   model-implied plots, and the ability to compare fits between two latent variable models. 
@@ -23,7 +22,6 @@ Imports:
     dplyr,
     semTools, 
     tidyr,
-    sna, 
     tibble, 
     ggforce
 Suggests: 
@@ -31,7 +29,7 @@ Suggests:
     testthat,
     covr, 
     vdiffr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Depends: 
     R (>= 2.10), 
     flexplot
