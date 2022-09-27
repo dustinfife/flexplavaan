@@ -1,3 +1,74 @@
+# create a small model for tests
+require(tidyverse)
+set.seed(2323)
+n = 50
+f1 = rnorm(n)
+f2 = .4*f1 + rnorm(n, 0, sqrt(1-.4^2))
+z = .3*f1 + .4*f2 + rnorm(n, 0, .3)
+f = function(x, f1) return(x = x*f1 + rnorm(length(f1), 0, sqrt(1-x^2)))
+x = c(.6,.7,.8) %>% 
+  purrr::map_dfc(f, f1) %>%
+  set_names(paste0("x", 1:3))
+y = c(.6,.7,.8) %>% 
+  purrr::map_dfc(f, f2) %>%
+  set_names(paste0("y", 1:3))
+d = cbind(x, y, z)
+head(d)
+
+small_syntax = '
+f1 =~ x1 + x2 + x3
+f2 =~ y1 + y2 + y3
+z ~ f1 + f2
+'
+small_mis_syntax = 
+'
+f1 =~ x1 + x2 
+f2 =~ y1 + y2 + y3 + x3
+z ~ f1 + f2
+'
+
+small_diflat_syntax = 
+  '
+f1 =~ x1 + x2 
+F =~ y1 + y2 + y3 + x3
+z ~ f1 + F
+'
+
+small_fa_syntax = '
+f1 =~ x1 + x2 + x3
+f2 =~ y1 + y2 + y3
+'
+
+small_uni = '
+f1 =~ x1 + x2 + x3
+'
+  
+
+small_data = d
+small_missing = d;
+  small_missing[sample(1:nrow(d), 5), 1] = NA
+  small_missing[sample(1:nrow(d), 5), 2] = NA
+  small_missing[sample(1:nrow(d), 5), 3] = NA
+small = lavaan::sem(small_syntax, d)
+small_mis = lavaan::sem(small_mis_syntax, d)
+small_diflat = lavaan::sem(small_diflat_syntax, d)
+small_fa = lavaan::sem(small_fa_syntax, d)
+small_flexplavaan = flexplavaan(small_syntax, d)
+small_flexplavaan_mis = flexplavaan(small_mis_syntax, d)
+small_uni_fit = flexplavaan(small_uni, d)
+usethis::use_data(small, overwrite=T)
+usethis::use_data(small_mis, overwrite=T)
+usethis::use_data(small_syntax, overwrite=T)
+usethis::use_data(small_mis_syntax, overwrite=T)
+usethis::use_data(small_data, overwrite=T)
+usethis::use_data(small_flexplavaan, overwrite=T)
+usethis::use_data(small_flexplavaan_mis, overwrite=T)
+usethis::use_data(small_diflat, overwrite=T)
+usethis::use_data(small_fa, overwrite=T)
+usethis::use_data(small_uni, overwrite=T)
+usethis::use_data(small_uni_fit, overwrite=T)
+usethis::use_data(small_missing, overwrite=T)
+
 # simulate data according to Figure 2 in paper
 set.seed(12121)
 f1 = rnorm(1000)

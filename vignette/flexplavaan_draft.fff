@@ -8,6 +8,8 @@
 
 \caption{A reproduction of Anscombe's quartet. Each plot has identical regression lines/correlations, even though the underlying data are vastly different.}\label{fig:anscombe}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -34,6 +36,8 @@
 \label{fig:implied}
 \end{center}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -70,6 +74,8 @@
 \label{fig:force}
 \end{center}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -106,6 +112,8 @@
 \label{fig:councilModel}
 \end{center}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -116,6 +124,8 @@
 
 \caption{An example of a "hopper plot," which graphs the discrepancy between the implied and observed correlation matrix. The dots represent observed residuals, while the lines represent the absolute value/negative absolute value.}\label{fig:hopper}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -126,6 +136,8 @@
 
 \caption{The LVM-implied fit between fitness score and light saber score, shown in red. The blue line represents the regression line between the two variables. The more closely the model-implied fit line resembles the regression line, the better the fit of the LVM.}\label{fig:trail1}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -136,6 +148,8 @@
 
 \caption{Scatterplot matrix showing the model-implied fit (red) and loess lines (blue) between four simulated indicator variables. These four variables are the indicators for the force latent variable. The diagonals show the histograms of the ICRs.}\label{fig:trailMatrix}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -146,6 +160,8 @@
 
 \caption{Scatterplot matrix showing the model-implied fit (red) and regression-implied fit (blue) between four simulated indicator variables. These four variables are the indicators for the Jedi latent variable. The diagonals show the histograms.}\label{fig:trailMatrix2}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -156,6 +172,8 @@
 
 \caption{The upper triangle of this plot is the same as the plot shown in Figure \ref{fig:trailMatrix2}. However, the lower triangle adds the disturbance-dependence plots.}\label{fig:ddp}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -166,6 +184,8 @@
 
 \caption{This image, called a measurement plot, shows the relationship between the latent variables ($Y$ axis) and each standardized indicator. The blue lines are loess lines, while the red lines are the model-implied fits of the model.}\label{fig:measurementplot}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -176,6 +196,8 @@
 
 \caption{Structural or "cross-hair" plot of the relationship between the latent variables force and Jedi. The crosshairs represent the prediction intervals for the factor scores of the latent variables.}\label{fig:beech}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -228,6 +250,8 @@
 \label{fig:forceNonlin}
 \end{center}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -238,6 +262,8 @@
 
 \caption{A hopper plot, but this time two models are being compared. The red line shows the residuals for the original model, while the blue lines show the residuals for the nonlinear model.}\label{fig:hopperModcomp}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -248,6 +274,8 @@
 
 \caption{Trail plots and DDPs for the two models. The red shows the original model, while the blue shows the fit for the nonlinear model. Trail/DDPs show very little difference between the two models, indicating the two models seem to have similar implied variance/covariance matrices.}\label{fig:trailnl}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -258,6 +286,8 @@
 
 \caption{Measurement plots for the force latent variable, with both the nonlinear, red, model and original, blue, model.}\label{fig:measnl}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -268,6 +298,8 @@
 
 \caption{Relationship between the two latent variables for the original model (left) and the nonlinear model (right). The red line is a 'ghost line,' which simply repeats the line from the left plot to the right plot. This line makes it easier to compare the fits of the models across panels.}\label{fig:structureNonlin}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -278,6 +310,8 @@
 
 \caption{Measurement plots of the user-specified model in Figure 2. While fit statistics will not reveal any problems, the measurement plots do. The top plot shows that the model-implied fit consistently underestimates the relationship between the observed and latent variable. The bottom plot compares the true model to the proposed model and reveals the two models say very different things about the relationships between the observed and latent variable.}\label{fig:equivalentmodels}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -288,6 +322,8 @@
 
 \caption{Hypothesized Model of the Effect of Social Distress on Emotional Well-Being with the NIH Toolbox Norming Data Set. In this model, Perceived Rejection and Perceived Hostility are treated as causal indicators of the Social Distress latent factor. Estimated parameters have red labels.}\label{fig:toolbox1}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -298,6 +334,8 @@
 
 \caption{Alternative Model of the Effect of Social Distress on Emotional Well-Being with the NIH Toolbox Norming Data Set. In this model, Perceived Rejection and Perceived Hostility are treated as reflective indicators of the Social Distress latent factor rather than causal indicators. Estimated parameters have red labels.}\label{fig:toolbox2}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -308,6 +346,8 @@
 
 \caption{Hopper plot of the hypothesized and alternative models.}\label{fig:hopperreal}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -318,6 +358,8 @@
 
 \caption{Trail/DDPs of the hypothesized model for the indicators of the social distress latent factor.}\label{fig:trailreal}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -328,6 +370,8 @@
 
 \caption{Trail/DDPs of the hypothesized model for the indicators of the social distress latent factor.}\label{fig:trailreal2}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -335,6 +379,8 @@
 \includegraphics{flexplavaan_draft_files/figure-latex/tralboth-1.pdf}
 \caption{\label{fig:tralboth}Trail/DDPs for both the hypothesized and altnerative model for the distress latent factor.}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -345,6 +391,8 @@
 
 \caption{Measurement plot for the hypothesized model, showing the relationship between several indicators and the distress latent factor.}\label{fig:measurementrealdistress}
 \end{figure*}
+\efloatseparator
+ 
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
 
@@ -355,3 +403,5 @@
 
 \caption{Influence plot for the hypothesized model.}\label{fig:influence}
 \end{figure*}
+\efloatseparator
+ 

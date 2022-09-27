@@ -1,0 +1,3 @@
+plot_ - only put functions here that return a plot
+helper_ - only put functions here that return a vector
+data_ - only put functions here that manipulate a data frame (need not be the dataset)

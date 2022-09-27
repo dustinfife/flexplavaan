@@ -20,6 +20,8 @@ Nonlinear & 26.3 & 31 & 0.705 & 1.000 & 1.004 & 50,388.6 & 0.000 & 0.022\\
 \end{center}
 
 \end{table*}
+\efloatseparator
+ 
 \begin{table*}[hbt]
 \ifnextchar[{\eatarg}{}
 [tbp]
@@ -42,3 +44,5 @@ Hypothesized & 20.2 & 6 & 0.000 & 0.040 & 0.020 & 0.060 & 0.990 & 0.010\\
 \end{center}
 
 \end{table*}
+\efloatseparator
+ 
