@@ -101,45 +101,50 @@ visualize.flexplavaan = function(object, object2=NULL,
 # mapping = aes(potions, darkarts)
 # visualize.runjags(object, data, which.latent=c(1,1,1,2,2,2))
 #viz_diagnostics_mcmc(data, mapping, latents=factor.scores, plot="disturbance")
-visualize.runjags = function(object, data, which.latent=c(1,1), object2=NULL, subset = NULL, plot=c("all", "residuals", "model"), formula = NULL,...){
+visualize.runjags = function(object, data, which.latent=c(1,1), object2=NULL, subset = NULL, 
+                             plot=c("all", "residuals", "model"), formula = NULL,...){
   
+  
+  browser()
   
   #### create factor scores
   factor.scores = export_jags_latents(object)[,-1]
   
-  #browser()
+  
   plot = match.arg(plot,c("all", "residuals", "model"))
   
   ### extract name of latent variables
   observed = names(data)
   latent.names = names(factor.scores)
-  if (!is.null(subset)) {
-    observed = names(data)[subset]
-  } else {
-    observed = names(data)
-  }
-  
-  
-  
+  observed = get_observed_names(data, subset)
   
   if (plot=="all"){
     
     #viz_diagnostics_mcmc(data[,observed], mapping, factor.scores, plot="trace")
-    ggpairs(data[,observed],
-            lower = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent, alpha = .2, plot="disturbance", ...)),
-            upper = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent,alpha = .2, plot="trace", ...)),
-            diag = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent,alpha = .2, plot="histogram", ...)))
-  } else if (plot == "residuals"){
-    ggpairs(data[,observed], legend=legend,
-            lower = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent,alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
+    return(ggpairs(data[,observed],
+            lower = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, 
+                                          which.latent=which.latent, alpha = .2, plot="disturbance", ...)),
+            upper = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, 
+                                           which.latent=which.latent, alpha = .2, plot="trace", ...)),
+            diag  = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, 
+                                           which.latent=which.latent, alpha = .2, plot="histogram", ...))))
+  }
+    
+  if (plot == "residuals"){
+    return(ggpairs(data[,observed], legend=legend,
+            lower = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, 
+                                           which.latent=which.latent,alpha = .2,invert.map=TRUE, plot="disturbance", ...)),
             upper = NULL,
-            diag = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, which.latent=which.latent,alpha = .2, plot="histogram", ...)))
-  }  else {
+            diag  = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, 
+                                           which.latent=which.latent,alpha = .2, plot="histogram", ...))))
+    return(
     ggpairs(data[,observed], legend=legend,
             lower = NULL,
-            upper = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, alpha = .2, plot="trace", ...)),
-            diag = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, alpha = .2, plot="histogram", ...)))
-  }         
+            upper = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, 
+                                           alpha = .2, plot="trace", ...)),
+            diag  = list(continuous = wrap(viz_diagnostics_mcmc,latents = factor.scores, 
+                                           alpha = .2, plot="histogram", ...))))
+  }
   
 } 
 

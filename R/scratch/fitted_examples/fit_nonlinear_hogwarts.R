@@ -1,14 +1,15 @@
 require(lavaan)
 require(blavaan)
 require(flexplot)
-
+require(runjags)
 
 # fit/visualize using standard lavaan -------------------------------------
 model = "
-magic_knowledge =~ potions + history + herbology
-magic_skills =~ spells + darkarts + flying 
-magic_skills ~ magic_knowledge
+knowledge =~ potions + history + herbology
+skills =~ spells + darkarts + flying 
+skills ~ magic_knowledge
 "
+
 hogwarts_fit = sem(model, data=hogwarts_survival)
   summary(hogwarts_fit, fit.measures=TRUE)
 hogwarts_viz = visualize(hogwarts_fit, method="loess")
@@ -19,10 +20,10 @@ hogwarts_viz = visualize(hogwarts_fit, method="loess")
 require(blavaan)
 hogwarts_survival$surv = rnorm(nrow(hogwarts_survival))
 model = "
-magic_knowledge =~ potions + history + herbology
-magic_skills =~ spells + darkarts + flying 
-magic_skills ~ magic_knowledge
-surv ~ magic_knowledge + magic_skills
+knowledge =~ potions + history + herbology
+skills =~ spells + darkarts + flying 
+skills ~ knowledge
+surv ~ knowledge + skills
 "
 fit.bayes.export = bcfa(model, data=hogwarts_survival, 
                         mcmcfile="hogwarts_survival",

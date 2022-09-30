@@ -83,6 +83,9 @@ variable_not_in_here = function(tocheck, available) {
   
 }
 
+
+
+
 # viz_diagnostics_get_data = function(fit.lavaan, fit.lavaan2, variables){
 #   
 #   x = variables[1]
