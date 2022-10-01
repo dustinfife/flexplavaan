@@ -105,7 +105,7 @@ visualize.runjags = function(object, data, which.latent=c(1,1), object2=NULL, su
                              plot=c("all", "residuals", "model"), formula = NULL,...){
   
   
-  browser()
+  
   
   #### create factor scores
   factor.scores = export_jags_latents(object)[,-1]
