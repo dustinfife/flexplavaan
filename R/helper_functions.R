@@ -1,10 +1,16 @@
 # this function takes a lav object/boolean and returns a vector of ordered variables
 # sorting according to residual
 sort_variables = function(object, sort_plots) {
-  vector_of_booleans = rep(sort_plots, times=length(lavNames(object)))
-  variable_order = ifelse(vector_of_booleans, 
-                          block_model_residuals(object), 
-                          1:length(lavNames(object)))
+  # get the names of the variables with largest residuals
+  residuals = return_residual_dataset(object)
+  variable_order = as.character(residuals$Correlation) %>%
+    strsplit(":") %>%
+    unlist() %>%
+    unique()
+  # vector_of_booleans = rep(sort_plots, times=length(lavNames(object)))
+  # variable_order = ifelse(vector_of_booleans, 
+  #                         block_model_residuals(object), 
+  #                         1:length(lavNames(object)))
   return(variable_order)
 }
 

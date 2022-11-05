@@ -67,7 +67,9 @@ extract_subset = function(object, subset) {
   if (length(subset)>length(names)) stop("It looks like you're trying to extract more variables than you have.")
   if (is.numeric(subset)) {
     if ((max(subset) > length(names))) stop("It looks like you're trying to extract variables that don't exist.")
-    return(names[subset])
+    # reorder data
+    variable_names = sort_variables(object)
+    return(variable_names[subset])
   }
   
   if (!all(subset %in% names)) {
