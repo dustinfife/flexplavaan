@@ -1,3 +1,15 @@
+# see if variances are negative
+find_negative_variances = function(fitted) {
+  variances = diag(lavInspect(fitted, what="std")$theta)
+  negative_variances = names(which(variances<0))
+  if (length(negative_variances)>0) {
+    stop(paste0("Sorry, but you can't plot a measurement plot when there are negative variances. 
+                By the way, it was the variable(s) ", paste0(negative_variances, collapse=","), 
+                " that caused the problem."))
+  }
+  return(NULL)
+}
+
 # this creates the scatterplot data for implied measurement plots
 prepare_measurement_data = function(model, model2=NULL) {
   # get names

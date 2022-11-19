@@ -19,13 +19,11 @@ create_latent_dataset = function(i, fitted) {
   obs_data = data.frame(fitted@Data@X)
 
   # get latent scores
-  #browser()
   latent_raw = data.frame(lavaan::lavPredict(fitted)[,i])
   obs_data = data.frame(cbind(obs_data, latent_raw))
   names(obs_data) = c(obs_names, latent_names[i])
 
   ## remove columns not associated with this latent variable
-  #
   lambda_factor_i = fitted@Model@GLIST$lambda[,i] %>% data.frame 
   indicators_for_factor_i = which(lambda_factor_i!=0)
   obs_data = obs_data[,c(obs_names[indicators_for_factor_i], latent_names[i])]
@@ -52,6 +50,8 @@ check_for_standard_errors = function(fitted) {
 
 #' @importFrom semTools plausibleValues
 estimate_standard_errors = function(i,fitted) {
+  # check for negative variances
+  find_negative_variances(fitted)
   latent_name = sym(lavaan::lavNames(fitted, type="lv")[i])
   se_posterior = semTools::plausibleValues(fitted)
   se_posterior = se_posterior %>% tibble::tibble() %>% unnest(cols=c(.)) %>%
@@ -73,26 +73,31 @@ apply_measurement_plot = function(i, fitted, ... ) {
   latent = lavaan::lavNames(fitted, type="lv")[i]
   
   # get latent names from lambda matrix (factor loadings)
-  factor_loadings = lavaan::inspect(fitted,what="est")$lambda
+  factor_loadings = lavaan::inspect(fitted,what="std")$lambda
   latent_column = dimnames(factor_loadings)[[2]] == latent
   observed_columns = dimnames(factor_loadings)[[1]] %in% unique(data$Measure)
   slopes = factor_loadings[observed_columns,latent_column]
   data$slopes = NA
-  
+
   # fine, I'm using a loop
   for (k in 1:length(slopes)) {
     value = slopes[k]
     item_name = names(slopes)[k]
     data$slopes[data$Measure==item_name] = value
   }
-  
-  
+
   # append measurement
+  old_sd = sd(data[,latent])
+  data[,latent] = scale(data[,latent])
   se = estimate_standard_errors(i, fitted)
-  data$se = rep(se$sd_imp, times=length(unique(data$Measure)))
+  
+  # new sd = 1; old sd = old_sd; that ratio tells us how much larger to increase the
+  # imputed values to match the new scale
+  data$se = rep((1/old_sd)*se$sd_imp, times=length(unique(data$Measure)))
   data$lower = data[,latent] - data$se
   data$upper = data[,latent] + data$se
-  
+  # need to scale the lv too, otherwise the standardized factor loading isn't correct
+
   formula_p = as.formula(paste0(latent, "~Observed|Measure"))
   # suppress datapoints so I can get the fitted line for the actual dataset
   # then I can add dots as a separate geom based on sampling
