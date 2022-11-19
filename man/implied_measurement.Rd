@@ -10,7 +10,6 @@ implied_measurement(
   latent = NULL,
   limit = 4,
   sort_slopes = T,
-  method = "default",
   ...
 )
 }

@@ -29,7 +29,7 @@ Suggests:
     testthat,
     covr, 
     vdiffr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Depends: 
     R (>= 2.10), 
     flexplot
