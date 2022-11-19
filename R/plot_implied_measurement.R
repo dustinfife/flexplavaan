@@ -55,6 +55,12 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, ...) {
   only_plot_these = levels(flex_data$Variable)[1:min(limit, length(flex_data$Variable))]
   flex_data = flex_data %>% filter(Variable %in% only_plot_these)
   
+  # change method if they supply it
+  if ("method" %in% names(list(...))) {
+    method = list(...)$method
+  } else {
+    method = "loess"
+  }
   # now plot it
   if ("model" %in% names(flex_data)) {
     p = ggplot(flex_data, 
@@ -65,13 +71,13 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, ...) {
   } else {
     p = ggplot(flex_data, 
                aes_string(x = "Observed", y = latent, group = "1"), ...) 
-    smooth = geom_smooth(method="loess", formula = y~x, colour="blue") 
+    smooth = geom_smooth(method=method, formula = y~x, colour="blue") 
     abline = geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="red", lwd=2) 
     labels = labs(x="Observed\n(Red = Implied, Blue:=Observed)")
   }
   
   p +
-    geom_point(...) + 
+    suppressWarnings(geom_point(...)) + 
     facet_wrap(~ Variable) +
     abline + 
     smooth + 
