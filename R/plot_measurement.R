@@ -71,7 +71,22 @@ apply_measurement_plot = function(i, fitted, ... ) {
   
   # get latent name
   latent = lavaan::lavNames(fitted, type="lv")[i]
-
+  
+  # get latent names from lambda matrix (factor loadings)
+  factor_loadings = lavaan::inspect(fitted,what="est")$lambda
+  latent_column = dimnames(factor_loadings)[[2]] == latent
+  observed_columns = dimnames(factor_loadings)[[1]] %in% unique(data$Measure)
+  slopes = factor_loadings[observed_columns,latent_column]
+  data$slopes = NA
+  
+  # fine, I'm using a loop
+  for (k in 1:length(slopes)) {
+    value = slopes[k]
+    item_name = names(slopes)[k]
+    data$slopes[data$Measure==item_name] = value
+  }
+  
+  
   # append measurement
   se = estimate_standard_errors(i, fitted)
   data$se = rep(se$sd_imp, times=length(unique(data$Measure)))
@@ -84,7 +99,8 @@ apply_measurement_plot = function(i, fitted, ... ) {
   p = flexplot(formula_p,
            data=data,
            method="lm",
-           ghost.line = "red", alpha=0,...) 
+           alpha=0,...)  +
+    geom_abline(aes(intercept=0, slope = slopes), col="red")
   d_sampled = random_sample_from_data(data, ...)
 
   p = p + 
