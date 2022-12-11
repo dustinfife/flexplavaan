@@ -10,6 +10,13 @@ return_residual_dataset = function(fitted, max_val = 0.01) {
   # subset data
   condition = which(abs(vechs_cors)>max_val)
   
+  # if there's few values greater than max value, warn the user and change it
+  if (length(condition)<3) {
+    number_of_vars = length(condition)
+    message(paste0("The number of variables you're asking to display, based on your max_val,
+                   is only ", number_of_vars, ". I'm going to display 3 variables instead."))
+    condition = which(order(abs(vechs_cors))<4)
+  }
   # create dataset
   res_d = data.frame(Residual=(vechs_cors[condition]), Correlation = pairwise_names[condition])
   res_d = res_d[order(abs(res_d$Residual), decreasing = T),]
@@ -54,8 +61,7 @@ combine_residual_datasets = function(fitted, fitted2=NULL, max_val=.01) {
 #' @examples
 #' hopper_plot(force_fit)
 residual_plots = hopper_plot = function(fitted, fitted2=NULL, max_val = 0.01) {
-  
-  
+
   fitted_l = flexplavaan_to_lavaan(fitted)
   fitted2_l = flexplavaan_to_lavaan(fitted2)
   

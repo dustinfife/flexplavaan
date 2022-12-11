@@ -2,7 +2,8 @@
 # sorting according to residual
 sort_variables = function(object, sort_plots) {
   # get the names of the variables with largest residuals
-  residuals = return_residual_dataset(object)
+  
+  residuals = return_residual_dataset(object, 0)
   variable_order = as.character(residuals$Correlation) %>%
     strsplit(":") %>%
     unlist() %>%
