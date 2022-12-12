@@ -1,7 +1,7 @@
 context("helper_functions tests")
 
 test_that("sort_variables works", {
-  expect_true(sort_variables(fit_bollen$lavaan, T)[1] == 11)
+  expect_true(sort_variables(fit_bollen$lavaan, T)[1] == "y5")
 })
 
 test_that("get_subset works", {

@@ -8,6 +8,12 @@ test_that("prepare_measurement_data works", {
   expect_equal(plot_data_2$model%>%unique, c("small", "small_mis"))
 })
 
+test_that("compute_latent_residual works", {
+  # make sure residuals are computed correctly
+  residual = with(plot_data, f1-slope_f1*Observed + intercept_f1)
+  expect_equal(residual%>%as.numeric, compute_latent_residual("f1", plot_data)$residual_f1)
+})
+
 test_that("order_flexdata_by_slopes works", {
   a = order_flexdata_by_slopes(plot_data, "f1", F)
   b = order_flexdata_by_slopes(plot_data, "f1", T)

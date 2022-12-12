@@ -12,6 +12,7 @@ find_negative_variances = function(fitted) {
 
 # this creates the scatterplot data for implied measurement plots
 prepare_measurement_data = function(model, model2=NULL) {
+  
   # get names
   names = get_names(model)
   obs_names = names[[1]]; latent_names = names[[2]]
@@ -32,6 +33,12 @@ prepare_measurement_data = function(model, model2=NULL) {
   # merge the intercept data with the actual data
   slopes_and_intercepts = cbind(slopes_observed, intercepts_observed, Variable=obs_names)
   flex_data = full_join(lav_data_std, slopes_and_intercepts, by="Variable")
+  
+  # create residuals
+  residuals = latent_names %>% 
+    purrr::map(compute_latent_residual, flex_data=flex_data) %>%
+    data.frame()
+  flex_data = cbind(flex_data, residuals)
 
   if (is.null(model2)) return(flex_data)
   
@@ -44,6 +51,16 @@ prepare_measurement_data = function(model, model2=NULL) {
   flex_data = full_join(flex_data, flex_data_two[,common_names], by=common_names)
   return(flex_data)
   
+}
+
+compute_latent_residual = function(latent_name, flex_data) {
+  
+  slope = flex_data[,paste0("slope_", latent_name)]
+  intercept = flex_data[,paste0("intercept_", latent_name)]
+  predicted = slope*flex_data$Observed + intercept
+  residual = data.frame(flex_data[,latent_name] - predicted)
+  names(residual) = paste0("residual_", latent_name)
+  return(residual)
 }
 
 # this function sorts the implied measurement data plots so that the most descrepant are shown first

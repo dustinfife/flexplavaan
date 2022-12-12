@@ -61,3 +61,4 @@ modify_smooth = function(p, method="lm", se=F,...) {
   method_call = smooth_method_check(method="quadratic")
   p + suppressMessages(eval(parse(text=method_call)))
 }
+

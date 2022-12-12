@@ -18,9 +18,8 @@
 #'
 #' @return Either a ggplot2 plot, or a list of ggplot2 plots
 #' @export
-implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_slopes=T, ...) {
+implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_slopes=T, plot_residuals=T, ...) {
 
-  
   model_l = flexplavaan_to_lavaan(model)
   model2_l = flexplavaan_to_lavaan(model2)
   
@@ -42,7 +41,7 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
 
 
 # this function NEEDS to be split up because I use it in plot_modifiers
-latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, ...) {
+latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, plot_residuals=T,...) {
 
   # name the abline parameters
   intercept_name = paste0("intercept_", latent)
@@ -61,19 +60,36 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, ...) {
   } else {
     method = "loess"
   }
+  
+  # if they're doing residuals...
+  if (plot_residuals) {
+    outcome = paste0("residual_", latent)
+  } else {
+    outcome = latent
+  }
+  
+  
   # now plot it
   if ("model" %in% names(flex_data)) {
     p = ggplot(flex_data, 
-               aes_string(x = "Observed", y = latent, group = "model", colour="model", shape="model", linetype="model"), ...) 
+               aes_string(x = "Observed", y = outcome, group = "model", colour="model", shape="model", linetype="model"), ...) 
     smooth = geom_blank() 
     abline = geom_abline(aes_string(intercept=intercept_name, slope=slope_name, colour="model", linetype="model"), lwd=1) 
     labels = geom_blank()
   } else {
     p = ggplot(flex_data, 
-               aes_string(x = "Observed", y = latent, group = "1"), ...) 
+               aes_string(x = "Observed", y = outcome, group = "1"), ...) 
     smooth = geom_smooth(method=method, formula = y~x, colour="blue") 
     abline = geom_abline(aes_string(intercept=intercept_name, slope=slope_name, group="1"), colour="red", lwd=2) 
     labels = labs(x="Observed\n(Red = Implied, Blue:=Observed)")
+  }
+  
+  # again, if they're doing residuals...
+  if (plot_residuals) {
+    abline = geom_hline(yintercept=0, colour = "red", lwd=2)
+    y_label = paste0(latent, " | Model")
+  } else {
+    y_label = latent
   }
   
   p +
@@ -82,8 +98,13 @@ latent_flexplot = function(flex_data, latent, limit=4, sort_slopes=T, ...) {
     abline + 
     smooth + 
     theme_bw() +
-    labels
+    labs(y=y_label)
+    
 
+}
+
+return_plot_type_implied_measurement = function(flex_data, latent, residuals=T) {
+  
 }
 
 

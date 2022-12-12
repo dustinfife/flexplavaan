@@ -10,7 +10,7 @@ test_that("name_vechs works", {
 
 test_that("return_residual_dataset works", {
   expect_true(return_residual_dataset(flexplavaan_to_lavaan(fit_bollen))$Correlation[1] == "y5:x1")
-  expect_true(return_residual_dataset(flexplavaan_to_lavaan(fit_bollen), max_val = .1) %>% nrow == 2)
+  expect_true(return_residual_dataset(flexplavaan_to_lavaan(fit_bollen), max_val = .1) %>% nrow == 3)
 })
 
 test_that("combine_residual_datasets works", {
