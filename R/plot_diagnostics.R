@@ -180,17 +180,17 @@ diagnostics_histogram = function(fit.lavaan, mapping, ...){
 viz_diagnostics_mcmc <- function(data, mapping, latents, which.latent,
                                  fit.mcmc, 
                                  invert.map=FALSE, alpha=.5, plot, ...) {
-  #browser()
+  
   ### extract name of latent variables
   observed = names(data)
-  latent.names = names(latents)[which.latent+1]
+  latent.names = names(latents)[which.latent]
   
   ### plot ggplot object so I can extract the elements
   if (dplyr::as_label(mapping$y) == "NULL" | plot=="histogram"){
     flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
     flexplot::flexplot(flexplot_form, data=data)
   } else {
-    #browser()
+    
     
     xy = extract_xy_mapping(mapping, invert.map=FALSE, data = data, observed=names(data), latent=NULL)
     x = xy$x; y = xy$y; 
@@ -198,6 +198,7 @@ viz_diagnostics_mcmc <- function(data, mapping, latents, which.latent,
     x.vals = data.frame(data[,x]); names(x.vals) = x
     y.vals = data.frame(data[,y]); names(y.vals) = y
     latents.to.show = which.latent[which(names(data)==x | names(data) == y)]
+  
     #latent.var = latents[,which(names(data)==x | names(data) == y)]
     visualize_nonlinear(x = x.vals, y=y.vals, latent=latents[,latents.to.show], plot = plot, ...)
   }
@@ -209,7 +210,9 @@ visualize_nonlinear = function(x,y,latent, plot){
   y.names = names(y)
   data = data.frame(x,y)
   names(data) = c(x.names, y.names)
+  
   newpred = nonlinear_prediction(x, y, latent) 
+  
   newpred = data.frame(newpred)
   form = flexplot::make.formula(y.names, x.names)
   if (plot=="trace"){

@@ -34,7 +34,7 @@ implied_measurement = function(model, model2=NULL, latent=NULL, limit=4, sort_sl
 
   # get long-format, standardized data
   flex_data = prepare_measurement_data(model_l, model2_l)
-  plots = latent_flexplot(flex_data, latent, limit=limit, sort_slopes=sort_slopes, ...)
+  plots = latent_flexplot(flex_data, latent, limit=limit, sort_slopes=sort_slopes, plot_residuals=plot_residuals,...)
   return(plots)
   
 }

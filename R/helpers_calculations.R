@@ -36,8 +36,8 @@ empirical_reliability = function(latent, observed, loess=FALSE){
   predicted = cbind(latent,observed) %>% 
     data.frame %>% setNames(c("latent", "observed"))  
   predicted = loess(formula = observed~latent, data=predicted, degree=2)$fitted
-  ss_reg = sum((predicted - mean(unlist(observed)))^2)
-  ss_tot = sum((observed-mean(unlist(observed)))^2)
+  ss_reg = sum((predicted - mean(unlist(observed), na.rm=T))^2, na.rm=T)
+  ss_tot = sum((observed-mean(unlist(observed), na.rm=T))^2, na.rm=T)
   return(ss_reg/ss_tot)
 }
 

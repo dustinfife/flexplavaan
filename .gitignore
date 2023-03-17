@@ -6,3 +6,4 @@
 tests/fits/deps.txt
 data/custom_bayes_fit_linear.rds
 data/hogwarts_nonlinear.rds
+*schizo*

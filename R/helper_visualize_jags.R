@@ -18,3 +18,25 @@ get_observed_names = function(data, subset) {
   if (!is.null(subset)) return(names(data)[subset])
   return(names(data))
 }
+
+extract_variables_from_jags_object = function(object) {
+  # extract data (comes as a string)
+  test = object$data
+  
+  #split the string into variables and numbers
+  k1 = strsplit(test, "\n")[[1]] %>% 
+    strsplit("<-") %>%
+    unlist 
+  
+  ## see where 'g' starts (because everything before that is a variable)
+  ## this is very prone to breaking!
+  k = k1[1:(which(k1 == "\"g\" ")-1)] %>%
+    matrix(ncol=2, byrow=T) %>%
+    data.frame() %>%
+    purrr::set_names(c("variables", "data")) %>%
+    select(variables) 
+  variables = gsub('\"', "", k$variables) %>% trimws
+    
+  
+  return(variables)
+}

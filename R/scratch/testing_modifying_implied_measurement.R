@@ -1,5 +1,5 @@
 a = implied_measurement(lavfit)
-
+?implied_measurement
 # Extract the raw data from the ggplot object
 residualize = function(a) {
   

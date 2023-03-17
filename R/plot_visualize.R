@@ -101,22 +101,33 @@ visualize.flexplavaan = function(object, object2=NULL,
 # mapping = aes(potions, darkarts)
 # visualize.runjags(object, data, which.latent=c(1,1,1,2,2,2))
 #viz_diagnostics_mcmc(data, mapping, latents=factor.scores, plot="disturbance")
-visualize.runjags = function(object, data, which.latent=c(1,1), object2=NULL, subset = NULL, 
+visualize.runjags = function(object, summary_bayesian=NULL, data, which.latent=1, object2=NULL, subset = NULL, 
                              plot=c("all", "residuals", "model"), formula = NULL,...){
   
   
   
+  # extract summary of bayesian model
+  if (is.null(summary_bayesian)) summary_bayesian = summary(object)
   
   #### create factor scores
-  factor.scores = export_jags_latents(object)[,-1]
+  factor.scores = export_jags_latents(summary_bayesian)[,-1, drop=F]
   
   
   plot = match.arg(plot,c("all", "residuals", "model"))
   
+  
   ### extract name of latent variables
-  observed = names(data)
+  observed = extract_variables_from_jags_object(object)[subset]
   latent.names = names(factor.scores)
-  observed = get_observed_names(data, subset)
+  
+  # make sure which.latent equals the number of observed variables
+  if (length(which.latent) != length(observed)) {
+    warning("The length of 'which.latent' is not the same as the number of observed variables. I'm going to modify that so it works.")
+    which.latent = rep(which.latent, times=length(observed)/length(which.latent))
+  }
+  
+  # get rid of missing values
+  data = data %>% select(all_of(observed)) 
   
   if (plot=="all"){
     
