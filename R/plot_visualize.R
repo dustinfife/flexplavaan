@@ -117,7 +117,13 @@ visualize.runjags = function(object, summary_bayesian=NULL, data, which.latent=1
   
   
   ### extract name of latent variables
-  observed = extract_variables_from_jags_object(object)[subset]
+  observed = extract_variables_from_jags_object(object)
+  
+  # if observed is a character vector, make sure they're all there
+  if (is.character(subset)) subset = which(observed %in% subset)
+  
+  # pull out the variables we need  
+  if (!is.null(subset)) observed = observed[subset]
   latent.names = names(factor.scores)
   
   # make sure which.latent equals the number of observed variables

@@ -205,6 +205,9 @@ joint_bin = function(i,xbin,ybin,latent){
 
 
 nonlinear_prediction = function(x,y,latent){
+  # plot x against predicted latent value, then extract the 
+  # predicted factor score for each level of x (and the same for y)
+  k = data.frame(cbind(latent[,1, drop=FALSE],x))
   pred.x = cbind(latent[,1, drop=FALSE],x) %>% 
     data.frame %>% 
     setNames(c("latent", "x")) %>% 
