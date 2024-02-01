@@ -31,9 +31,10 @@ flexplavaan_check_errors = function(model, data=NULL) {
 }
 
 check_for_standard_errors = function(fitted) {
+  
   if (class(fitted)=="flexplavaan") return(fitted$standard_errors)
-  message("It looks like you're visualizing lavaan objects. We recommend fitting a flexplavaan object\n
-          instead to avoid having to recompute standard errors everytime. Type ?flexplavaan for more information.")
+  # message("It looks like you're visualizing lavaan objects. We recommend fitting a flexplavaan object\n
+  #         instead to avoid having to recompute standard errors everytime. Type ?flexplavaan for more information.")
   return(get_standard_errors(fitted))
 }
 
