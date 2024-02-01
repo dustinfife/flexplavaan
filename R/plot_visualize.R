@@ -29,7 +29,7 @@ visualize.lavaan = function(object, object2=NULL,
                             subset = NULL, 
                             plot = "all", 
                             formula = NULL,...){
-
+  
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
   
@@ -52,7 +52,7 @@ visualize.lavaan = function(object, object2=NULL,
   }
   
   if (plot == "latent"){
-    p = latent_plot(fitted = object_l, fitted2 = object2_l, ...) 
+    p = latent_plot(fitted = object_l, fitted2 = object2_l, formula=formula,...) 
     return(p)
   }  
 
@@ -61,6 +61,8 @@ visualize.lavaan = function(object, object2=NULL,
   }
 
 } 
+
+
 
 
 
@@ -73,6 +75,7 @@ visualize.flexplavaan = function(object, object2=NULL,
                                  subset = NULL, 
                                  plot = "all", 
                                  formula = NULL,...){
+  
   object_l = flexplavaan_to_lavaan(object)
   object2_l = flexplavaan_to_lavaan(object2)
 

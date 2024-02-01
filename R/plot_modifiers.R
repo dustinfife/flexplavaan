@@ -58,7 +58,8 @@ modify_smooth = function(p, method="lm", se=F,...) {
 
   # delete existing smoothing layers
   p = remove_geom(p, "GeomAbline")
-  method_call = smooth_method_check(method="quadratic")
+  p = remove_geom(p, "GeomSmooth")
+  method_call = smooth_method_check(method=method)
   p + suppressMessages(eval(parse(text=method_call)))
 }
 
