@@ -1,7 +1,7 @@
 #fitted = fit_twofactor
 # latent_plot(fit_bollen, formula = Eta2 ~ Eta1)
 # latent_plot(fit_bollen)
-latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ...) {
+latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", formula = NULL, ...) {
 
   fitted_l = flexplavaan_to_lavaan(fitted)
   fitted2_l = flexplavaan_to_lavaan(fitted2)
@@ -37,7 +37,9 @@ latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ..
   }
 
   ### give them a formula (can be changed with modify_formula)
-  if (!("formula" %in% names(list(...))))  formula = beta_to_flexplot(fitted_l) else formula = list(...)["formula"]$formula
+  if (is.null(formula))  formula = beta_to_flexplot(fitted_l)
+  
+  
   if (formula[[1]]=="~") return(latent_plot_only(formula, latent_predicted, se_data, fitted_l, ...))
   
   # only return one plot
