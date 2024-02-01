@@ -3,7 +3,6 @@
 # latent_plot(fit_bollen)
 latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ...) {
 
-  
   fitted_l = flexplavaan_to_lavaan(fitted)
   fitted2_l = flexplavaan_to_lavaan(fitted2)
   
@@ -14,7 +13,6 @@ latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ..
 
   # compute standard errors 
   se_data = check_for_sd_true(estimate_se, fitted, latent_names)
-  
   model_names = get_and_check_names(NULL,fitted, fitted2)
 
   # add second dataset
@@ -39,7 +37,7 @@ latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ..
   }
 
   ### give them a formula (can be changed with modify_formula)
-  formula = beta_to_flexplot(fitted_l)
+  if (!("formula" %in% names(list(...))))  formula = beta_to_flexplot(fitted_l) else formula = list(...)["formula"]$formula
   if (formula[[1]]=="~") return(latent_plot_only(formula, latent_predicted, se_data, fitted_l, ...))
   
   # only return one plot
@@ -51,7 +49,7 @@ latent_plot = function(fitted, fitted2 = NULL, estimate_se=T, method="loess", ..
 # formula = forms
 # data=latent_predicted
 latent_plot_only = function(f, data, se_data, fitted, ...) {
-
+  
   # make a "se" column for endogenous variables
   data = create_se_for_endogenous(cbind(data, se_data), f, fitted)
 
@@ -59,7 +57,6 @@ latent_plot_only = function(f, data, se_data, fitted, ...) {
   data = create_ci_limits(data, f)
   
   ## see if alpha is set
-  list(...)
   alpha_default = return_alpha(...)
 
   # get fit implied by the model
