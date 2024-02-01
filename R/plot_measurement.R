@@ -41,13 +41,6 @@ create_latent_dataset = function(i, fitted) {
 }
 
 
-check_for_standard_errors = function(fitted) {
-  if (class(fitted)=="flexplavaan") return(fitted$standard_errors)
-  message("It looks like you're visualizing lavaan objects. We recommend fitting a flexplavaan object\n
-          instead to avoid having to recompute standard errors everytime. Type ?flexplavaan for more information.")
-  return(get_standard_errors(fitted))
-}
-
 #' @importFrom semTools plausibleValues
 estimate_standard_errors = function(i,fitted) {
   # check for negative variances
