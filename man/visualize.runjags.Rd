@@ -7,8 +7,9 @@
 \usage{
 \method{visualize}{runjags}(
   object,
+  summary_bayesian = NULL,
   data,
-  which.latent = c(1, 1),
+  which.latent = 1,
   object2 = NULL,
   subset = NULL,
   plot = c("all", "residuals", "model"),

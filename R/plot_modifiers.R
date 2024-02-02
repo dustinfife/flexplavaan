@@ -41,9 +41,15 @@ modify_latent = function(p, latent, ...) {
   latent_flexplot(data, latent, ...)
 }
 
-#p = visualize(small, subset=1:3, plot="all")
-#p %>% modify_smooth(method="quadratic")
-modify_smooth = function(p, method="lm", se=F,...) {
+#' Modify the default smoothing function
+#'
+#' @param p a plot to modify
+#' @param method method to modify from flexplot
+#' @param se should standard errors be reported? I'm not sure if this will actually do anything though....
+#'
+#' @return a ggplot object
+#' @export
+modify_smooth = function(p, method="lm", se=F) {
   
   # if it's a scatterplot matrix, modify geom for all plots
   if(class(p)[2] == "ggmatrix") {
