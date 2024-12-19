@@ -40,6 +40,10 @@ be installed from github using the following command:
     # install.packages("devtools")
     devtools::install_github("dustinfife/flexplavaan")
 
+    # in case the installation fails, set the following option:
+    options(timeout=9999999)
+
+
 Usage
 -----
 
