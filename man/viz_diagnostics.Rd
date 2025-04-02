@@ -9,10 +9,7 @@ viz_diagnostics(
   mapping,
   fit.lavaan,
   fit.lavaan2 = NULL,
-  invert.map = FALSE,
-  alpha = 0.5,
   plot = c("trace", "disturbance", "histogram"),
-  label_names,
   ...
 )
 }
@@ -23,14 +20,14 @@ viz_diagnostics(
 
 \item{fit.lavaan}{A fitted \code{\link{lavaan::lavaan}} object}
 
-\item{invert.map}{Should the x/y axes be flipped in the mapping? This is important when using viz_diagnostics
-within \code{\link{GGally::ggpairs}}, otherwise the residuals don't match the "trace" plots.}
-
-\item{alpha}{The transparency of the datapoints in the scatterplot. Defaults to 0.5}
-
 \item{plot}{One of the following: "trace" or "disturbance"}
 
 \item{...}{Other arguments passed to \code{\link{ggplot2::ggplot}}}
+
+\item{alpha}{The transparency of the datapoints in the scatterplot. Defaults to 0.5}
+
+\item{invert.map}{Should the x/y axes be flipped in the mapping? This is important when using viz_diagnostics
+within \code{\link{GGally::ggpairs}}, otherwise the residuals don't match the "trace" plots.}
 }
 \value{
 a plot of the desired relationship
