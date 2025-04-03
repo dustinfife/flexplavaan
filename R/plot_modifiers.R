@@ -19,7 +19,7 @@ modify_formula = function(p, formula, ...) {
   check_formula_in_data(p$data, formula)
   
   ## see if alpha is set
-  list(...)
+  #list(...)
   alpha_default = return_alpha(...)
   
   # plot that thang

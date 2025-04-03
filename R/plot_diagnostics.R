@@ -87,7 +87,8 @@ viz_diagnostics <- function(data, mapping,
   }  
     
   if (plot=="trace"){
-    return(diagnostics_trace(fit.lavaan, fit.lavaan2, mapping, ...))
+    p = diagnostics_trace(fit.lavaan, fit.lavaan2, mapping, ...)
+    return(p)
   } 
   
   else if (plot=="disturbance") {
@@ -119,13 +120,16 @@ diagnostics_disturbance = function(fit.lavaan, fit.lavaan2=NULL, mapping, ...) {
     data2$model = factor(data2$model, levels=c("residuals",resid_name), labels=c("Model 1", "Model 2"))
     f = make.formula("residuals", c(x, "model"))
     p = flexplot::flexplot(f, data=data2,...) + geom_hline(yintercept = 0) 
+    if (!inherits(p, "gg")) stop("Not a ggplot object!")
     return(p)
   } 
   
   flexplot_form = flexplot::make.formula("residuals", x)
+  
   p = flexplot::flexplot(flexplot_form, data=data, ...) + 
     labs(y=paste0(y, " | latent")) + 
     geom_hline(yintercept=0, col="red")
+  if (!inherits(p, "gg")) stop("Not a ggplot object!")
   return(p)
 }
 
@@ -136,7 +140,7 @@ diagnostics_trace = function(fit.lavaan, fit.lavaan2=NULL, mapping, ...) {
   x = variables[1]
   y = variables[2]
   flexplot_form = flexplot::make.formula(y, x)
-
+  
   # get necessary data (maybe split this up?)
   d      = viz_diagnostics_get_data(fit.lavaan, fit.lavaan2, variables) 
   data     = d$data     # scatterplot data
@@ -146,17 +150,21 @@ diagnostics_trace = function(fit.lavaan, fit.lavaan2=NULL, mapping, ...) {
   if (!is.null(fit.lavaan2)){
     # convert to long format so I can plot two lines
     n = new_data %>% 
-      tidyr::gather(key="Model", value=y, all_of(c(!!y,y2_name))) %>% 
-      dplyr::mutate(Model = factor(Model, levels=c(!!y, y2_name), labels=c("Model 1", "Model2")))
+      tidyr::pivot_longer(cols = all_of(c(y, y2_name)), names_to = "Model", values_to = "value") %>%
+      mutate(Model = factor(Model, levels = c(y, y2_name), labels = c("Model 1", "Model 2")))
     p = flexplot::flexplot(flexplot_form, data=data, se=F, suppress_smooth = T, ...) + 
-      geom_line(data=n, aes_string(x,"y", col="Model"))
+      geom_line(data = n, aes(x = .data[[x]], y = value, color = Model))
+    if (!inherits(p, "gg")) stop("Not a ggplot object!")
     return(p)
   } 
   
   # second line is just the fit of the model
   p = flexplot::flexplot(flexplot_form, data=data, se=F, ...) + 
-      geom_line(data=new_data, aes_string(x,y), col="red") + labs(title="Trace Plot")
-
+        geom_line(data = new_data, 
+                  aes(x = .data[[x]], y = .data[[y]]), 
+                  color = "red") +
+        labs(title = "Trace Plot")
+  if (!inherits(p, "gg")) stop("Not a ggplot object!")
   return(p)
 }
 
@@ -170,7 +178,9 @@ diagnostics_histogram = function(fit.lavaan, mapping, ...){
   names(d) = as_label(mapping$x)
   
   flexplot_form = flexplot::make.formula(dplyr::as_label(mapping$x), "1")
-  return(flexplot::flexplot(flexplot_form, data=d,...))
+  
+  p = flexplot::flexplot(flexplot_form, data=d,...)
+  return(p)
 }
 
 

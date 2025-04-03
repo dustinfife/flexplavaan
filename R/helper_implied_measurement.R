@@ -178,9 +178,9 @@ rank_worst_fitting_latents = function(model) {
   
   # compute the average slope descrepancy by latent variable
   flex_data = prepare_measurement_data(model)
-  ranks_latents = flex_data %>% 
-    mutate(across(all_of(slope_name), ~ abs(.x - Observed))) %>% # computes difference between observed and implied slope
-    summarize(across(all_of(slope_name), .fns=mean, na.rm=T))
+  ranks_latents = flex_data %>%
+    mutate(across(all_of(slope_name), ~ abs(.x - Observed))) %>%
+    summarize(across(all_of(slope_name), ~ mean(.x, na.rm = TRUE)))
   return(names(suppressWarnings(sort(ranks_latents[1,]))) %>% gsub_piped("slope_", ""))
 }
 

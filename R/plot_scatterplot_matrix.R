@@ -2,7 +2,7 @@
 #plot_scatter_matrix(fit_twofactor$lavaan, fit_twofactor_2$lavaan, subset=c("x1", "x2", "x3"), model_names=c("a", "b"))
 # get rid of model_names argument by making it an attribute??
 plot_scatter_matrix = function(object1, object2=NULL, subset=NULL, plot="all", ...) {
-  
+
   object1_l = flexplavaan_to_lavaan(object1)
   object2_l = flexplavaan_to_lavaan(object2)
  
@@ -20,8 +20,13 @@ plot_scatter_matrix = function(object1, object2=NULL, subset=NULL, plot="all", .
   
   ## set the class
   x = set_model_class(object1_l=object1_l, object2_l=object2_l, names=names, legend=legend, d=d, nms=nms, plot=plot)
+  # tmp_data <- d[, c("x1", "x2")]  # pick two real columns
+  # tmp_mapping <- aes(x = x1, y = x2)
+  # viz_diagnostics(tmp_data, tmp_mapping, fit.lavaan = object1_l, fit.lavaan2 = object2_l, plot = "trace", ...)
+  # 
   matrix_plot(x, ...)
-
+  
+  
 }
 
 matrix_plot = function(x, ...) {
@@ -29,7 +34,7 @@ matrix_plot = function(x, ...) {
 }
 
 matrix_plot.all = function(x, ...) {
-  p = with(x, ggpairs(d, legend=legend,
+  p = with(x, ggpairs(d, legend=NULL,
               lower = list(continuous = wrap(viz_diagnostics,fit.lavaan = object1_l, fit.lavaan2 = object2_l, alpha = .2, plot="disturbance", label_names=nms, invert.map=TRUE)),
               upper = list(continuous = wrap(viz_diagnostics,fit.lavaan = object1_l, fit.lavaan2 = object2_l, alpha = .2, plot="trace",       label_names=nms)),
               diag  = list(continuous = wrap(viz_diagnostics,fit.lavaan = object1_l, fit.lavaan2 = object2_l, alpha = .2, plot="histogram",   label_names=nms)))
